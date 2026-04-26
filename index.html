@@ -1395,12 +1395,12 @@
           </tr>
           <tr>
             <td><strong>[4] 軸別評価 × 4</strong></td>
-            <td>サブスコア / 評価 / 効いている要素 / ボトルネック / 次のアクション</td>
+            <td>サブスコア / 評価 / 強み / 弱み / 伸びしろ</td>
             <td><span class="badge badge-todo">Claude API × 4</span></td>
             <td>根拠ある個別分析・課題自覚</td>
           </tr>
           <tr>
-            <td><strong>[5] 構造的な特徴</strong></td>
+            <td><strong>[5] あなたの特徴</strong></td>
             <td>GAPセクション（条件付き）+ 自己認識のズレ</td>
             <td><span class="badge badge-todo">Claude API</span></td>
             <td>盲点・パターンの可視化</td>
@@ -1503,9 +1503,9 @@
             <ul class="page-items">
               <li><strong>① サブカテゴリスコア：</strong>3サブの点数を自分 vs 全体平均で並べて表示（アニメーションバー）。これがClaudeの評価の「根拠」になる</li>
               <li><strong>② 評価テキスト：</strong>このスコアパターンが実務でどういう状態を示しているかを言語化（文章）</li>
-              <li><strong>③ 効いている要素：</strong>この軸の中で機能している要因（箇条書き・2〜3点）</li>
-              <li><strong>④ ボトルネック：</strong>この軸の中で足を引っ張っている要因。実務への影響まで踏み込む（箇条書き・2〜3点）</li>
-              <li><strong>⑤ この軸での次のアクション：</strong>ボトルネック解消のために具体的に何をするか（文章）</li>
+              <li><strong>③ 強み：</strong>この軸の中で機能している要因（箇条書き・2〜3点）</li>
+              <li><strong>④ 弱み：</strong>この軸の中で足を引っ張っている要因。実務への影響まで踏み込む（箇条書き・2〜3点）</li>
+              <li><strong>⑤ 伸びしろ：</strong>この弱みを解消すると何が変わるか・具体的なアクション（文章）</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ 評価テキスト100字・アクション100字</div>
             <span class="page-gen">Claude API × 4</span>
@@ -1517,7 +1517,7 @@
           <div class="page-num">5</div>
           <div class="page-body">
             <div class="page-role">Claude API · 条件付き表示あり</div>
-            <div class="page-title">データが示す構造的な特徴</div>
+            <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
               <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。kt_gap / aj_gap（⚠️最重要・過信実行型の検知）/ kj_gap。GAPなし → このH2ごと非表示</li>
               <li><strong>自己認識のズレ：</strong>不整合グループをH3で展開し「このズレが実務で何を意味するか」を記述。0件 → 「一貫した自己認識が確認されました」1文のみ</li>
@@ -1762,38 +1762,97 @@
         <thead>
           <tr>
             <th>セクション</th>
-            <th>生成内容</th>
+            <th>出力フィールド</th>
+            <th>形式</th>
             <th>Sheets保存列</th>
-            <th>状態</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>診断サマリー</td>
-            <td>4軸全体像の総評（2〜3文・100〜150字）</td>
+            <td><code>summary</code></td>
+            <td>文章 100〜120字</td>
             <td>DK列</td>
-            <td><span class="badge badge-todo">プロンプト未設計</span></td>
           </tr>
           <tr>
-            <td>軸別評価</td>
-            <td>知識力・思考力・活用力・判断力の各軸評価テキスト（×4・各150〜200字）</td>
-            <td>DL〜DO列</td>
-            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+            <td rowspan="4">軸別評価 × 4</td>
+            <td><code>eval</code></td>
+            <td>文章 〜80字</td>
+            <td rowspan="4">DL〜DO列</td>
           </tr>
           <tr>
-            <td>構造的な特徴</td>
-            <td>GAP言語化（条件付き）+ 自己認識のズレ</td>
-            <td>DP列</td>
-            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+            <td><code>strengths</code></td>
+            <td>配列 2点固定・各〜20字</td>
           </tr>
           <tr>
-            <td>伸びしろ</td>
-            <td>優先ポイント1〜2本 + 具体アクション（200〜250字）</td>
-            <td>DQ列</td>
-            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+            <td><code>weaknesses</code></td>
+            <td>配列 2点固定・各〜20字</td>
+          </tr>
+          <tr>
+            <td><code>growth</code></td>
+            <td>文章 〜80字</td>
+          </tr>
+          <tr>
+            <td rowspan="2">あなたの特徴</td>
+            <td><code>gaps[]</code></td>
+            <td>配列（条件付き）description 〜80字</td>
+            <td rowspan="2">DP列</td>
+          </tr>
+          <tr>
+            <td><code>self_gaps[]</code></td>
+            <td>配列 name + description 〜60字</td>
+          </tr>
+          <tr>
+            <td rowspan="2">これからのあなたへ</td>
+            <td><code>priority_action</code></td>
+            <td>短文 〜30字</td>
+            <td rowspan="2">DQ列</td>
+          </tr>
+          <tr>
+            <td><code>explanation</code></td>
+            <td>文章 150〜180字</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="callout" style="margin-top:24px">
+        <strong>形式選択の根拠：</strong><br>
+        <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
+          <li><strong>文章</strong>：意味・論理・感情の流れが必要な要素（eval / growth / gaps / explanation）</li>
+          <li><strong>配列（各〜20字）</strong>：strengths / weaknesses はスキャン・タグ的消化が目的。4軸繰り返しなので短く統一して認知負荷を抑える</li>
+          <li><strong>短文（〜30字）</strong>：priority_action は「1点に絞った行動指針」としてデザイン上強調できる長さに固定</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:24px">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">JSON出力スキーマ（確定）</div>
+        <pre style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px;line-height:1.7;overflow-x:auto;color:var(--text)"><code>{
+  "summary": "string  // 100〜120字・全体総評",
+
+  "axes": {
+    "knowledge":    { "eval": "string ~80字", "strengths": ["~20字", "~20字"], "weaknesses": ["~20字", "~20字"], "growth": "string ~80字" },
+    "thinking":     { /* 同構造 */ },
+    "application":  { /* 同構造 */ },
+    "judgment":     { /* 同構造 */ }
+  },
+
+  "structure": {
+    "gaps": [
+      { "pair": "aj | kt | kj", "description": "string ~80字" }
+    ],
+    // gaps は差25点以上のペアのみ。0件の場合は空配列
+    "self_gaps": [
+      { "name": "string", "description": "string ~60字" }
+    ]
+    // self_gaps は不整合グループ分。0件の場合は空配列
+  },
+
+  "next_step": {
+    "priority_action": "string ~30字  // GAP・ズレを踏まえた最優先1点",
+    "explanation":     "string 150~180字  // CTAブリッジ"
+  }
+}</code></pre>
+      </div>
 
       <div class="callout" style="margin-top:20px">
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、「構造的な特徴」セクションの自己認識ズレとして言語化する。例：「確認してから使う」という問いへの回答が一貫していない場合、判断基準の曖昧さとして文章に組み込む。
