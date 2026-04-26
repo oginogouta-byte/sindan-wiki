@@ -1353,7 +1353,10 @@
       </div>
 
       <div class="callout">
-        <strong>設計思想：</strong>タイプ名なし。数字と言語化の組み合わせで「自分がどこにいて、何が強く、何がボトルネックか」を伝える。最初のビジュアルブロックで市場位置を即時把握させ、以降のセクションで根拠・構造・行動へと展開する。
+        <strong>設計思想：</strong>タイプ名・ランクなし。「市場の中で自分がどこにいるか」を上位X%で即時把握させ、サブカテゴリの数値と言語化の組み合わせで「このレポートは自分のことを全部分かっている」という体験を作る。デザイン品質がコンテンツ品質に見える。診断ページと同水準のビジュアルで、業界の基準を作りにいく。
+      </div>
+      <div class="callout" style="margin-top:8px">
+        <strong>コンバージョン設計：</strong>レポート体験の質そのものがLINE登録のドライバー。低スコア層は「情報が欲しい」、高スコア層は「成長意欲が刺激される」という2つのパスで自然に誘導する。CTAは「1on1誘導」ではなく「個別最適化された情報をLINEでお届け」。
       </div>
 
       <table class="score-table" style="margin-top:24px">
@@ -1367,34 +1370,52 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>ビジュアルブロック</strong></td>
-            <td>AI戦闘力 / ランク / 上位X% / 4軸スコア</td>
+            <td><strong>ファーストビュー</strong></td>
+            <td>上位X%（ヒーロー表示）/ 4軸スコアサマリー</td>
             <td><span class="badge badge-done">自動計算</span></td>
-            <td>市場内の位置を即時把握</td>
+            <td>市場内の位置を0.5秒で把握</td>
           </tr>
           <tr>
-            <td><strong>診断サマリー</strong></td>
+            <td><strong>[1] 点数と戦闘力</strong></td>
+            <td>AI戦闘力トークン / 4軸詳細スコア（/125）</td>
+            <td><span class="badge badge-done">自動計算</span></td>
+            <td>数値の根拠を見せる</td>
+          </tr>
+          <tr>
+            <td><strong>[2] レーダーチャート</strong></td>
+            <td>自分 vs 全体平均・4軸の差異</td>
+            <td><span class="badge badge-done">自動計算</span></td>
+            <td>平均との乖離を可視化</td>
+          </tr>
+          <tr>
+            <td><strong>[3] 総評</strong></td>
             <td>4軸全体像の総評（2〜3文）</td>
             <td><span class="badge badge-todo">Claude API</span></td>
-            <td>自分への評価を受け取る</td>
+            <td>「自分のことを語られている」体験</td>
           </tr>
           <tr>
-            <td><strong>軸別評価</strong></td>
-            <td>知識力 / 思考力 / 活用力 / 判断力（H2 × 4）</td>
+            <td><strong>[4] 軸別評価 × 4</strong></td>
+            <td>サブスコア / 評価 / 効いている要素 / ボトルネック / 次のアクション</td>
             <td><span class="badge badge-todo">Claude API × 4</span></td>
-            <td>納得感・根拠の提示</td>
+            <td>根拠ある個別分析・課題自覚</td>
           </tr>
           <tr>
-            <td><strong>構造的な特徴</strong></td>
-            <td>GAPセクション（条件付き表示）+ 自己認識のズレ</td>
+            <td><strong>[5] 構造的な特徴</strong></td>
+            <td>GAPセクション（条件付き）+ 自己認識のズレ</td>
             <td><span class="badge badge-todo">Claude API</span></td>
-            <td>盲点の可視化</td>
+            <td>盲点・パターンの可視化</td>
           </tr>
           <tr>
-            <td><strong>伸びしろ</strong></td>
-            <td>優先ポイント1〜2本 + 具体アクション</td>
+            <td><strong>[6] あなたの次のステップ</strong></td>
+            <td>4軸横断・最優先の1課題 + 解消したら何が変わるか</td>
             <td><span class="badge badge-todo">Claude API</span></td>
-            <td>行動喚起</td>
+            <td>行動意欲の喚起・CTAブリッジ</td>
+          </tr>
+          <tr>
+            <td><strong>[CTA] LINE登録</strong></td>
+            <td>「個別最適化された情報をLINEでお届け」+ 登録ボタン</td>
+            <td><span class="badge badge-done">静的</span></td>
+            <td>コンバージョン</td>
           </tr>
         </tbody>
       </table>
@@ -1409,84 +1430,132 @@
 
       <div class="report-pages">
 
-        <!-- ビジュアルブロック -->
+        <!-- ファーストビュー -->
         <div class="report-page-card" style="--page-color: var(--c1)">
-          <div class="page-num">①</div>
+          <div class="page-num">FV</div>
           <div class="page-body">
-            <div class="page-role">自動計算 · 静的表示</div>
-            <div class="page-title">ビジュアルブロック</div>
+            <div class="page-role">自動計算 · ヒーロー表示</div>
+            <div class="page-title">ファーストビュー</div>
             <ul class="page-items">
-              <li>AI戦闘力：X,XXX,XXX トークン（数値大きく表示）</li>
-              <li>ランク：S / A / B / C / D</li>
-              <li>上位 X%（全受検者中の相対位置）</li>
-              <li>4軸スコアサマリー（バーまたはレーダーチャート）</li>
+              <li><strong>上位X%</strong>：最大サイズで表示。「市場の中の自分」を0.5秒で認識させる</li>
+              <li>4軸スコアサマリー：コンパクトに並べて全体感を示す</li>
+              <li>ランク（S/A/B/C/D）は表示しない</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（各軸スコア・ランク・合計・上位X%）</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（上位X%・4軸スコア）</div>
             <span class="page-gen">自動計算</span>
           </div>
         </div>
 
-        <!-- 診断サマリー -->
+        <!-- 点数と戦闘力 -->
+        <div class="report-page-card" style="--page-color: var(--c1)">
+          <div class="page-num">1</div>
+          <div class="page-body">
+            <div class="page-role">自動計算</div>
+            <div class="page-title">点数と戦闘力</div>
+            <ul class="page-items">
+              <li>AI戦闘力：X,XXX,XXX トークン（数値大きく・アニメーション込み）</li>
+              <li>4軸詳細スコア（/125点）</li>
+              <li>ランク表示なし</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（戦闘力・4軸スコア）</div>
+            <span class="page-gen">自動計算</span>
+          </div>
+        </div>
+
+        <!-- レーダーチャート -->
         <div class="report-page-card" style="--page-color: var(--c5)">
-          <div class="page-num">②</div>
+          <div class="page-num">2</div>
+          <div class="page-body">
+            <div class="page-role">自動計算 · カスタムビジュアル</div>
+            <div class="page-title">レーダーチャート</div>
+            <ul class="page-items">
+              <li>自分のスコア（塗りつぶし）vs 全体平均（線のみ）の2層表示</li>
+              <li>4軸の差異が一目で分かる</li>
+              <li>診断ページと同水準のカスタムビジュアル（デフォルトChartJSは使わない）</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア）+ 全体平均（Sheets集計）</div>
+            <span class="page-gen">自動計算</span>
+          </div>
+        </div>
+
+        <!-- 総評 -->
+        <div class="report-page-card" style="--page-color: var(--c2)">
+          <div class="page-num">3</div>
           <div class="page-body">
             <div class="page-role">Claude API · H1</div>
-            <div class="page-title">診断サマリー</div>
+            <div class="page-title">総評</div>
             <ul class="page-items">
-              <li>4軸の全体像を俯瞰した総評（2〜3文）</li>
-              <li>「全体を一言で表す文」として機能させる</li>
-              <li>数値ブロック直後に置くことで「自分のことを語られている」感を作る</li>
+              <li>4軸全体像を俯瞰した総評（2〜3文）</li>
+              <li>「このスコアパターンの人が市場でどういう立ち位置にいるか」を言語化</li>
+              <li>抽象的な褒め言葉・励ましは禁止。客観的・分析的なトーンで</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・ランク・GAP3本）／ 目安：100〜150字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：100〜150字</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
 
         <!-- 軸別評価 -->
         <div class="report-page-card" style="--page-color: var(--c2)">
-          <div class="page-num">③</div>
+          <div class="page-num">4</div>
           <div class="page-body">
             <div class="page-role">Claude API × 4 · H1 > H2</div>
             <div class="page-title">軸別評価（知識力 / 思考力 / 活用力 / 判断力）</div>
             <ul class="page-items">
-              <li>各軸H2：スコアの意味（このレベルはどういう状態か）</li>
-              <li>サブカテゴリの偏りが何を示すか（最高サブ vs 最低サブの差）</li>
-              <li>実際のAI活用にどう現れるか（実務レベルでの言語化）</li>
+              <li><strong>① サブカテゴリスコア：</strong>3サブの点数を自分 vs 全体平均で並べて表示（アニメーションバー）。これがClaudeの評価の「根拠」になる</li>
+              <li><strong>② 評価テキスト：</strong>このスコアパターンが実務でどういう状態を示しているかを言語化（文章）</li>
+              <li><strong>③ 効いている要素：</strong>この軸の中で機能している要因（箇条書き・2〜3点）</li>
+              <li><strong>④ ボトルネック：</strong>この軸の中で足を引っ張っている要因。実務への影響まで踏み込む（箇条書き・2〜3点）</li>
+              <li><strong>⑤ この軸での次のアクション：</strong>ボトルネック解消のために具体的に何をするか（文章）</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ 各軸150〜200字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ 評価テキスト100字・アクション100字</div>
             <span class="page-gen">Claude API × 4</span>
           </div>
         </div>
 
         <!-- 構造的な特徴 -->
         <div class="report-page-card" style="--page-color: var(--c4)">
-          <div class="page-num">④</div>
+          <div class="page-num">5</div>
           <div class="page-body">
-            <div class="page-role">Claude API · H1 > H2 · 条件付き表示あり</div>
+            <div class="page-role">Claude API · 条件付き表示あり</div>
             <div class="page-title">データが示す構造的な特徴</div>
             <ul class="page-items">
-              <li><strong>GAPセクション（条件付き）：</strong>|GAP| ≥ 閾値（要確定・目安25点）の場合のみH2表示。kt_gap / aj_gap（⚠️最重要）/ kj_gapのうち有意なものを言語化。GAPがない場合はこのH2ごと非表示。</li>
-              <li><strong>自己認識のズレ：</strong>「今回X件の不整合が検出されました」→ 各グループ名をH3で展開し、そのズレが意味することを記述。不整合0件の場合はその旨を1文で示す。</li>
+              <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。kt_gap / aj_gap（⚠️最重要・過信実行型の検知）/ kj_gap。GAPなし → このH2ごと非表示</li>
+              <li><strong>自己認識のズレ：</strong>不整合グループをH3で展開し「このズレが実務で何を意味するか」を記述。0件 → 「一貫した自己認識が確認されました」1文のみ</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数）</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
 
-        <!-- 伸びしろ -->
+        <!-- 次のステップ -->
         <div class="report-page-card" style="--page-color: var(--c3)">
-          <div class="page-num">⑤</div>
+          <div class="page-num">6</div>
           <div class="page-body">
-            <div class="page-role">Claude API · H1 > H2</div>
-            <div class="page-title">伸びしろ</div>
+            <div class="page-role">Claude API · CTAブリッジ</div>
+            <div class="page-title">あなたの次のステップ</div>
             <ul class="page-items">
-              <li>最も優先すべきポイントを1〜2本に絞って提示</li>
-              <li>ボトルネック解消で何が変わるかを具体的に記述</li>
-              <li>すぐ実行できる具体的アクションを添える</li>
-              <li>CTA（LINE登録）へのブリッジとして機能させる</li>
+              <li>4軸横断で「今最も優先すべき1課題」に絞って提示（文章）</li>
+              <li>その課題を解消したら何が変わるかを具体的に記述</li>
+              <li>「一人でやるのが難しい部分がある」という文脈を自然に作り、LINE登録への動機を醸成する</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸）+ Layer2（最低サブ）／ 目安：200〜250字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸）+ Layer2（最低サブ・GAP）／ 目安：150〜200字</div>
             <span class="page-gen">Claude API</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="report-page-card" style="--page-color: var(--accent)">
+          <div class="page-num">CTA</div>
+          <div class="page-body">
+            <div class="page-role">静的 · コンバージョン</div>
+            <div class="page-title">LINE登録</div>
+            <ul class="page-items">
+              <li>コピー：「あなたのAI活用レベルに合わせた情報をLINEでお届けします」</li>
+              <li>低スコア層：「情報を取り続けることが差になる」という訴求</li>
+              <li>高スコア層：「さらに上を目指すための情報」という訴求</li>
+              <li>LINE登録ボタン（lin.ee/XXXXXXX）</li>
+            </ul>
+            <span class="page-gen">静的</span>
           </div>
         </div>
 
@@ -1502,7 +1571,10 @@
       </div>
 
       <div class="callout">
-        <strong>設計方針：</strong>情報密度を担保するため縦スクロール型を採用。セクション単位でコンテンツを区切り、ビジュアルブロック → テキスト分析 → 行動喚起 の順で自然に読み進められる構成にする。
+        <strong>設計方針：</strong>情報密度を担保するため縦スクロール型を採用。セクション単位でコンテンツを区切り、ビジュアルゾーン（FV〜2）→ テキスト分析ゾーン（3〜6）→ CTA の順で自然に読み進められる構成にする。
+      </div>
+      <div class="callout" style="margin-top:8px">
+        <strong>デザイン品質方針：</strong>診断ページ（index.html）のビジュアル水準を前提とする。一般ユーザーはAI診断の良し悪しを判断する軸を持っていないため、デザインの先進性・精緻さが「このサービスはすごい」という認知を直接作る。市場にほぼ競合が存在しない今、このレポートが業界の基準になる。レーダーチャート・スコアバーはデフォルトライブラリを使わず、診断ページと同世界観のカスタムビジュアルで構築する。
       </div>
 
       <div class="flow" style="margin-top: 24px;">
