@@ -1609,6 +1609,143 @@
       </div>
     </section>
 
+    <!-- CONTENT SPEC -->
+    <section class="section" id="r-content">
+      <div class="section-header">
+        <div class="section-eyebrow">Content Spec</div>
+        <h2 class="section-title">コンテンツ仕様書</h2>
+        <p class="section-desc">デザイン制作・Claude APIプロンプト設計のベースとなる、セクションごとの確定テキスト仕様。</p>
+      </div>
+
+      <!-- ファーストビュー -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">FIRST VIEW</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">ファーストビュー（タイトルなし）</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>テキスト</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>メイン数値</td><td>上位 <strong>X</strong> %</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>サブテキスト</td><td>全受検者 N人中の位置</td><td><span class="badge badge-check">データ蓄積後</span></td></tr>
+              <tr><td>4軸サマリー</td><td>知識力 XX点 / 思考力 XX点 / 活用力 XX点 / 判断力 XX点</td><td><span class="badge badge-done">自動計算</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 1 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 1</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：あなたのAI戦闘力</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>テキスト</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>メイン数値</td><td>XXX,XXX トークン</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>4軸詳細</td><td>知識力 XX / 125点（×4軸）</td><td><span class="badge badge-done">自動計算</span></td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">ランク（S/A/B/C/D）は表示しない。</div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 2</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：能力分布図</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>テキスト</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>チャート</td><td>カスタムレーダーチャート（診断ページ同水準）</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>凡例</td><td>● あなた　◯ 全体平均</td><td><span class="badge badge-done">静的ラベル</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 3</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：診断サマリー</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（2〜3文・100〜150字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">禁止：褒め言葉・励まし・「素晴らしい」「頑張りましょう」。客観・分析トーンで。</div>
+        </div>
+      </div>
+
+      <!-- Section 4 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 4</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：軸別詳細評価　／　H2：知識力・思考力・活用力・判断力（×4）</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>サブスコア表示</td><td>サブカテゴリ名 + XX点 + 平均XX点 + アニメーションバー（×3サブ）</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>H3：評価</td><td>このスコアパターンが実務でどういう状態かを言語化（〜100字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：強み</td><td>この軸内で機能している要因（箇条書き・2〜3点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：弱み</td><td>この軸内で足を引っ張っている要因・実務への影響（箇条書き・2〜3点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：伸びしろ</td><td>この弱みを解消すると何が変わるか・具体的アクション（文章・〜100字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 5 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 5</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：あなたの特徴</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>H2：[GAP見出し]</td><td>例「活用力と判断力のギャップ」― 差が25点以上のGAPのみ表示。GAPなし→このH2ごと非表示</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H2：自己認識のズレ</td><td>「今回 X件 の不整合が検出されました」</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>H3：[グループ名]</td><td>このズレが実務で何を意味するか（不整合グループ数分だけ展開）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>0件の場合</td><td>「一貫した自己認識が確認されました」1文のみ</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 6 -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 6</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：これからのあなたへ</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>本文</td><td>4軸横断で最優先の1課題 + 解消したら何が変わるか（文章・150〜200字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">CTA</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">LINE登録</div>
+          <table class="score-table" style="margin:0">
+            <thead><tr><th>要素</th><th>テキスト</th><th>種別</th></tr></thead>
+            <tbody>
+              <tr><td>見出し</td><td>AI活用について、もっと詳しく知りたい方へ</td><td><span class="badge badge-done">静的</span></td></tr>
+              <tr><td>説明文</td><td>あなたの診断結果をもとに、個別最適化された情報をLINEでお届けします</td><td><span class="badge badge-done">静的</span></td></tr>
+              <tr><td>ボタン</td><td>LINE登録はこちら</td><td><span class="badge badge-done">静的</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
     <!-- CLAUDE API -->
     <section class="section" id="r-api">
       <div class="section-header">
