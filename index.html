@@ -1,0 +1,2860 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI戦闘力診断 — 設計Wiki</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #eceae5;
+    --surface2: #e2e0da;
+    --border: #c8c6be;
+    --text: #1c1c22;
+    --muted: #60607a;
+    --accent: #5858a8;
+
+    --c1: #5858a8;
+    --c2: #a04870;
+    --c3: #2e7a5a;
+    --c4: #8a5820;
+    --c5: #2e7098;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', 'Hiragino Sans', 'Meiryo', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===== TAB BAR ===== */
+  .tab-bar {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: 49px;
+  }
+
+  .tab-btn {
+    padding: 0 20px;
+    height: 49px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+    letter-spacing: .04em;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ===== PANE ===== */
+  .pane {
+    display: flex;
+    min-height: calc(100vh - 49px);
+  }
+
+  .pane-hidden { display: none !important; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 49px;
+    height: calc(100vh - 49px);
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo .sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .nav-section {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 8px 8px 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--surface2); color: var(--text); }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    padding: 48px 56px;
+    max-width: 900px;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { margin-bottom: 72px; }
+
+  .section-header {
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-desc {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ===== OVERVIEW CARDS ===== */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    border-top: 3px solid var(--card-color, var(--accent));
+  }
+
+  .overview-card .card-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--card-color, var(--accent));
+    margin-bottom: 6px;
+  }
+
+  .overview-card .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .overview-card .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .overview-card .card-count {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* ===== SCORE TABLE ===== */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .score-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .score-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .rank-badge {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 16px;
+    text-align: center;
+    line-height: 32px;
+  }
+
+  .rank-s { background: rgba(180,140,0,0.12); color: #7a5e00; }
+  .rank-a { background: rgba(88,88,168,0.12); color: #5858a8; }
+  .rank-b { background: rgba(46,122,90,0.12); color: #2e7a5a; }
+  .rank-c { background: rgba(138,88,32,0.12); color: #8a5820; }
+  .rank-d { background: rgba(160,72,112,0.12); color: #a04870; }
+
+  /* ===== QUESTION DIMENSION ===== */
+  .dim-block { margin-bottom: 48px; }
+
+  .dim-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dim-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .dim-title { font-size: 18px; font-weight: 700; }
+  .dim-range { font-size: 12px; color: var(--muted); }
+
+  .q-list { list-style: none; }
+
+  .q-item {
+    display: flex;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    width: 28px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .q-text { font-size: 14px; line-height: 1.6; }
+
+  /* ===== FLOW ===== */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+  }
+
+  .flow-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+  }
+
+  .flow-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+    flex-shrink: 0;
+  }
+
+  .flow-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .flow-line {
+    flex: 1;
+    width: 2px;
+    background: var(--border);
+    margin: 4px 0;
+    min-height: 24px;
+  }
+
+  .flow-item:last-child .flow-line { display: none; }
+
+  .flow-content { padding-bottom: 24px; }
+
+  .flow-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .flow-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ===== STATUS TABLE ===== */
+  .status-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .status-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .badge-done { background: rgba(46,122,90,0.12); color: #2e7a5a; }
+  .badge-todo { background: rgba(138,88,32,0.12); color: #8a5820; }
+  .badge-check { background: rgba(160,72,112,0.12); color: #a04870; }
+
+  .priority-high { color: #a04870; font-weight: 700; }
+  .priority-mid { color: #8a5820; }
+  .priority-low { color: #2e7a5a; }
+
+  /* ===== TODO LIST ===== */
+  .todo-list { list-style: none; }
+
+  .todo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .todo-marker {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .todo-marker.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .todo-marker.done::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .todo-text { line-height: 1.5; }
+  .todo-text.done-text { color: var(--muted); text-decoration: line-through; }
+
+  /* ===== CALLOUT ===== */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .callout strong { color: var(--text); }
+
+  /* ===== TECH STACK ===== */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .tech-role { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .tech-name { font-size: 14px; font-weight: 700; }
+  .tech-status { font-size: 11px; margin-top: 6px; }
+
+  /* ===== REPORT PAGE CARDS ===== */
+  .report-pages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .report-page-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    border-left: 4px solid var(--page-color, var(--accent));
+  }
+
+  .page-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--page-color, var(--accent));
+    opacity: .6;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-top: 2px;
+    width: 36px;
+  }
+
+  .page-body { flex: 1; }
+
+  .page-role {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--page-color, var(--accent));
+    margin-bottom: 4px;
+  }
+
+  .page-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .page-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-items li {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .page-items li::before {
+    content: '—';
+    color: var(--border);
+    flex-shrink: 0;
+  }
+
+  .page-gen {
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--surface2);
+    color: var(--muted);
+  }
+
+  /* ===== STEP TRACKER ===== */
+  .step-tracker { display: flex; flex-direction: column; }
+
+  .step-item {
+    display: flex;
+    gap: 16px;
+  }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 36px;
+    flex-shrink: 0;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-item.step-active .step-num {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .step-item.step-done .step-num {
+    background: #2e7a5a;
+    border-color: #2e7a5a;
+    color: white;
+  }
+  .step-item.step-done .step-line { background: rgba(46,122,90,0.2); }
+
+  .step-line {
+    flex: 1;
+    width: 2px;
+    background: var(--border);
+    margin: 6px 0;
+    min-height: 20px;
+  }
+
+  .step-item:last-child .step-line { display: none; }
+
+  .step-body {
+    padding-bottom: 28px;
+    flex: 1;
+    padding-top: 4px;
+  }
+
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .step-meta { display: flex; align-items: center; }
+
+  /* ===== LAYER GRID ===== */
+  .layer-grid { display: flex; flex-direction: column; gap: 16px; margin: 24px 0; }
+
+  .layer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .layer-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .layer-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+
+  .layer-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .layer-example {
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ===== CLASSIFICATION MAP ===== */
+  .axis-chain {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .chain-node {
+    flex: 1;
+    min-width: 90px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .chain-node-role { font-size: 10px; color: var(--muted); letter-spacing: .06em; margin-bottom: 4px; }
+  .chain-node-name { font-size: 15px; font-weight: 800; }
+  .chain-arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0 2px;
+  }
+  .chain-arrow { color: var(--muted); font-size: 16px; line-height: 1; }
+  .chain-gap-label { font-size: 9px; font-weight: 700; color: #ff6e9c; letter-spacing: .05em; }
+
+  .gap-patterns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0;
+  }
+  .gap-pattern {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 12px;
+    align-items: start;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .gap-pattern.danger { border-color: rgba(255,110,156,0.35); background: rgba(160,72,112,0.06); }
+  .gap-formula { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 700; }
+  .gap-meaning { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .gap-meaning strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* 4-axis type profile */
+  .ax-row {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .ax {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .ax.h { background: var(--accent); color: #000e1a; }
+  .ax.m { background: rgba(255,255,255,0.14); color: var(--text); border: 1px solid rgba(255,255,255,0.22); }
+  .ax.l { background: transparent; color: var(--muted); border: 1px dashed rgba(255,255,255,0.18); }
+
+  .type-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .type-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .type-card.tc-s { border-color: #f4a73355; background: linear-gradient(135deg,#f4a73310,#ff6e9c0a); }
+  .type-card.tc-a { border-color: #7c6eff44; }
+  .type-card.tc-warn { border-color: #ff6e9c44; background: rgba(255,110,156,0.05); }
+  .type-card.tc-dim { opacity: .8; }
+  .tc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tc-name { font-size: 14px; font-weight: 800; flex: 1; }
+  .tc-rule { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .05em; background: rgba(255,255,255,0.07); border-radius: 4px; padding: 2px 6px; }
+  .tc-desc { font-size: 12px; color: var(--muted); line-height: 1.65; margin-top: 8px; }
+  .tc-edge { font-size: 11px; font-weight: 700; margin-top: 8px; color: var(--text); }
+
+  .algo-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 20px 0;
+  }
+  .algo-rule {
+    display: grid;
+    grid-template-columns: 28px 1fr 150px;
+    gap: 12px;
+    align-items: center;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+  }
+  .algo-rule.r-warn { border-color: rgba(255,110,156,0.3); }
+  .rule-num { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; }
+  .rule-cond { font-family: 'Courier New', monospace; font-size: 12px; color: var(--text); }
+  .rule-cond strong { color: var(--accent); }
+  .rule-cond .warn { color: #ff6e9c; }
+  .rule-type { font-size: 12px; font-weight: 700; text-align: right; }
+
+  .gap-vars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .gap-var {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .gap-var-name { font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--accent); margin-bottom: 8px; }
+  .gap-var-eq { font-size: 13px; margin-bottom: 8px; }
+  .gap-var-interp { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .gap-var-interp span { display: block; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .pane { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; }
+    .main { padding: 24px 20px; }
+    .tab-bar { padding: 0 12px; }
+    .gap-vars { grid-template-columns: 1fr; }
+    .algo-rule { grid-template-columns: 24px 1fr; }
+    .rule-type { grid-column: 2; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-pane="shindan">診断設計</button>
+  <button class="tab-btn" data-pane="report">レポート</button>
+  <button class="tab-btn" data-pane="algo">評価軸設計</button>
+  <button class="tab-btn" data-pane="dousen">導線設計</button>
+</div>
+
+<!-- ==================== PANE: 診断設計 ==================== -->
+<div id="pane-shindan" class="pane">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">AI戦闘力診断</div>
+      <div class="sub">設計 Wiki v1.0</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">概要</div>
+      <a href="#overview" class="nav-item active">
+        <span class="nav-dot" style="background:#7c6eff"></span>
+        全体設計
+      </a>
+      <a href="#flow" class="nav-item">
+        <span class="nav-dot" style="background:#4ec9f0"></span>
+        システムフロー
+      </a>
+      <a href="#scoring" class="nav-item">
+        <span class="nav-dot" style="background:#f4a733"></span>
+        スコアリング
+      </a>
+      <a href="#stack" class="nav-item">
+        <span class="nav-dot" style="background:#36d399"></span>
+        技術スタック
+      </a>
+      <a href="#todo" class="nav-item">
+        <span class="nav-dot" style="background:#ff6e9c"></span>
+        TODO / 未確定
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">設問 100問</div>
+      <a href="#q-chishiki" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>
+        知識力 Q1〜25
+      </a>
+      <a href="#q-shiko" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        思考力 Q26〜50
+      </a>
+      <a href="#q-katsuyo" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        活用力 Q51〜75
+      </a>
+      <a href="#q-handan" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        判断力 Q76〜100
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div class="section-eyebrow">Overview</div>
+        <h1 class="section-title">全体設計</h1>
+        <p class="section-desc">スキルプラスのAI活用度診断ツール。100問の回答から個別最適化されたレポートをLINEで送付する。</p>
+      </div>
+
+      <div class="overview-grid">
+        <div class="overview-card" style="--card-color: var(--c1)">
+          <div class="card-label">01</div>
+          <div class="card-title">知識力</div>
+          <div class="card-desc">AIのツール・仕組み・動向をどれだけ深く理解し、学び続けているか</div>
+          <div class="card-count">Q1〜Q25 / 25問</div>
+        </div>
+        <div class="overview-card" style="--card-color: var(--c2)">
+          <div class="card-label">02</div>
+          <div class="card-title">思考力</div>
+          <div class="card-desc">AIへの指示を目的や文脈に応じてどれだけ深く考え、工夫して組み立てられているか</div>
+          <div class="card-count">Q26〜Q50 / 25問</div>
+        </div>
+        <div class="overview-card" style="--card-color: var(--c3)">
+          <div class="card-label">03</div>
+          <div class="card-title">活用力</div>
+          <div class="card-desc">AIをどれだけ幅広い場面・用途で取り入れ、実践的に活用できているか</div>
+          <div class="card-count">Q51〜Q75 / 25問</div>
+        </div>
+        <div class="overview-card" style="--card-color: var(--c4)">
+          <div class="card-label">04</div>
+          <div class="card-title">判断力</div>
+          <div class="card-desc">AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
+          <div class="card-count">Q76〜Q100 / 25問</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>戦闘力の構造</strong>：知識力・思考力・活用力・判断力の4つが揃い、それらの合計が「AI戦闘力」として算出される。
+      </div>
+    </section>
+
+    <!-- FLOW -->
+    <section class="section" id="flow">
+      <div class="section-header">
+        <div class="section-eyebrow">System Flow</div>
+        <h2 class="section-title">システムフロー</h2>
+        <p class="section-desc">診断完了からLINEでレポートURLが届くまでの流れ。</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c1)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">① 診断HTML（100問回答）</div>
+            <div class="flow-desc">ユーザーが100問に回答。完了時にセッションID + 回答データをGoogle Apps ScriptへPOST。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">② Google Sheets（データ保存）</div>
+            <div class="flow-desc">GASがスプレッドシートに1行書き込み。セッションIDをキーとして管理。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">③ UTAGEサンクスページ</div>
+            <div class="flow-desc">電話番号収集。URLパラメータ（?sid=xxxx）でセッションIDを引き継ぎ。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c4)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">④ LINE登録</div>
+            <div class="flow-desc">LINEユーザーIDとセッションIDを紐づけ。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c5)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">⑤ ページ生成（Claude API）</div>
+            <div class="flow-desc">スプレッドシートの回答データをClaude APIに渡してコンテンツを生成。ユニークIDでレポートレコードを保存。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--accent)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">⑥ レポートURL送付（LINE Bot）</div>
+            <div class="flow-desc">個別レポートURL（例：yourdomain.com/report/abc123）をLINEでプッシュ送信。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:#ffd110"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">⑦ レポートページ閲覧</div>
+            <div class="flow-desc">固定テンプレートHTMLがIDからデータを取得し、個別最適化されたコンテンツを表示。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>ポイント：</strong>AI生成は閲覧時ではなく<strong>データ受信時（1回のみ）</strong>に実行。コスト固定・表示速度を確保。
+      </div>
+    </section>
+
+    <!-- SCORING -->
+    <section class="section" id="scoring">
+      <div class="section-header">
+        <div class="section-eyebrow">Scoring</div>
+        <h2 class="section-title">スコアリング設計</h2>
+        <p class="section-desc">各観点25問 × 最大5点 = 各観点125点。4観点の内部合計（最大500点）を非線形変換し、AI戦闘力として表示する。</p>
+      </div>
+
+      <div class="callout" style="margin-bottom:20px">
+        <strong>戦闘力の算出式（軸別加算型）：</strong><br>
+        <code style="display:block;margin-top:8px;font-size:14px;letter-spacing:.03em">各軸トークン = round( (軸スコア ÷ 125)³ × 249,999 )</code>
+        <code style="display:block;margin-top:4px;font-size:14px;letter-spacing:.03em">AI戦闘力（総合）= 知識力 + 思考力 + 活用力 + 判断力（各軸トークンの合計）</code>
+        <p style="margin-top:8px;font-size:13px;color:var(--muted)">4軸それぞれで3乗変換し合算。各軸最大 <strong style="color:var(--text)">249,999トークン</strong>、総合最大 <strong style="color:var(--text)">999,999トークン</strong>。バックエンドは生スコア（1〜5）保持、表示変換はフロント側で実施。</p>
+      </div>
+
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>ランク</th>
+            <th>AI戦闘力（表示値）</th>
+            <th>内部スコア換算</th>
+            <th>レベル感</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank-badge rank-s">S</span></td>
+            <td>729,000 〜 999,999トークン</td>
+            <td>約450点以上</td>
+            <td>AIを完全に使いこなしている最上位層</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge rank-a">A</span></td>
+            <td>343,000 〜 728,999トークン</td>
+            <td>約350〜449点</td>
+            <td>業務でAIを高度に活用できている</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge rank-b">B</span></td>
+            <td>125,000 〜 342,999トークン</td>
+            <td>約250〜349点</td>
+            <td>ある程度使えているが伸びしろあり</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge rank-c">C</span></td>
+            <td>27,000 〜 124,999トークン</td>
+            <td>約150〜249点</td>
+            <td>使い始めている段階。基礎の強化が必要</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge rank-d">D</span></td>
+            <td>〜 26,999トークン</td>
+            <td>約149点以下</td>
+            <td>AI活用がほぼできていない。ここからがスタート</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:20px">
+        <strong>※ランク判定は内部スコア（500点満点）ベースで行い、ユーザーへの表示は戦闘力に変換する。</strong>境界値は実際のスコア分布データを取得後に調整予定。
+      </div>
+    </section>
+
+    <!-- STACK -->
+    <section class="section" id="stack">
+      <div class="section-header">
+        <div class="section-eyebrow">Tech Stack</div>
+        <h2 class="section-title">技術スタック</h2>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-role">診断フロントエンド</div>
+          <div class="tech-name">HTML / CSS / JS</div>
+          <div class="tech-status"><span class="badge badge-done">実装済み</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">データ保存・API</div>
+          <div class="tech-name">Google Sheets + GAS</div>
+          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">AI コンテンツ生成</div>
+          <div class="tech-name">Claude API</div>
+          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">レポートページ Hosting</div>
+          <div class="tech-name">GitHub Pages / Netlify</div>
+          <div class="tech-status"><span class="badge badge-check">未確定</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">LINE Bot</div>
+          <div class="tech-name">LINE Messaging API</div>
+          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">ユーザー管理・LP</div>
+          <div class="tech-name">UTAGE</div>
+          <div class="tech-status"><span class="badge badge-done">運用中</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODO -->
+    <section class="section" id="todo">
+      <div class="section-header">
+        <div class="section-eyebrow">TODO</div>
+        <h2 class="section-title">未確定事項 / TODO</h2>
+      </div>
+
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>優先度</th>
+            <th>項目</th>
+            <th>確認先</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>UTAGEのstate パラメータ動的埋め込み可否</td>
+            <td>UTAGE管理画面 / サポートへ確認</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>GASデプロイ権限・管理者アカウント</td>
+            <td>GWS管理者との確認が必要</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>ユーザー分類スキーマ（タイプ定義）</td>
+            <td>Claude APIプロンプト設計の前提</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>Claude APIプロンプト設計（マークダウン）</td>
+            <td>3枚目×4・4枚目×1の計5本</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>レポートページHTML実装（5枚横スクロール）</td>
+            <td>フェーズ1のゴール</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>診断HTMLへのGAS送信処理追加</td>
+            <td>現状はデータがどこにも飛ばない状態</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>ホスティング先・ドメイン決定</td>
+            <td>GitHub Pages / Netlify 候補</td>
+          </tr>
+          <tr>
+            <td class="priority-low">🟢 低</td>
+            <td>LINE Bot実装（フェーズ3）</td>
+            <td>follow イベント → 紐付け → push送信</td>
+          </tr>
+          <tr>
+            <td class="priority-low">🟢 低</td>
+            <td>UTAGE連携・エンドツーエンドテスト（フェーズ3）</td>
+            <td>全フロー通しの検証</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- QUESTIONS HEADER -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Questions</div>
+        <h2 class="section-title">設問一覧（100問）</h2>
+        <p class="section-desc">回答形式：全く当てはまらない / あまり当てはまらない / どちらでもない / やや当てはまる / 非常に当てはまる</p>
+      </div>
+
+      <!-- 知識力 -->
+      <div class="dim-block" id="q-chishiki">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#7c6eff20; color:#7c6eff">知</div>
+          <div>
+            <div class="dim-title">知識力</div>
+            <div class="dim-range">Q1〜Q25 — AIのツール・仕組み・動向をどれだけ深く理解し、学び続けているか</div>
+          </div>
+        </div>
+        <ul class="q-list">
+          <li class="q-item"><span class="q-num">Q1</span><span class="q-text">ChatGPTやClaudeなど、代表的な生成AIツールを知っており、実際に使ったことがある</span></li>
+          <li class="q-item"><span class="q-num">Q2</span><span class="q-text">文章生成AI・画像生成AI・動画生成AIをそれぞれ別のものとして区別して使っている</span></li>
+          <li class="q-item"><span class="q-num">Q3</span><span class="q-text">よく使うAIツールの有料プランと無料プランの機能差を把握している</span></li>
+          <li class="q-item"><span class="q-num">Q4</span><span class="q-text">音声・画像・動画を生成できるAIツールを知っており、種類の違いをイメージできる</span></li>
+          <li class="q-item"><span class="q-num">Q5</span><span class="q-text">自分の業務に役立つAIツールを把握している</span></li>
+          <li class="q-item"><span class="q-num">Q6</span><span class="q-text">複数のAIツールの特徴や用途の違いを理解して、使い分けるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q7</span><span class="q-text">生成AIが事実らしい誤情報を出した経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q8</span><span class="q-text">AIが苦手なこと（最新情報・厳密な計算・感情的判断など）を意識して使い方を変えている</span></li>
+          <li class="q-item"><span class="q-num">Q9</span><span class="q-text">AIツールを使う前に利用規約やデータの取り扱い方針を確認する習慣がある</span></li>
+          <li class="q-item"><span class="q-num">Q10</span><span class="q-text">AIモデルのバージョンによって性能が異なるため、目的に応じて使い分けるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q11</span><span class="q-text">AI生成コンテンツをそのまま公開・提出しないよう気をつけている</span></li>
+          <li class="q-item"><span class="q-num">Q12</span><span class="q-text">AIへの入力データが学習に使われる可能性を意識して、入力内容を使い分けている</span></li>
+          <li class="q-item"><span class="q-num">Q13</span><span class="q-text">同じ質問を複数のAIに投げて、回答の違いを比較したことがある</span></li>
+          <li class="q-item"><span class="q-num">Q14</span><span class="q-text">AIの回答自体が間違っている可能性があると意識して使っている</span></li>
+          <li class="q-item"><span class="q-num">Q15</span><span class="q-text">AI関連のニュースや技術動向を定期的にチェックしている</span></li>
+          <li class="q-item"><span class="q-num">Q16</span><span class="q-text">新しいAIツールや機能がリリースされたときに、すぐにチェックして試すようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q17</span><span class="q-text">AIエージェント・マルチエージェントが何か、自分の言葉で説明できる</span></li>
+          <li class="q-item"><span class="q-num">Q18</span><span class="q-text">AIが自分の業界・職種をどう変えるかを考えている</span></li>
+          <li class="q-item"><span class="q-num">Q19</span><span class="q-text">Chain-of-ThoughtやFew-Shotなど、プロンプトエンジニアリングの手法名を知っている</span></li>
+          <li class="q-item"><span class="q-num">Q20</span><span class="q-text">他業界のAI活用事例を自分の業務改善のヒントとして取り入れたことがある</span></li>
+          <li class="q-item"><span class="q-num">Q21</span><span class="q-text">AIと自分の専門領域を組み合わせた、自分なりの活用方法を持っている</span></li>
+          <li class="q-item"><span class="q-num">Q22</span><span class="q-text">ZapierやAPIなどを使ってAIツールを連携・自動化したことがある</span></li>
+          <li class="q-item"><span class="q-num">Q23</span><span class="q-text">AIの進化に合わせて、自分のスキルや知識を意識的に更新している</span></li>
+          <li class="q-item"><span class="q-num">Q24</span><span class="q-text">生成AIの社会的インパクト（雇用・著作権・倫理など）について自分の考えを持っている</span></li>
+          <li class="q-item"><span class="q-num">Q25</span><span class="q-text">特定のAIモデルの強みと弱みを他者に説明できる</span></li>
+        </ul>
+      </div>
+
+      <!-- 思考力 -->
+      <div class="dim-block" id="q-shiko">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#ff6e9c20; color:#ff6e9c">思</div>
+          <div>
+            <div class="dim-title">思考力</div>
+            <div class="dim-range">Q26〜Q50 — AIへの指示を目的や文脈に応じてどれだけ深く考え、工夫して組み立てられているか</div>
+          </div>
+        </div>
+        <ul class="q-list">
+          <li class="q-item"><span class="q-num">Q26</span><span class="q-text">AIに指示を出すとき「何をしてほしいか」をはっきり伝えるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q27</span><span class="q-text">AIの回答形式（箇条書き・表・番号リストなど）を指定して出力させることがある</span></li>
+          <li class="q-item"><span class="q-num">Q28</span><span class="q-text">AIに役割やペルソナ（「マーケターとして」「編集者として」など）を設定して使っている</span></li>
+          <li class="q-item"><span class="q-num">Q29</span><span class="q-text">AIへの指示に出力のトーン（丁寧・カジュアル・専門的など）を指定することがある</span></li>
+          <li class="q-item"><span class="q-num">Q30</span><span class="q-text">AIへの指示に背景情報や目的を加えて、回答精度を上げるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q31</span><span class="q-text">AIへの指示に、誰向けの内容かや使う場面を書き添えるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q32</span><span class="q-text">AIに「例を挙げて」「300字以内で」など出力スタイルを追加指示することがある</span></li>
+          <li class="q-item"><span class="q-num">Q33</span><span class="q-text">AIへの指示に「やること」と「やらないこと」を両方書くようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q34</span><span class="q-text">AIへの指示を複数のステップ（①→②→③）に分けて順番に出すようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q35</span><span class="q-text">同じ目的で複数の指示パターンを試して回答の質を比較したことがある</span></li>
+          <li class="q-item"><span class="q-num">Q36</span><span class="q-text">自分がよく使う業務に合わせたプロンプトテンプレートを作って再利用している</span></li>
+          <li class="q-item"><span class="q-num">Q37</span><span class="q-text">AIに自分の文章・企画・提案を批評・改善させるように使っている</span></li>
+          <li class="q-item"><span class="q-num">Q38</span><span class="q-text">他の人のプロンプト例を参考にして自分の指示の質を上げようとしている</span></li>
+          <li class="q-item"><span class="q-num">Q39</span><span class="q-text">AIとの対話の流れ（文脈）を意識して次の指示を組み立てている</span></li>
+          <li class="q-item"><span class="q-num">Q40</span><span class="q-text">AIに複数の選択肢を出させてから自分で最善案を選ぶようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q41</span><span class="q-text">AIに顧客・読者・第三者の視点から評価させてフィードバックを得ている</span></li>
+          <li class="q-item"><span class="q-num">Q42</span><span class="q-text">指示の書き方を見直して、AIの回答品質を改善するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q43</span><span class="q-text">AIに「なぜそう考えたか」「どんな理由で」など思考プロセスを引き出す問いかけをしている</span></li>
+          <li class="q-item"><span class="q-num">Q44</span><span class="q-text">指示に対してAIが誤解しそうな表現を事前に取り除いて書くようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q45</span><span class="q-text">AIへの指示を組み立てる前に、ゴールから逆算して設計するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q46</span><span class="q-text">AIを使う前に、どんな情報をインプットすれば精度が上がるかを考えている</span></li>
+          <li class="q-item"><span class="q-num">Q47</span><span class="q-text">AIに指示を出す前に、目的や状況を整理するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q48</span><span class="q-text">複雑な問題を扱うとき、AIが対応しきれない部分を自分が補うよう設計している</span></li>
+          <li class="q-item"><span class="q-num">Q49</span><span class="q-text">AIとのやり取り全体の流れを、最初に組み立ててから取り掛かるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q50</span><span class="q-text">AIが生成した内容をどう活用するかを、指示の段階から考えるようにしている</span></li>
+        </ul>
+      </div>
+
+      <!-- 活用力 -->
+      <div class="dim-block" id="q-katsuyo">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#36d39920; color:#36d399">活</div>
+          <div>
+            <div class="dim-title">活用力</div>
+            <div class="dim-range">Q51〜Q75 — AIをどれだけ幅広い場面・用途で取り入れ、実践的に活用できているか</div>
+          </div>
+        </div>
+        <ul class="q-list">
+          <li class="q-item"><span class="q-num">Q51</span><span class="q-text">文章の作成・修正・要約にAIを日常的に使っている</span></li>
+          <li class="q-item"><span class="q-num">Q52</span><span class="q-text">情報収集や調査にAIを活用するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q53</span><span class="q-text">アイデア出し・ブレインストーミングにAIを使うようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q54</span><span class="q-text">メール・報告書・提案書などのビジネス文書作成にAIを活用している</span></li>
+          <li class="q-item"><span class="q-num">Q55</span><span class="q-text">AIを使うことで作業時間を短縮できている</span></li>
+          <li class="q-item"><span class="q-num">Q56</span><span class="q-text">資料・企画の構成や骨格を考えるときにAIを相談相手として使っている</span></li>
+          <li class="q-item"><span class="q-num">Q57</span><span class="q-text">AIを使うことが自分の日常業務のルーティンに組み込まれている</span></li>
+          <li class="q-item"><span class="q-num">Q58</span><span class="q-text">翻訳・多言語対応・外国語文章チェックにAIを活用している</span></li>
+          <li class="q-item"><span class="q-num">Q59</span><span class="q-text">AIを使って下書きや素案を素早く作り、そこから自分で仕上げるという進め方をしている</span></li>
+          <li class="q-item"><span class="q-num">Q60</span><span class="q-text">議事録・会議サマリー・インタビュー文字起こしの作成にAIを使ったことがある</span></li>
+          <li class="q-item"><span class="q-num">Q61</span><span class="q-text">プレゼンテーションやスライドのデザイン・構成にAIを活用したことがある</span></li>
+          <li class="q-item"><span class="q-num">Q62</span><span class="q-text">AIを使って、自分ひとりでは作れなかったもの（動画・画像・コードなど）を作ったことがある</span></li>
+          <li class="q-item"><span class="q-num">Q63</span><span class="q-text">AIを使い続けることで、自分のアウトプットの質が上がったと感じている</span></li>
+          <li class="q-item"><span class="q-num">Q64</span><span class="q-text">AIを活用して、以前は外注や専門家に依頼していた作業を自分でこなすようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q65</span><span class="q-text">AIを使って実験的・創造的なことに挑戦した経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q66</span><span class="q-text">定型業務を超えた創造的な作業（コンテンツ制作・戦略立案など）にAIを取り入れている</span></li>
+          <li class="q-item"><span class="q-num">Q67</span><span class="q-text">AIを使って業務の一部を自動化した仕組みが実際に稼働している</span></li>
+          <li class="q-item"><span class="q-num">Q68</span><span class="q-text">AIツール同士を連携・組み合わせて使った経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q69</span><span class="q-text">AIを活用してビジネスアイデアを実際に形にした経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q70</span><span class="q-text">AI活用によって自分のアウトプット量が大幅に増えた分野がある</span></li>
+          <li class="q-item"><span class="q-num">Q71</span><span class="q-text">自分のAI活用法を周囲の人に共有している</span></li>
+          <li class="q-item"><span class="q-num">Q72</span><span class="q-text">職場でAI活用を広める役割を担っている</span></li>
+          <li class="q-item"><span class="q-num">Q73</span><span class="q-text">AIを活用した新しい業務フローや仕組みを職場に導入した経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q74</span><span class="q-text">チームでAIを使う際のルールや手順を自分で作って共有したことがある</span></li>
+          <li class="q-item"><span class="q-num">Q75</span><span class="q-text">AIを使った量産体制（コンテンツ・資料・コードなど）を自分で設計・運用している</span></li>
+        </ul>
+      </div>
+
+      <!-- 判断力 -->
+      <div class="dim-block" id="q-handan">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#4ec9f020; color:#4ec9f0">判</div>
+          <div>
+            <div class="dim-title">判断力</div>
+            <div class="dim-range">Q76〜Q100 — AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
+          </div>
+        </div>
+        <ul class="q-list">
+          <li class="q-item"><span class="q-num">Q76</span><span class="q-text">AIの回答をそのまま使わず、内容を確認・編集してから使うようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q77</span><span class="q-text">AIの回答に誤りを見つけて、修正した経験がある</span></li>
+          <li class="q-item"><span class="q-num">Q78</span><span class="q-text">AIの回答内の数字・統計・固有名詞は別の手段で確認してから使うようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q79</span><span class="q-text">AIが出した文章・資料を公開・提出前に読み直すようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q80</span><span class="q-text">AIの出力が期待を外れたとき、指示の書き方を見直して再試行するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q81</span><span class="q-text">AIの回答に違和感を感じたとき、そのまま受け入れず指摘・修正するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q82</span><span class="q-text">AIの回答の根拠・出典を確認してから重要な判断に活用するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q83</span><span class="q-text">AI生成コンテンツを使う際に著作権・商用利用の可否を確認している</span></li>
+          <li class="q-item"><span class="q-num">Q84</span><span class="q-text">機密情報・個人情報・社外秘データをAIに入力しないよう気をつけている</span></li>
+          <li class="q-item"><span class="q-num">Q85</span><span class="q-text">AIの出力が使えるかどうか、自分で判断してから使うようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q86</span><span class="q-text">AIの回答が古い情報に基づいている可能性を意識して確認するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q87</span><span class="q-text">AIの翻訳・要約を使う前に確認するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q88</span><span class="q-text">AIが出した選択肢やアドバイスを自分で考えてから行動に使っている</span></li>
+          <li class="q-item"><span class="q-num">Q89</span><span class="q-text">AIの回答を読んで「この情報は正確か？」と確認するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q90</span><span class="q-text">AIに任せる作業と人が担うべき作業を意識的に区別して仕事を設計している</span></li>
+          <li class="q-item"><span class="q-num">Q91</span><span class="q-text">AIの出力は参考情報として使い、最終的な判断・決定は自分で行うようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q92</span><span class="q-text">AIを信頼しすぎず、人間としての判断・責任を保持するバランスを意識している</span></li>
+          <li class="q-item"><span class="q-num">Q93</span><span class="q-text">AIの得意・不得意を踏まえて「ここはAI・ここは人」と役割を明確に決めている</span></li>
+          <li class="q-item"><span class="q-num">Q94</span><span class="q-text">チームや組織でAIを活用する際に、アウトプットの品質管理の仕組みを考えたことがある</span></li>
+          <li class="q-item"><span class="q-num">Q95</span><span class="q-text">AIのアウトプットに自分の専門知識・判断を加えて、付加価値を高めるようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q96</span><span class="q-text">AIに任せてはいけない判断領域（倫理的・法的・感情的な意思決定など）を自分なりに定義している</span></li>
+          <li class="q-item"><span class="q-num">Q97</span><span class="q-text">AIが生み出すバイアス（偏り・不公平な出力）を意識して批判的に解釈するようにしている</span></li>
+          <li class="q-item"><span class="q-num">Q98</span><span class="q-text">AIの限界を理解した上で、人とAIの役割分担を設計できる</span></li>
+          <li class="q-item"><span class="q-num">Q99</span><span class="q-text">AI活用のリスク（誤情報拡散・依存・セキュリティ）を評価して、自分なりの使い方ルールを定めている</span></li>
+          <li class="q-item"><span class="q-num">Q100</span><span class="q-text">組織・チームのAI活用ポリシーや品質基準を設計・提案できる</span></li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+</div><!-- /pane-shindan -->
+
+
+<!-- ==================== PANE: レポート ==================== -->
+<div id="pane-report" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">レポート設計</div>
+      <div class="sub">縦スクロール型 / パフォーマンス分析</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">構成</div>
+      <a href="#r-overview" class="nav-item active">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        全体構成
+      </a>
+      <a href="#r-pages" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>
+        各ページ詳細
+      </a>
+      <a href="#r-ux" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        UX設計
+      </a>
+      <a href="#r-api" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        Claude API生成
+      </a>
+      <a href="#r-phases" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        実装フェーズ
+      </a>
+      <a href="#r-monitoring" class="nav-item">
+        <span class="nav-dot" style="background:var(--c5)"></span>
+        監視・ダッシュボード
+      </a>
+      <a href="#r-todo" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        未確定事項
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- REPORT OVERVIEW -->
+    <section class="section" id="r-overview">
+      <div class="section-header">
+        <div class="section-eyebrow">Report Design</div>
+        <h2 class="section-title">レポート全体構成</h2>
+        <p class="section-desc">診断完了後にLINEで届く個別レポート。横スクロール・スワイプ型で全5枚構成。</p>
+      </div>
+
+      <div class="callout">
+        <strong>設計思想：</strong>受検者が最も知りたいのは「自分は周囲よりAIを活用できているのか」という比較認知。この不安を1枚目で解消し、2枚目以降で数値・分析・行動喚起へと展開する。
+      </div>
+
+      <table class="score-table" style="margin-top:24px">
+        <thead>
+          <tr>
+            <th>ページ</th>
+            <th>内容</th>
+            <th>生成方法</th>
+            <th>役割</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1枚目</strong></td>
+            <td>上位X% ／ 4観点スコア内訳</td>
+            <td><span class="badge badge-done">自動計算</span></td>
+            <td>比較認知・不安の解消</td>
+          </tr>
+          <tr>
+            <td><strong>2枚目</strong></td>
+            <td>AI戦闘力 ／ スコア比較表 ／ レーダーチャート</td>
+            <td><span class="badge badge-done">自動計算</span></td>
+            <td>自分の数値を深掘り</td>
+          </tr>
+          <tr>
+            <td><strong>3枚目</strong></td>
+            <td>各観点に対する評価（アコーディオン）</td>
+            <td><span class="badge badge-todo">Claude API</span></td>
+            <td>納得感・理由の提示</td>
+          </tr>
+          <tr>
+            <td><strong>4枚目</strong></td>
+            <td>あなたの強みと弱み ／ これからの伸びしろ</td>
+            <td><span class="badge badge-todo">Claude API</span></td>
+            <td>行動喚起</td>
+          </tr>
+          <tr>
+            <td><strong>5枚目</strong></td>
+            <td>SNS共有ボタン ／ PDFダウンロード</td>
+            <td><span class="badge badge-done">静的</span></td>
+            <td>拡散・保存</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PAGES DETAIL -->
+    <section class="section" id="r-pages">
+      <div class="section-header">
+        <div class="section-eyebrow">Pages</div>
+        <h2 class="section-title">各ページ詳細</h2>
+      </div>
+
+      <div class="report-pages">
+
+        <div class="report-page-card" style="--page-color: var(--c1)">
+          <div class="page-num">1</div>
+          <div class="page-body">
+            <div class="page-role">比較認知 · 不安の解消</div>
+            <div class="page-title">上位X% ／ 4観点スコア内訳</div>
+            <ul class="page-items">
+              <li>全受検者中の相対順位（上位 X%）を大きく表示</li>
+              <li>知識力・思考力・活用力・判断力の各スコア（/125点）</li>
+              <li>受検者が最初に知りたい「自分は周囲と比べてどうか」に直接答える</li>
+            </ul>
+            <span class="page-gen">自動計算</span>
+          </div>
+        </div>
+
+        <div class="report-page-card" style="--page-color: var(--c4)">
+          <div class="page-num">2</div>
+          <div class="page-body">
+            <div class="page-role">数値の深掘り</div>
+            <div class="page-title">AI戦闘力 ／ スコア比較表 ／ レーダーチャート</div>
+            <ul class="page-items">
+              <li>AI戦闘力（数値）とランク（S〜D）を表示</li>
+              <li>観点別スコア比較表：自分のスコア vs 全体平均</li>
+              <li>レーダーチャート：自分スコア（塗りつぶし）+ 全体平均（線のみ）の2層表示</li>
+            </ul>
+            <span class="page-gen">自動計算</span>
+          </div>
+        </div>
+
+        <div class="report-page-card" style="--page-color: var(--c2)">
+          <div class="page-num">3</div>
+          <div class="page-body">
+            <div class="page-role">納得感 · 理由の提示</div>
+            <div class="page-title">各観点に対する評価（アコーディオン）</div>
+            <ul class="page-items">
+              <li>知識力・思考力・活用力・判断力をアコーディオン形式で表示</li>
+              <li>デフォルト：全閉じ、または最高スコアの観点のみ展開</li>
+              <li>タップで展開 → Claudeが生成した観点ごとの評価テキスト</li>
+              <li>各観点テキストの文字数・フォーマットは別途設計</li>
+            </ul>
+            <span class="page-gen">Claude API</span>
+          </div>
+        </div>
+
+        <div class="report-page-card" style="--page-color: var(--c3)">
+          <div class="page-num">4</div>
+          <div class="page-body">
+            <div class="page-role">行動喚起</div>
+            <div class="page-title">あなたの強みと弱み ／ これからの伸びしろ</div>
+            <ul class="page-items">
+              <li>4観点を横断した総合的な強みと弱みの評価</li>
+              <li>スコアに基づいた具体的な伸びしろ・改善ポイント</li>
+              <li>整合性チェック（トラップ問）の不整合結果をここに反映</li>
+            </ul>
+            <span class="page-gen">Claude API</span>
+          </div>
+        </div>
+
+        <div class="report-page-card" style="--page-color: var(--c5)">
+          <div class="page-num">5</div>
+          <div class="page-body">
+            <div class="page-role">拡散 · 保存</div>
+            <div class="page-title">SNS共有 ／ PDFダウンロード</div>
+            <ul class="page-items">
+              <li>SNS共有ボタン（X / LINE など）</li>
+              <li>PDFダウンロード：スマートフォンのファイルに保存できる形式</li>
+              <li>実装方式はブラウザ印刷→PDF保存が現実的（サーバーサイド不要）</li>
+            </ul>
+            <span class="page-gen">静的</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- UX DESIGN -->
+    <section class="section" id="r-ux">
+      <div class="section-header">
+        <div class="section-eyebrow">UX Design</div>
+        <h2 class="section-title">UX設計</h2>
+        <p class="section-desc">横スクロール・スワイプ型で1画面＝1ページを徹底する。</p>
+      </div>
+
+      <div class="callout">
+        <strong>設計方針：</strong>シームレスな縦スクロールではなく、1枚ごとに画面を切り替えることで「今何の話をしているか」が明確になり、認知負荷を下げる。診断UIの「1問ずつ進む」体験と統一感を持たせる。
+      </div>
+
+      <div class="flow" style="margin-top: 24px;">
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">横スクロール・スナップ方式</div>
+            <div class="flow-desc"><code>scroll-snap-type: x mandatory</code> を使用。スワイプで1枚ずつ吸着遷移する。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">フルスクリーン設計</div>
+            <div class="flow-desc">各ページは <code>100vw × 100dvh</code>。コンテンツが1画面に収まるよう各ページのレイアウトを設計する。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">ページネーションドット</div>
+            <div class="flow-desc">現在位置を示すドットインジケーターを画面下部に配置。5枚中どこにいるかを常に表示。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">モバイルファースト</div>
+            <div class="flow-desc">基本設計は375px〜のスマートフォン縦向きを想定。タップ・スワイプ操作を基準とする。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLAUDE API -->
+    <section class="section" id="r-api">
+      <div class="section-header">
+        <div class="section-eyebrow">Claude API</div>
+        <h2 class="section-title">Claude API生成設計</h2>
+        <p class="section-desc">データ受信時（1回のみ）に実行。生成済みテキストをSheetsに保存し、レポートHTMLに差し込む。</p>
+      </div>
+
+      <div class="callout">
+        <strong>入力データ（確定）：</strong>4観点スコア・ユーザー分類タイプ・整合性チェック結果・上位X%。<strong>100問の生回答データは渡さない</strong>（ノイズが多く生成品質が下がるため）。
+      </div>
+
+      <table class="score-table" style="margin-top:20px">
+        <thead>
+          <tr>
+            <th>ページ</th>
+            <th>生成内容</th>
+            <th>Sheets保存列</th>
+            <th>状態</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>3枚目</td>
+            <td>知識力・思考力・活用力・判断力の観点評価テキスト（×4）</td>
+            <td>DK〜DN列</td>
+            <td><span class="badge badge-check">文字数未定</span></td>
+          </tr>
+          <tr>
+            <td>4枚目</td>
+            <td>強みと弱み・伸びしろテキスト（×1）</td>
+            <td>DO列</td>
+            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:20px">
+        <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、4枚目の生成テキストに反映する。例：「確認してから使う」という問いへの回答が一貫していない場合、判断基準の曖昧さとして文章に組み込む。
+      </div>
+
+      <div class="callout">
+        <strong>プロンプト管理方針（確定）：</strong>プロンプトはマークダウンファイルとして外部管理し、GASから参照する。ユーザー分類タイプ・スコア・整合性結果をテンプレートに差し込む形式。データ蓄積とともにプロンプトを精緻化していく。
+      </div>
+    </section>
+
+    <!-- PHASES -->
+    <section class="section" id="r-phases">
+      <div class="section-header">
+        <div class="section-eyebrow">Implementation</div>
+        <h2 class="section-title">実装フェーズ</h2>
+      </div>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">フェーズ1 ― コアを完成させる</div>
+            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（5枚横スクロール）</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">フェーズ2 ― 生成をつなぐ</div>
+            <div class="flow-desc">Claude APIとデータを接続し、レポートが出力される状態にする。ユーザー分類スキーマ確定 / プロンプトマークダウン設計 / Claude API接続テスト / Sheets保存 → HTML差し込み</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-left"><div class="flow-dot" style="background:var(--c4)"></div></div>
+          <div class="flow-content">
+            <div class="flow-label">フェーズ3 ― 動線を完結させる</div>
+            <div class="flow-desc">診断からレポート受け取りまで一気通貫で体験できる状態にする。UTAGE連携実装 / LINE Bot実装（follow → 紐付け → push送信）/ エンドツーエンドテスト</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MONITORING -->
+    <section class="section" id="r-monitoring">
+      <div class="section-header">
+        <div class="section-eyebrow">Monitoring</div>
+        <h2 class="section-title">監視・ダッシュボード設計</h2>
+        <p class="section-desc">GWS内で完結。Sheetsにダッシュボードシートを1枚設置し、GASエラーはメール通知で検知する。</p>
+      </div>
+
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>指標</th>
+            <th>集計方法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>総受検者数</td><td>COUNTA関数</td></tr>
+          <tr><td>ランク分布（S/A/B/C/D）</td><td>COUNTIF関数</td></tr>
+          <tr><td>ユーザー分類タイプ分布</td><td>COUNTIF関数</td></tr>
+          <tr><td>観点別平均スコア</td><td>AVERAGE関数</td></tr>
+          <tr><td>API生成成功数 / 失敗数</td><td>生成テキスト列（DK〜DO）の有無で判定</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:20px">
+        <strong>アラート：</strong>GASのエラーはApps Script実行トリガー設定のメール通知で検知。GWS管理者アカウントで設定する。
+      </div>
+    </section>
+
+    <!-- REPORT TODO -->
+    <section class="section" id="r-todo">
+      <div class="section-header">
+        <div class="section-eyebrow">TODO</div>
+        <h2 class="section-title">未確定事項</h2>
+      </div>
+
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>優先度</th>
+            <th>項目</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>UTAGEのstate パラメータ動的埋め込み可否</td>
+            <td>LINE紐付けフローの実現可否に直結。UTAGE管理者へ確認</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>ユーザー分類スキーマ（タイプ定義）</td>
+            <td>Claude APIプロンプトに組み込む前提で設計が必要</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>Claude APIプロンプト設計（マークダウン）</td>
+            <td>3枚目×4・4枚目×1の計5本。文字数・トーン含む</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>GASデプロイ権限・管理者アカウント</td>
+            <td>GWS管理者との確認が必要</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>レポートページHTML実装</td>
+            <td>5枚横スクロール構成。フェーズ1のゴール</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>3枚目テキストの文字数・フォーマット</td>
+            <td>1画面に収まるボリューム感の設計が必要</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>全体平均の初期値対応方針</td>
+            <td>ローンチ直後はデータ不足。ダミー値 or 一定数集まるまで非表示</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>ホスティング先・ドメイン</td>
+            <td>GitHub Pages / Netlify 候補</td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td>PDFダウンロードの実装方式</td>
+            <td>ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</td>
+          </tr>
+          <tr>
+            <td class="priority-low">🟢 低</td>
+            <td>LINE Bot実装（フェーズ3）</td>
+            <td>follow イベント → 紐付け → push送信</td>
+          </tr>
+          <tr>
+            <td class="priority-low">🟢 低</td>
+            <td>SNS共有テキストのテンプレート設計</td>
+            <td>戦闘力・ランクを含む共有文言</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div><!-- /pane-report -->
+
+
+<!-- ==================== PANE: 評価軸設計 ==================== -->
+<div id="pane-algo" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">評価軸設計</div>
+      <div class="sub">スコア厳密化 / 個別最適化</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">ナビゲーション</div>
+      <a href="#algo-todo" class="nav-item active">
+        <span class="nav-dot" style="background:#ff6e9c"></span>
+        今日のTo Do
+      </a>
+      <a href="#algo-3layer" class="nav-item">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        評価の3層構造
+      </a>
+      <a href="#algo-subcats" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>
+        軸内サブカテゴリ
+      </a>
+      <a href="#algo-classification" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        ユーザー分類スキーマ
+      </a>
+      <a href="#algo-api-vars" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        API入力変数設計
+      </a>
+      <a href="#algo-ui-quality" class="nav-item">
+        <span class="nav-dot" style="background:#36d399"></span>
+        入力品質管理
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- TO DO -->
+    <section class="section" id="algo-todo">
+      <div class="section-header">
+        <div class="section-eyebrow">To Do</div>
+        <h2 class="section-title">今やるべきこと</h2>
+        <p class="section-desc">評価アルゴリズムを完成させるためのステップ。上から順に潰していく。</p>
+      </div>
+
+      <div class="step-tracker">
+
+        <div class="step-item step-done">
+          <div class="step-left">
+            <div class="step-num">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">各軸のサブカテゴリ確定</div>
+            <div class="step-desc">知識力・思考力・活用力・判断力の各25問を3サブカテゴリ（初級→中級→上級の難易度帯）に分類完了。サブスコアとその内部分散がLayer 2変数の核となる。<br>
+            <span style="color:#36d399;font-size:12px;font-weight:700;margin-top:6px;display:block">✦ 追加設計：同じ回答10回連続で確認ポップアップを表示し、惰性回答を防止する（診断HTML実装項目）</span></div>
+            <div class="step-meta">
+              <span class="badge badge-done">完了</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">→ 「軸内サブカテゴリ」セクション参照</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item step-done">
+          <div class="step-left">
+            <div class="step-num">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">評価変数アーキテクチャ確定</div>
+            <div class="step-desc">「タイプ名でClaude APIを動かす」設計から「3層変数でClaudeが直接解釈する」設計に移行。Layer1(5段階位置) × Layer2(サブ内訳+分散) × Layer3(整合性チェック) の構造で穴のない個別最適化を実現。タイプ名は表示ラベルとして補助的に使用。</div>
+            <div class="step-meta">
+              <span class="badge badge-done">設計完了</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">→ 「ユーザー分類スキーマ」「API入力変数設計」参照</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item step-done">
+          <div class="step-left">
+            <div class="step-num">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">Claude API 入力変数の定義</div>
+            <div class="step-desc">全変数スロットを確定。軸スコア4本・5段階レベル4本・サブカテゴリスコア12本・分散4本・GAP3本・整合性2本・タイプラベル1本の計30変数。</div>
+            <div class="step-meta">
+              <span class="badge badge-done">設計完了</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">→ 「API入力変数設計」セクション参照</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item step-active">
+          <div class="step-left">
+            <div class="step-num">4</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">コンバージョントリガー確定</div>
+            <div class="step-desc">UTAGE 500円支払い or X引用RTの2案。UTAGEでWebhookにセッションIDを乗せられるかを技術検証。GASのWebhook設計の前提になる。</div>
+            <div class="step-meta">
+              <span class="badge" style="background:#7c6eff20;color:#7c6eff">検証中</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">UTAGEで技術確認が必要</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-num">5</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">プロンプト設計（計5本）</div>
+            <div class="step-desc">観点評価×4・強み弱み×1のマークダウンファイルを設計。3層変数をどう渡せばClaudeが正しく解釈できるかの検証も含む。サンプル出力で品質確認。</div>
+            <div class="step-meta">
+              <span class="badge badge-todo">未着手</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">変数設計完了後に着手</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-num">6</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">GAS実装（スコア計算・変数生成・API呼び出し）</div>
+            <div class="step-desc">POST受信 → 4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出 → Claude API呼び出し → Sheets保存 → URL発行の一連フロー実装。</div>
+            <div class="step-meta">
+              <span class="badge badge-todo">未着手</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-num">7</div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">レポートHTML実装（5枚横スクロール）</div>
+            <div class="step-desc">GAS APIからデータを受け取り、スコア表示・レーダーチャート・生成テキスト差し込みまで一気通貫で動く状態にする。</div>
+            <div class="step-meta">
+              <span class="badge badge-todo">未着手</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3 LAYER EVALUATION -->
+    <section class="section" id="algo-3layer">
+      <div class="section-header">
+        <div class="section-eyebrow">Evaluation Structure</div>
+        <h2 class="section-title">評価の3層構造</h2>
+        <p class="section-desc">個別最適化レポートを生み出すための3つの評価レイヤー。MBTIのような事前テキストマッピングではなく、Claude APIが3層の文脈から都度生成する。</p>
+      </div>
+
+      <div class="callout">
+        <strong>根本方程式：</strong><code style="font-size:14px;margin:0 6px">アウトプット = 思考フレームの質 × AI実行能力</code><br>
+        <span style="display:block;margin-top:8px;font-size:13px;color:var(--muted)">AIは「増幅装置」であって「補完装置」ではない。弱い思考を強くはしないが、強い思考を大量に実行してくれる。</span>
+      </div>
+
+      <div class="callout" style="margin-bottom:28px">
+        <strong>AIが提供する3つの価値</strong>
+        <div style="margin-top:10px;font-size:13px;line-height:2.2">
+          <span style="color:#7c6eff;font-weight:700">① 速度と量</span><span style="color:var(--muted);margin-left:8px">— 自分の思考を分身として再現・量産する（100人でやっていたことを1人で）</span><br>
+          <span style="color:#36d399;font-weight:700">② スキル実行</span><span style="color:var(--muted);margin-left:8px">— 自分にないスキルセットを実行できる（デザイン・コード・法務…）</span><br>
+          <span style="color:#f4a733;font-weight:700">③ 思考の外部化</span><span style="color:var(--muted);margin-left:8px">— 自分の思考フレームをAIに設計・再現させる</span>
+        </div>
+      </div>
+
+      <div class="layer-grid">
+
+        <div class="layer-card">
+          <div class="layer-num">Layer 1 — 数値</div>
+          <div class="layer-title">スコア（軸スコア + サブカテゴリ内訳）</div>
+          <div class="layer-desc">各観点スコア（/125）をサブカテゴリに分解することで「知識力が高い」ではなく「ツール知識は高いが本質理解が低い」という粒度を得る。サブスコアの組み合わせパターンがClaude APIへの入力文脈になる。</div>
+          <div class="layer-example">例：知識力 88/125 → ツール知識（高）/ 本質・限界理解（低）/ 動向・発展把握（中）</div>
+        </div>
+
+        <div class="layer-card">
+          <div class="layer-num">Layer 2 — パターン</div>
+          <div class="layer-title">ユーザー分類タイプ（サブカテゴリのパターンから判定）</div>
+          <div class="layer-desc">軸スコアの合計ではなく、サブカテゴリの組み合わせパターンから分類タイプを付与。「思考設計（高）× 時短実感（低）」と「時短実感（高）× 思考設計（低）」は同じ合計でも異なるタイプとして評価する。分類アルゴリズムは別途設計中。</div>
+          <div class="layer-example">例：思考設計（高）× スキル実行（高）× 量産統合（高）→ 上級活用型</div>
+        </div>
+
+        <div class="layer-card">
+          <div class="layer-num">Layer 3 — 矛盾</div>
+          <div class="layer-title">整合性チェック（自己認識と実態のズレ）</div>
+          <div class="layer-desc">9グループのトラップ問により「言っていることとやっていることの不一致」を検出。思考フレームの質が問われる核心部分。ここが最も「刺さる」個別要素。</div>
+          <div class="layer-example">例：判断-1グループ不整合 → 「AIの出力確認に対する判断基準がまだ自分の中で定まっていないサインです」</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SUB CATEGORIES -->
+    <section class="section" id="algo-subcats">
+      <div class="section-header">
+        <div class="section-eyebrow">Sub Categories</div>
+        <h2 class="section-title">軸内サブカテゴリ設計</h2>
+        <p class="section-desc">各軸25問を設問の意味のまとまりで分類。サブカテゴリスコアはClaude APIへの入力粒度になる。</p>
+      </div>
+
+      <!-- 知識力 -->
+      <div class="dim-block">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#7c6eff20;color:#7c6eff">知</div>
+          <div>
+            <div class="dim-title">知識力 Q1〜Q25</div>
+            <div class="dim-range">AIのツール・仕組み・動向をどれだけ深く理解し、学び続けているか</div>
+          </div>
+        </div>
+        <table class="score-table">
+          <thead>
+            <tr><th>サブカテゴリ</th><th>対象設問</th><th>問数</th><th>難易度帯</th><th>測定する次元</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>① ツール知識</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q1〜6</td>
+              <td>6問</td>
+              <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
+              <td>何があるか知っているか</td>
+            </tr>
+            <tr>
+              <td><strong>② 本質・限界理解</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q7〜14</td>
+              <td>8問</td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">中級</span></td>
+              <td>なぜそうなるかを理解しているか</td>
+            </tr>
+            <tr>
+              <td><strong>③ 動向・発展把握</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q15〜25</td>
+              <td>11問</td>
+              <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
+              <td>どこへ向かうかを追えているか</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 思考力 -->
+      <div class="dim-block">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#ff6e9c20;color:#ff6e9c">思</div>
+          <div>
+            <div class="dim-title">思考力 Q26〜Q50</div>
+            <div class="dim-range">AIへの指示を目的や文脈に応じて深く考え、工夫して組み立てられているか</div>
+          </div>
+        </div>
+        <table class="score-table">
+          <thead>
+            <tr><th>サブカテゴリ</th><th>対象設問</th><th>問数</th><th>難易度帯</th><th>測定する次元</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>① 基本指示</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q26〜33</td>
+              <td>8問</td>
+              <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
+              <td>意図を正確に伝えられるか</td>
+            </tr>
+            <tr>
+              <td><strong>② 反復・改善</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q34〜44</td>
+              <td>11問</td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">中級</span></td>
+              <td>対話を重ねて精度を上げられるか</td>
+            </tr>
+            <tr>
+              <td><strong>③ 思考設計</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q45〜50</td>
+              <td>6問</td>
+              <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
+              <td>自分の思考フレームをAIに再現させられるか</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 活用力 -->
+      <div class="dim-block">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#36d39920;color:#36d399">活</div>
+          <div>
+            <div class="dim-title">活用力 Q51〜Q75</div>
+            <div class="dim-range">AIをどれだけ幅広い場面・用途で取り入れ、実践的に活用できているか</div>
+          </div>
+        </div>
+        <table class="score-table">
+          <thead>
+            <tr><th>サブカテゴリ</th><th>対象設問</th><th>問数</th><th>難易度帯</th><th>測定する次元</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>① 時短・統合</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q51〜61</td>
+              <td>11問</td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">初〜中級</span></td>
+              <td>明確に速くなり業務に組み込まれているか</td>
+            </tr>
+            <tr>
+              <td><strong>② スキル実行</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q62〜69</td>
+              <td>8問</td>
+              <td><span style="font-size:11px;color:#f4a733;font-weight:700">中〜上級</span></td>
+              <td>自分にないスキルをAIで動かせているか</td>
+            </tr>
+            <tr>
+              <td><strong>③ 量産・組織展開</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q70〜75</td>
+              <td>6問</td>
+              <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
+              <td>複数人分の量を一人で出し、組織にも展開できているか</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 判断力 -->
+      <div class="dim-block">
+        <div class="dim-header">
+          <div class="dim-icon" style="background:#4ec9f020;color:#4ec9f0">判</div>
+          <div>
+            <div class="dim-title">判断力 Q76〜Q100</div>
+            <div class="dim-range">AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
+          </div>
+        </div>
+        <table class="score-table">
+          <thead>
+            <tr><th>サブカテゴリ</th><th>対象設問</th><th>問数</th><th>難易度帯</th><th>測定する次元</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>① 出力検証</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q76〜89</td>
+              <td>14問</td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">初〜中級</span></td>
+              <td>AIの出力を確認・検証する習慣があるか</td>
+            </tr>
+            <tr>
+              <td><strong>② 役割分担</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q90〜95</td>
+              <td>6問</td>
+              <td><span style="font-size:11px;color:#f4a733;font-weight:700">中級</span></td>
+              <td>AIと人間の使い分けができているか</td>
+            </tr>
+            <tr>
+              <td><strong>③ 境界設計</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q96〜100</td>
+              <td>5問</td>
+              <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
+              <td>人間が担うべき思考・判断を守れているか</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- CLASSIFICATION SCHEMA -->
+    <section class="section" id="algo-classification">
+      <div class="section-header">
+        <div class="section-eyebrow">User Classification</div>
+        <h2 class="section-title">ユーザー分類スキーマ</h2>
+        <p class="section-desc">4軸すべてを個別に評価し、隣接する軸間のGAPパターンで分類タイプを決定する。2軸圧縮では消えてしまう「K高×T低」「A高×J低」「K高×J低」などの危険パターンを明示的に検知する。</p>
+      </div>
+
+      <!-- STEP 1: 認知チェーン -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 1 ── 4軸は認知チェーンを形成している</h3>
+      <div class="callout" style="margin-bottom:16px">
+        4軸は独立した指標ではなく、AIを活用するまでの<strong>認知フロー</strong>の各段階に対応する。隣接する軸間のスコア差（GAP）が「どこで詰まっているか」を示す。
+      </div>
+
+      <div class="axis-chain">
+        <div class="chain-node">
+          <div class="chain-node-role">INPUT</div>
+          <div class="chain-node-name" style="color:#7c6eff">知識力 K</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">AIを知る</div>
+        </div>
+        <div class="chain-arrow-col">
+          <div class="chain-arrow">→</div>
+          <div class="chain-gap-label">K-T GAP</div>
+        </div>
+        <div class="chain-node">
+          <div class="chain-node-role">DESIGN</div>
+          <div class="chain-node-name" style="color:#7c6eff">思考力 T</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">指示を設計する</div>
+        </div>
+        <div class="chain-arrow-col">
+          <div class="chain-arrow">→</div>
+          <div class="chain-gap-label">T-A GAP</div>
+        </div>
+        <div class="chain-node">
+          <div class="chain-node-role">EXECUTE</div>
+          <div class="chain-node-name" style="color:#4ec9f0">活用力 A</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">実際に使う</div>
+        </div>
+        <div class="chain-arrow-col">
+          <div class="chain-arrow">→</div>
+          <div class="chain-gap-label">A-J GAP</div>
+        </div>
+        <div class="chain-node">
+          <div class="chain-node-role">VERIFY</div>
+          <div class="chain-node-name" style="color:#4ec9f0">判断力 J</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">出力を検証する</div>
+        </div>
+      </div>
+
+      <!-- STEP 2: 各軸閾値 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 2 ── 各軸を 高(H)・中(M)・低(L) に変換</h3>
+      <table class="score-table">
+        <thead>
+          <tr><th>レベル</th><th>スコア範囲（各軸 /125点）</th><th>割合目安</th><th>意味</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span style="font-weight:700;color:var(--accent)">高（H）</span></td>
+            <td>87点以上</td>
+            <td>70%以上到達</td>
+            <td>その軸で明確に実力がある</td>
+          </tr>
+          <tr>
+            <td><span style="font-weight:700;color:rgba(255,255,255,0.6)">中（M）</span></td>
+            <td>50〜86点</td>
+            <td>40〜69%</td>
+            <td>使えているが突出していない</td>
+          </tr>
+          <tr>
+            <td><span style="font-weight:700;color:var(--muted)">低（L）</span></td>
+            <td>49点以下</td>
+            <td>39%以下</td>
+            <td>まだこれからの領域</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- STEP 3: 重要GAPパターン -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 3 ── 検知すべき重要GAPパターン</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">2軸圧縮では消えてしまう。4軸個別評価でのみ検知できるパターン。</p>
+
+      <div class="gap-patterns">
+        <div class="gap-pattern danger">
+          <div>
+            <div class="gap-formula" style="color:#ff6e9c">A高 × J低 ⚠️</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">活用力≥87 かつ 判断力≤49</div>
+          </div>
+          <div class="gap-meaning">
+            <strong>過信実行型 — 最も危険なパターン</strong>
+            AIを大量に使っているが出力の検証・品質管理が追いついていない。間違った情報や低品質な成果物をそのまま使い続けるリスクが高い。レポートで最優先に警告すべき。
+          </div>
+        </div>
+        <div class="gap-pattern">
+          <div>
+            <div class="gap-formula" style="color:#7c6eff">K高 × T低</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 思考力≤49</div>
+          </div>
+          <div class="gap-meaning">
+            <strong>知識偏重型 — インプット過多パターン</strong>
+            AIの知識・情報収集は豊富だが、具体的な指示設計・活用に変換できていない。インプットを行動に変える力が課題。
+          </div>
+        </div>
+        <div class="gap-pattern">
+          <div>
+            <div class="gap-formula" style="color:#7c6eff">K高 × J低</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 判断力≤49</div>
+          </div>
+          <div class="gap-meaning">
+            <strong>知識過信型 — 盲点パターン</strong>
+            AIについてよく知っているが、出力の検証習慣が薄い。「知っているから大丈夫」という思い込みが精度リスクを生む。
+          </div>
+        </div>
+        <div class="gap-pattern">
+          <div>
+            <div class="gap-formula" style="color:#4ec9f0">K高・J高 × A低</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">K≥80 かつ J≥80 かつ A≤49</div>
+          </div>
+          <div class="gap-meaning">
+            <strong>慎重未実践型 — 理解はある、手が動かないパターン</strong>
+            知識もあり出力検証もできるが、実際の活用量が圧倒的に少ない。理解と実践の間の心理的な壁が存在する。
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: タイプ一覧 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 4 ── 分類タイプ一覧（4軸プロファイル）</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">ドットは各軸のレベル：<span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle"><span class="ax h" style="width:18px;height:18px;font-size:8px">H</span>高</span>　<span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle"><span class="ax m" style="width:18px;height:18px;font-size:8px">M</span>中</span>　<span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle"><span class="ax l" style="width:18px;height:18px;font-size:8px">L</span>低</span></p>
+
+      <div class="type-cards">
+        <div class="type-card tc-s">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#f4a733">上級完成型</div>
+            <div class="tc-rule">R0</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax h">K</span><span class="ax h">T</span><span class="ax h">A</span><span class="ax h">J</span>
+          </div>
+          <div class="tc-desc">4軸すべて高水準。思考フレームとAI実行能力の両輪が回っている。AIを完全に武器化できている層。</div>
+          <div class="tc-edge">成長の次の壁：差別化・組織展開・領域の深化</div>
+        </div>
+
+        <div class="type-card tc-warn">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#ff6e9c">過信実行型 ⚠️</div>
+            <div class="tc-rule">R1</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax m">K</span><span class="ax m">T</span><span class="ax h">A</span><span class="ax l">J</span>
+          </div>
+          <div class="tc-desc">活用量は多いが判断力が著しく低い。AI出力を検証せず使い続けるリスクが高い。最優先で判断力強化が必要。</div>
+          <div class="tc-edge">コア課題：A-J GAP の解消（検証習慣の定着）</div>
+        </div>
+
+        <div class="type-card tc-a">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#7c6eff">評論家型</div>
+            <div class="tc-rule">R2</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax h">K</span><span class="ax h">T</span><span class="ax l">A</span><span class="ax l">J</span>
+          </div>
+          <div class="tc-desc">知識と思考設計は高いが実際の活用量がほぼゼロ。「理解している」が「やっていない」状態。手を動かすことが唯一の打ち手。</div>
+          <div class="tc-edge">コア課題：活用力の量的拡大（まず使う回数を増やす）</div>
+        </div>
+
+        <div class="type-card tc-a">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#7c6eff">知識偏重型</div>
+            <div class="tc-rule">R3</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax h">K</span><span class="ax l">T</span><span class="ax l">A</span><span class="ax m">J</span>
+          </div>
+          <div class="tc-desc">知識は豊富だが指示設計（思考力）と実践（活用力）が弱い。情報を収集・蓄積するが「では何をAIに頼むか」が設計できていない。</div>
+          <div class="tc-edge">コア課題：K-T GAP の解消（知識→指示への変換）</div>
+        </div>
+
+        <div class="type-card tc-a">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#7c6eff">慎重未実践型</div>
+            <div class="tc-rule">R4</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax h">K</span><span class="ax m">T</span><span class="ax l">A</span><span class="ax h">J</span>
+          </div>
+          <div class="tc-desc">知識と判断力は高いが活用力が低い。「AIの正確性・リスクを知っているから慎重になりすぎる」パターン。実践量を増やすことで急成長が見込める。</div>
+          <div class="tc-edge">コア課題：心理的ブレーキの除去・活用量の増加</div>
+        </div>
+
+        <div class="type-card">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#4ec9f0">直感実行型</div>
+            <div class="tc-rule">R5</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax l">K</span><span class="ax l">T</span><span class="ax h">A</span><span class="ax m">J</span>
+          </div>
+          <div class="tc-desc">知識・思考フレームなしに感覚でAIを動かしている。実践量はある。知識と思考を体系化すれば一気に上位に食い込める伸びしろ最大層。</div>
+          <div class="tc-edge">コア課題：フレームワークの獲得（知識・指示設計の強化）</div>
+        </div>
+
+        <div class="type-card">
+          <div class="tc-head">
+            <div class="tc-name" style="color:#4ade80">均等発展型</div>
+            <div class="tc-rule">R6</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax m">K</span><span class="ax m">T</span><span class="ax m">A</span><span class="ax m">J</span>
+          </div>
+          <div class="tc-desc">4軸が中程度でバランスよく揃っている。突出した強みも弱みもない安定型。次の突破口をどの軸に置くかが成長の鍵。</div>
+          <div class="tc-edge">コア課題：どれか1軸を意識的に伸ばして突破口をつくる</div>
+        </div>
+
+        <div class="type-card tc-dim">
+          <div class="tc-head">
+            <div class="tc-name" style="color:var(--muted)">感覚実践型</div>
+            <div class="tc-rule">R7</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax l">K</span><span class="ax l">T</span><span class="ax m">A</span><span class="ax l">J</span>
+          </div>
+          <div class="tc-desc">なんとなく使っている段階。活用量は中程度あるが知識・思考・判断のすべてが低い。全方位での基礎固めが優先。</div>
+          <div class="tc-edge">コア課題：全軸の底上げ（特に知識と判断の基礎）</div>
+        </div>
+
+        <div class="type-card tc-dim">
+          <div class="tc-head">
+            <div class="tc-name" style="color:var(--muted)">入門型</div>
+            <div class="tc-rule">R8</div>
+          </div>
+          <div class="ax-row">
+            <span class="ax l">K</span><span class="ax l">T</span><span class="ax l">A</span><span class="ax l">J</span>
+          </div>
+          <div class="tc-desc">AI活用がこれから始まる段階。4軸すべてが低水準。今が最も伸びやすいフェーズ。基礎の知識インプットから丁寧に展開する。</div>
+          <div class="tc-edge">コア課題：まず使い始めること・知識の土台構築</div>
+        </div>
+      </div>
+
+      <!-- STEP 5: 判定アルゴリズム -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 5 ── 判定アルゴリズム（4軸・優先順位付きルール）</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">上のルールが優先。最初にマッチした条件でタイプが確定する。各軸スコアは /125点で評価。</p>
+
+      <div class="algo-rules">
+        <div class="algo-rule">
+          <div class="rule-num">R0</div>
+          <div class="rule-cond">K<strong>≥87</strong> AND T<strong>≥87</strong> AND A<strong>≥87</strong> AND J<strong>≥87</strong></div>
+          <div class="rule-type" style="color:#f4a733">→ 上級完成型</div>
+        </div>
+        <div class="algo-rule r-warn">
+          <div class="rule-num">R1</div>
+          <div class="rule-cond">A<strong>≥87</strong> AND J<span class="warn">≤49</span></div>
+          <div class="rule-type" style="color:#ff6e9c">→ 過信実行型 ⚠️</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R2</div>
+          <div class="rule-cond">K<strong>≥87</strong> AND T<strong>≥75</strong> AND A<span class="warn">≤55</span> AND J<span class="warn">≤55</span></div>
+          <div class="rule-type" style="color:#7c6eff">→ 評論家型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R3</div>
+          <div class="rule-cond">K<strong>≥87</strong> AND T<span class="warn">≤55</span> AND A<span class="warn">≤65</span></div>
+          <div class="rule-type" style="color:#7c6eff">→ 知識偏重型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R4</div>
+          <div class="rule-cond">K<strong>≥80</strong> AND J<strong>≥80</strong> AND A<span class="warn">≤55</span></div>
+          <div class="rule-type" style="color:#7c6eff">→ 慎重未実践型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R5</div>
+          <div class="rule-cond">K<span class="warn">≤55</span> AND T<span class="warn">≤55</span> AND A<strong>≥75</strong></div>
+          <div class="rule-type" style="color:#4ec9f0">→ 直感実行型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R6</div>
+          <div class="rule-cond">max(K,T,A,J) − min(K,T,A,J) <strong>≤28</strong> AND total <strong>≥150</strong></div>
+          <div class="rule-type" style="color:#4ade80">→ 均等発展型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R7</div>
+          <div class="rule-cond">K<span class="warn">≤55</span> AND T<span class="warn">≤55</span> AND A 50〜74 AND J<span class="warn">≤55</span></div>
+          <div class="rule-type" style="color:var(--muted)">→ 感覚実践型</div>
+        </div>
+        <div class="algo-rule">
+          <div class="rule-num">R8</div>
+          <div class="rule-cond">total <strong>≤150</strong>（または全軸≤49）</div>
+          <div class="rule-type" style="color:var(--muted)">→ 入門型</div>
+        </div>
+      </div>
+
+      <!-- STEP 6: サブ修飾変数 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Step 6 ── サブ修飾変数（Claude API への追加入力）</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">タイプが同じでも軸内の偏りが違えばレポート内容が変わる。3つのGAPを変数として渡す。</p>
+
+      <div class="gap-vars">
+        <div class="gap-var">
+          <div class="gap-var-name">{{kt_gap}}</div>
+          <div class="gap-var-eq">= 知識力 − 思考力（/125）</div>
+          <div class="gap-var-interp">
+            <span>＋大 → 知識先行：情報はある、指示設計が弱い</span>
+            <span>−大 → 思考先行：設計力あり、インプット不足</span>
+          </div>
+        </div>
+        <div class="gap-var">
+          <div class="gap-var-name">{{aj_gap}}</div>
+          <div class="gap-var-eq">= 活用力 − 判断力（/125）</div>
+          <div class="gap-var-interp">
+            <span>＋大 → 活用先行：量は出る、検証が甘い ⚠️</span>
+            <span>−大 → 判断先行：慎重だが実践量が少ない</span>
+          </div>
+        </div>
+        <div class="gap-var">
+          <div class="gap-var-name">{{kj_gap}}</div>
+          <div class="gap-var-eq">= 知識力 − 判断力（/125）</div>
+          <div class="gap-var-interp">
+            <span>＋大 → 知識過信：知ってるが検証しない</span>
+            <span>−大 → 慎重無知：検証するが知識が薄い</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:8px">
+        <strong>Claude APIへ渡す変数（分類関連）：</strong><br>
+        <code>{{user_type}}</code>　<code>{{k_score}}</code>　<code>{{t_score}}</code>　<code>{{a_score}}</code>　<code>{{j_score}}</code>　<code>{{kt_gap}}</code>　<code>{{aj_gap}}</code>　<code>{{kj_gap}}</code><br>
+        これらにサブカテゴリスコア・整合性チェック結果・上位X%を加えた計11〜12変数がプロンプトに差し込まれる。
+      </div>
+    </section>
+
+    <!-- API INPUT VARIABLES -->
+    <section class="section" id="algo-api-vars">
+      <div class="section-header">
+        <div class="section-eyebrow">API Input</div>
+        <h2 class="section-title">Claude API 入力変数設計</h2>
+        <p class="section-desc">タイプ名ではなく生の数値をClaudeに渡す。3層の変数群がどんなパターンにも対応する個別最適化コンテキストを生成する。</p>
+      </div>
+
+      <div class="callout">
+        <strong>設計原則：</strong>変数が揃っていれば、Claudeはどんな数値の組み合わせにも意味を見出せる。タイプ判定の精度より変数設計の精度が出力品質を決める。
+      </div>
+
+      <!-- Layer 1 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Layer 1 ── 位置の把握（どこにいるか）</h3>
+      <table class="score-table">
+        <thead><tr><th>変数名</th><th>内容</th><th>算出元</th></tr></thead>
+        <tbody>
+          <tr><td><code>{{rank}}</code></td><td>ランク（S / A / B / C / D）</td><td>Sheets DD列</td></tr>
+          <tr><td><code>{{total_score}}</code></td><td>合計スコア（/500）</td><td>Sheets DB列</td></tr>
+          <tr><td><code>{{percentile}}</code></td><td>全体の上位X%（例：12.4）</td><td>Sheets DG列（PERCENTRANK）</td></tr>
+          <tr><td><code>{{k_score}} / {{t_score}} / {{a_score}} / {{j_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CX〜DA列</td></tr>
+          <tr><td><code>{{k_level}} / {{t_level}} / {{a_level}} / {{j_level}}</code></td><td>各軸の5段階レベル（1〜5）</td><td>GAS計算（スコアをレンジで変換）</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;padding:0 4px">
+        5段階換算：L1=0〜24点 / L2=25〜49点 / L3=50〜74点 / L4=75〜99点 / L5=100〜125点
+      </div>
+
+      <!-- Layer 2 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Layer 2 ── 内訳の分析（どうやって到達したか）</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">同じ軸スコアでもサブカテゴリの内訳が違えばレポートは別物になる。中間層の個別最適化もこの層が担う。</p>
+      <table class="score-table">
+        <thead><tr><th>変数名</th><th>内容</th><th>算出元</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>{{k_sub1}} / {{k_sub2}} / {{k_sub3}}</code></td>
+            <td>知識力サブ（①ツール知識 /6問 ②本質・限界理解 /8問 ③動向・発展把握 /11問）</td>
+            <td>GAS：対象設問を合算</td>
+          </tr>
+          <tr>
+            <td><code>{{t_sub1}} / {{t_sub2}} / {{t_sub3}}</code></td>
+            <td>思考力サブ（①基本指示 /8問 ②反復・改善 /11問 ③思考設計 /6問）</td>
+            <td>GAS：対象設問を合算</td>
+          </tr>
+          <tr>
+            <td><code>{{a_sub1}} / {{a_sub2}} / {{a_sub3}}</code></td>
+            <td>活用力サブ（①時短・統合 /11問 ②スキル実行 /8問 ③量産・組織展開 /6問）</td>
+            <td>GAS：対象設問を合算</td>
+          </tr>
+          <tr>
+            <td><code>{{j_sub1}} / {{j_sub2}} / {{j_sub3}}</code></td>
+            <td>判断力サブ（①出力検証 /14問 ②役割分担 /6問 ③境界設計 /5問）</td>
+            <td>GAS：対象設問を合算</td>
+          </tr>
+          <tr>
+            <td><code>{{k_var}} / {{t_var}} / {{a_var}} / {{j_var}}</code></td>
+            <td>各軸の回答分散（サブカテゴリ内 最大スコア率 − 最小スコア率）</td>
+            <td>GAS計算</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout" style="margin-top:12px;font-size:12px">
+        <strong>分散の読み方：</strong>同じ知識力65点でも「Sub1=高・Sub3=低（偏り大）」と「全Sub均等（偏り小）」では評価が異なる。偏りが大きい人には「どこが強くてどこが弱いか」、偏りが小さい人には「全体的な底上げ」という異なるフィードバックが生成される。
+      </div>
+
+      <!-- Layer 3 -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Layer 3 ── 自己認識の検証（スコアの信頼性）</h3>
+      <table class="score-table">
+        <thead><tr><th>変数名</th><th>内容</th><th>算出元</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>{{inconsistency}}</code></td>
+            <td>不整合グループ名（カンマ区切り、なければ「なし」）</td>
+            <td>Sheets DF列</td>
+          </tr>
+          <tr>
+            <td><code>{{inconsistency_count}}</code></td>
+            <td>不整合グループ数（0〜9）</td>
+            <td>GAS計算</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Cross-axis GAPs -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Cross-axis GAP ── 認知チェーンの詰まり</h3>
+      <table class="score-table">
+        <thead><tr><th>変数名</th><th>計算式</th><th>正値の意味</th><th>負値の意味</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>{{kt_gap}}</code></td>
+            <td>知識力 − 思考力</td>
+            <td>知識先行（情報はある、指示に変換できない）</td>
+            <td>思考先行（設計力あり、インプット不足）</td>
+          </tr>
+          <tr>
+            <td><code>{{aj_gap}}</code></td>
+            <td>活用力 − 判断力</td>
+            <td style="color:#ff6e9c;font-weight:700">活用先行・過信実行 ⚠️（検証が追いつかない）</td>
+            <td>判断先行（慎重だが実践量が少ない）</td>
+          </tr>
+          <tr>
+            <td><code>{{kj_gap}}</code></td>
+            <td>知識力 − 判断力</td>
+            <td>知識過信（知ってるが出力を信用しすぎる）</td>
+            <td>慎重無知（検証は丁寧だが知識基盤が薄い）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Supplementary -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">補助変数 ── 表示用ラベル</h3>
+      <table class="score-table">
+        <thead><tr><th>変数名</th><th>内容</th><th>役割</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>{{user_type}}</code></td>
+            <td>分類タイプ名（上級完成型 / 過信実行型 など）</td>
+            <td>レポートの見出し・ユーザー向け表示ラベル。<strong>生成の主役ではない。</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Prompt example -->
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">プロンプト構造イメージ</h3>
+      <div class="callout">
+        <code style="display:block;font-size:12px;line-height:2;color:var(--text);white-space:pre-wrap">以下のデータをもとに、このユーザーの「知識力」に対する個別評価を200字以内で生成してください。
+
+【基本情報】
+ランク: {{rank}} ／ 上位 {{percentile}}%
+
+【知識力】
+スコア: {{k_score}}/125（レベル {{k_level}}/5）
+ - ①ツール知識: {{k_sub1}}点（/30）
+ - ②本質・限界理解: {{k_sub2}}点（/40）
+ - ③動向・発展把握: {{k_sub3}}点（/55）
+ - サブカテゴリ偏り: {{k_var}}
+
+【認知チェーン】
+K-T GAP: {{kt_gap}}（知識→思考の変換ギャップ）
+K-J GAP: {{kj_gap}}（知識と検証の整合）
+
+【自己認識】
+整合性チェック不整合: {{inconsistency}}（{{inconsistency_count}}件）
+
+※ 強みと弱みを具体的に指摘し、次のアクションを1つ提示すること。</code>
+      </div>
+    </section>
+
+    <!-- UI QUALITY CONTROL -->
+    <section class="section" id="algo-ui-quality">
+      <div class="section-header">
+        <div class="section-eyebrow">UI Quality</div>
+        <h2 class="section-title">入力品質管理：連続回答検知</h2>
+        <p class="section-desc">アルゴリズムでノイズを補正するより、入力段階でユーザー自身が質の高い回答をする構造を作る。</p>
+      </div>
+
+      <div class="callout">
+        <strong>設計哲学：</strong>同じスコアでも「惰性で全部3を選んだ100問」と「真剣に考えた100問」は別物。アルゴリズムにはその差が見えない。入力品質を上げることで、出力の個別最適化精度が根本から上がる。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">連続回答検知ポップアップ</h3>
+
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>項目</th><th>仕様</th></tr></thead>
+        <tbody>
+          <tr><td>トリガー条件</td><td>同じ回答値（1〜5のいずれか）が<strong>10回連続</strong>で選択された時</td></tr>
+          <tr><td>表示タイミング</td><td>10回目の回答直後（次の設問に進む前）</td></tr>
+          <tr><td>メッセージ</td><td>「同じ回答が続いていますが、しっかりと回答できていますか？」</td></tr>
+          <tr><td>ポップアップ挙動</td><td>非ブロッキング（閉じれば続行可能）</td></tr>
+          <tr><td>カウンターリセット</td><td>ポップアップ表示後にリセット（再び10回連続で再発火）</td></tr>
+          <tr><td>対象外パターン</td><td>「5」が10回連続も検知対象（全て高いのが本物かもしれないが確認は促す）</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>副次効果：</strong>ユーザーが「自分で真剣に答えた診断」として結果を受け取るため、レポートへの納得感・信頼感が上がる。CTAへのコンバージョン率にも好影響が見込まれる。
+      </div>
+    </section>
+
+  </main>
+</div><!-- /pane-algo -->
+
+
+<!-- ==================== PANE: 導線設計 ==================== -->
+<div id="pane-dousen" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">導線設計</div>
+      <div class="sub">診断 → CV → レポート届達</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">構造</div>
+      <a href="#d-map" class="nav-item active">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        導線マップ
+      </a>
+      <a href="#d-verify" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        技術検証タスク
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- MINDMAP -->
+    <section class="section" id="d-map">
+      <div class="section-header">
+        <div class="section-eyebrow">Flow Design</div>
+        <h2 class="section-title">導線マップ</h2>
+        <p class="section-desc">診断完了からLINE登録まで。CVトリガーのみ未確定（2案）。</p>
+      </div>
+
+      <!-- ===== FLOWCHART ===== -->
+      <div style="padding:20px 0;display:flex;flex-direction:column;align-items:center">
+
+        <!-- 診断完了 -->
+        <div style="background:var(--surface2);border:2px solid var(--accent);border-radius:12px;padding:10px 28px;text-align:center;min-width:210px">
+          <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:2px">START</div>
+          <div style="font-weight:700;font-size:14px;color:var(--text)">診断完了</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">100問回答 → 戦闘力・ランク表示</div>
+        </div>
+        <div style="width:2px;height:18px;background:var(--border)"></div>
+
+        <!-- UTAGE サンクスページ（共通起点） -->
+        <div style="background:rgba(88,88,168,0.07);border:2px solid var(--accent);border-radius:12px;padding:10px 20px;text-align:center;min-width:210px">
+          <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:2px">UTAGE</div>
+          <div style="font-weight:700;font-size:13px;color:var(--text)">サンクスページ</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">2つの取得方法を提示</div>
+        </div>
+
+        <!-- FORK ⊓ -->
+        <div style="position:relative;width:86%;height:28px">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--border)"></div>
+          <div style="position:absolute;top:0;left:0;width:2px;height:28px;background:var(--c3)"></div>
+          <div style="position:absolute;top:0;right:0;width:2px;height:28px;background:var(--c5)"></div>
+        </div>
+
+        <!-- BRANCH COLUMNS -->
+        <div style="display:flex;gap:10px;width:86%;align-items:flex-start">
+
+          <!-- === 案A: UTAGEドメイン === -->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+
+            <!-- ドメインヘッダー -->
+            <div style="background:rgba(46,122,90,0.12);border:2px solid var(--c3);border-radius:10px 10px 0 0;padding:7px 8px;text-align:center;width:100%;box-sizing:border-box">
+              <div style="font-size:9px;color:var(--c3);font-weight:700;letter-spacing:.08em">UTAGE ドメイン</div>
+              <div style="font-weight:700;font-size:12px;color:var(--text);margin-top:1px">500円決済</div>
+            </div>
+
+            <!-- ステップ群 (左border で視覚的に領域を表現) -->
+            <div style="width:100%;border-left:2px solid var(--c3);border-right:2px solid var(--c3);box-sizing:border-box;display:flex;flex-direction:column;align-items:center">
+              <div style="width:2px;height:10px;background:var(--border)"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 8px;font-size:11px;color:var(--muted);text-align:center;width:88%;box-sizing:border-box">500円決済フォームへ</div>
+              <div style="width:2px;height:8px;background:var(--border)"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 8px;font-size:11px;color:var(--muted);text-align:center;width:88%;box-sizing:border-box">決済完了</div>
+              <div style="width:2px;height:8px;background:var(--border)"></div>
+            </div>
+
+            <!-- 届達 -->
+            <div style="background:rgba(46,122,90,0.08);border:2px solid var(--c3);border-radius:0 0 10px 10px;padding:8px 8px;text-align:center;width:100%;box-sizing:border-box">
+              <div style="font-size:10px;color:var(--c3);font-weight:700;margin-bottom:2px">DELIVER</div>
+              <div style="font-size:12px;font-weight:700;color:var(--text)">📧 メールで届く</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">UTAGEステップ配信</div>
+            </div>
+            <div style="width:2px;height:14px;background:var(--border)"></div>
+
+          </div>
+
+          <!-- === 案B: Xドメイン === -->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+
+            <!-- ドメインヘッダー -->
+            <div style="background:rgba(46,112,152,0.12);border:2px solid var(--c5);border-radius:10px 10px 0 0;padding:7px 8px;text-align:center;width:100%;box-sizing:border-box">
+              <div style="font-size:9px;color:var(--c5);font-weight:700;letter-spacing:.08em">X ドメイン</div>
+              <div style="font-weight:700;font-size:12px;color:var(--text);margin-top:1px">引用RT（無料）</div>
+            </div>
+
+            <!-- ステップ群 -->
+            <div style="width:100%;border-left:2px solid var(--c5);border-right:2px solid var(--c5);box-sizing:border-box;display:flex;flex-direction:column;align-items:center">
+              <div style="width:2px;height:10px;background:var(--border)"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 8px;font-size:11px;color:var(--muted);text-align:center;width:88%;box-sizing:border-box">固定ツイートのリンク</div>
+              <div style="width:2px;height:8px;background:var(--border)"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 8px;font-size:11px;color:var(--muted);text-align:center;width:88%;box-sizing:border-box">引用RTを投稿</div>
+              <div style="width:2px;height:8px;background:var(--border)"></div>
+            </div>
+
+            <!-- 届達 -->
+            <div style="background:rgba(46,112,152,0.08);border:2px solid var(--c5);border-radius:0 0 10px 10px;padding:8px 8px;text-align:center;width:100%;box-sizing:border-box">
+              <div style="font-size:10px;color:var(--c5);font-weight:700;margin-bottom:2px">DELIVER</div>
+              <div style="font-size:12px;font-weight:700;color:var(--text)">💬 XStep DMで届く</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">自動DM送信</div>
+            </div>
+            <div style="width:2px;height:14px;background:var(--border)"></div>
+
+          </div>
+
+        </div>
+
+        <!-- MERGE ∪ -->
+        <div style="position:relative;width:86%;height:28px">
+          <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border)"></div>
+          <div style="position:absolute;bottom:0;left:0;width:2px;height:28px;background:var(--border)"></div>
+          <div style="position:absolute;bottom:0;right:0;width:2px;height:28px;background:var(--border)"></div>
+        </div>
+        <div style="width:2px;height:18px;background:var(--border)"></div>
+
+        <!-- レポートURL -->
+        <div style="background:rgba(88,88,168,0.10);border:2px solid var(--accent);border-radius:12px;padding:10px 20px;text-align:center;min-width:210px">
+          <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:2px">CLAUDE API + SHEETS</div>
+          <div style="font-weight:700;font-size:13px;color:var(--text)">詳細レポートを受け取る</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">個別URL発行 → 縦スクロール型レポート</div>
+        </div>
+        <div style="width:2px;height:18px;background:var(--border)"></div>
+
+        <!-- LINE CTA -->
+        <div style="background:rgba(160,72,112,0.10);border:2px solid var(--c2);border-radius:12px;padding:10px 28px;text-align:center;min-width:210px">
+          <div style="font-size:10px;color:var(--c2);font-weight:700;letter-spacing:.08em;margin-bottom:2px">GOAL</div>
+          <div style="font-weight:700;font-size:14px;color:var(--text)">LINE登録 CTA</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">レポート末尾 → LINE公式へ誘導</div>
+        </div>
+
+      </div>
+      <!-- ===== /FLOWCHART ===== -->
+
+    </section>
+
+    <!-- 技術検証 -->
+    <section class="section" id="d-verify">
+      <div class="section-header">
+        <div class="section-eyebrow">Technical Verification</div>
+        <h2 class="section-title">技術検証タスク</h2>
+        <p class="section-desc">3つの懸念軸に沿って整理。担当者へ委託してYES/NOで返してもらう確認事項。</p>
+      </div>
+
+      <!-- 懸念①：X APIでユーザーを特定できるか -->
+      <div style="margin-bottom:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em">
+        懸念① X APIでユーザーを特定できるか
+      </div>
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>No.</th><th>確認事項</th><th>対象</th><th>ステータス</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>引用RTしたユーザーのアカウントIDをX APIで取得できるか（無料〜Basicどのtierが必要か）</td>
+            <td>X API</td>
+            <td><span class="badge" style="background:rgba(138,88,32,0.12);color:var(--c4)">未確認</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 懸念②：引用ユーザーをUTAGEと連携できるか -->
+      <div style="margin-bottom:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em">
+        懸念② 引用ユーザーをUTAGEと連携できるか（最重要）
+      </div>
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>No.</th><th>確認事項</th><th>対象</th><th>ステータス</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>2</td>
+            <td>UTAGEのサンクスページ内リンクに診断IDを動的パラメータとして付与できるか</td>
+            <td>UTAGE</td>
+            <td><span class="badge" style="background:rgba(138,88,32,0.12);color:var(--c4)">未確認</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>UTAGEの決済完了後WebhookにユーザーデータIDを含めてGASへ送れるか</td>
+            <td>UTAGE</td>
+            <td><span class="badge" style="background:rgba(138,88,32,0.12);color:var(--c4)">未確認</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>X引用RTアカウントIDと診断IDをGAS上で照合・紐づけできるか（設計成立可否）</td>
+            <td>GAS</td>
+            <td><span class="badge" style="background:rgba(138,88,32,0.12);color:var(--c4)">未確認</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 懸念③：XのURL・テキスト情報を認識できるか -->
+      <div style="margin-bottom:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em">
+        懸念③ XのURL・テキスト情報を認識できるか
+      </div>
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>No.</th><th>確認事項</th><th>対象</th><th>ステータス</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>5</td>
+            <td>引用RTのツイート本文テキスト（診断IDなど）をXStep / GASで取得・照合できるか</td>
+            <td>XStep / X API</td>
+            <td><span class="badge" style="background:rgba(138,88,32,0.12);color:var(--c4)">未確認</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:4px">
+        <strong>判断タイミング：</strong>懸念②（No.2〜4）がすべて揃った時点でXルートの成立可否が決まる。UTAGEが動的ID付与に対応していない場合、Xルートは診断IDを引用RTテキストに含めさせる運用設計（No.5）に一本化する。
+      </div>
+    </section>
+
+
+  </main>
+</div><!-- /pane-dousen -->
+
+
+<script>
+  // タブ切り替え
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panes   = document.querySelectorAll('.pane');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      panes.forEach(p => p.classList.add('pane-hidden'));
+      btn.classList.add('active');
+      document.getElementById('pane-' + btn.dataset.pane).classList.remove('pane-hidden');
+    });
+  });
+
+  // アクティブナビ（各ペイン独立）
+  document.querySelectorAll('.pane').forEach(pane => {
+    const sections = pane.querySelectorAll('[id]');
+    const navItems = pane.querySelectorAll('.nav-item');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navItems.forEach(n => n.classList.remove('active'));
+          const active = pane.querySelector(`.nav-item[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    sections.forEach(s => observer.observe(s));
+  });
+</script>
+
+</body>
+</html>
