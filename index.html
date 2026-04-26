@@ -1856,9 +1856,17 @@
     // 例：pair=kt, positive → 「知識力 > 思考力」
     // 例：pair=aj, negative → 「判断力 > 活用力」
     "self_gaps": [
-      { "name": "string", "description": "string ~60字" }
+      {
+        "name": "string",        // グループ名（GAS側が判定）
+        "min": 1,                // グループ内最小回答値（GAS側が計算）
+        "max": 5,                // グループ内最大回答値（GAS側が計算）
+        "description": "string ~60字"  // Claude生成
+      }
     ]
-    // self_gaps は不整合グループ分。0件の場合は空配列
+    // self_gaps は不整合グループ分（min≤2 かつ max≥4）。0件の場合は空配列
+    // min/maxをClaudeに渡すことで「揺れの幅」を把握させる
+    // ⚠️ Claudeへのプロンプト制約：過大/過小のどちらとも断定しない。
+    //    「この領域に認識のムラがある」としてフラットに語ること
   },
 
   "next_step": {
