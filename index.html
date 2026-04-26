@@ -1855,7 +1855,82 @@
       </div>
 
       <div class="callout" style="margin-top:20px">
-        <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、「構造的な特徴」セクションの自己認識ズレとして言語化する。例：「確認してから使う」という問いへの回答が一貫していない場合、判断基準の曖昧さとして文章に組み込む。
+        <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、「あなたの特徴」セクションの自己認識ズレとして言語化する。グループは9種：判断-1 / 判断-2 / 思考-1 / 思考-2 / 知識 / 活用-1 / 活用-2 / 活用-3 / 観点またぎ（知識×判断の2軸またぎ）。
+      </div>
+
+      <div style="margin-top:24px">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">自己認識のズレ 出力例</div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- 0件 -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN A ― 不整合 0件</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">self_gaps: []（空配列）→ 静的テキストで代替</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>「一貫した自己認識が確認されました。
+同じテーマへの複数の問いに対して
+回答が安定しており、自分のAI活用の
+実態を正しく把握できています。」</code></pre>
+          </div>
+
+          <!-- 1件 -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN B ― 不整合 1件（判断-1）</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
+  "name": "判断-1",
+  "description": "AIの出力を確認してから使う行動について
+回答のブレが検出されました。「確認している」
+という認識と実際の行動が乖離している
+可能性があります。"  // 58字
+}</code></pre>
+          </div>
+
+          <!-- 複数件 -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN C ― 不整合 3件（判断-1 / 思考-2 / 活用-1）</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>[
+  {
+    "name": "判断-1",
+    "description": "AIの出力確認行動について回答のブレが
+見られます。できているときとできていない
+ときの差が大きく、習慣として定着して
+いない可能性があります。"  // 60字
+  },
+  {
+    "name": "思考-2",
+    "description": "指示前のゴール・情報設計に関して回答が
+一貫していません。場面によって取り組み方
+が変わっており、意識的な型がまだ
+固まっていないと考えられます。"  // 60字
+  },
+  {
+    "name": "活用-1",
+    "description": "AIを継続的に活用して成果を上げている
+かどうか、評価にブレがあります。成果の
+定義が曖昧なまま運用している可能性
+があります。"  // 52字
+  }
+]</code></pre>
+          </div>
+
+          <!-- 観点またぎ（特殊ケース） -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN D ― 観点またぎ（特殊・知識×判断の2軸）</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">知識面での理解と判断場面での実践が乖離しているケース。「知っているがやっていない」状態を示す。</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
+  "name": "観点またぎ",
+  "description": "AIの得意・不得意への理解は高いと
+回答しつつ、判断場面では使い分けて
+いないと回答しています。知識と実践の
+間に乖離があります。"  // 57字
+}</code></pre>
+          </div>
+
+        </div>
+
+        <div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
+          ※ description は〜60字・文章形式。「〜という認識と実態がズレている」「〜が習慣として定着していない」「〜が場面によってブレている」のいずれかのフレームで書く。断定・糾弾調にしない。
+        </div>
       </div>
 
       <div class="callout">
