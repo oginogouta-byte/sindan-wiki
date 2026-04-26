@@ -1707,7 +1707,7 @@
             <tbody>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差25点以上のペアのみ表示）</td></tr>
               <tr><td>H2：[GAP見出し]</td><td>HTML側が pair + direction から静的生成。例：「知識力 &gt; 思考力」「判断力 &gt; 活用力」― 絶対値≥25のペアのみ（最大3本）。0本 → このブロックごと非表示</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>説明文</td><td>「この診断では4軸間のスコア差を"ギャップ"と呼びます。差が大きいほど、2つの力が連動していない状態を示します。」（〜50字）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>スコアビジュアル</td><td>2軸のスコアバーを横並びで表示。記号（&gt;）で大小を示す。説明文なし・視覚的に完結</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>本文</td><td>このギャップが実務でどういう状態を生んでいるか（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（常時表示）</td></tr>
               <tr><td>H2：自己認識のズレ</td><td>―</td><td>―</td></tr>
@@ -1874,7 +1874,8 @@
           <li><strong>表示条件：</strong>絶対値 ≥ 25点（正負両方。逆方向GAPも個別最適の対象）</li>
           <li><strong>見出し：</strong>HTML側が pair + direction から静的生成。例：kt×positive → 「知識力 &gt; 思考力」/ aj×negative → 「判断力 &gt; 活用力」</li>
           <li><strong>色分け：</strong>各軸の既存カラーをそのまま左右に使用（デザイン側が制御）</li>
-          <li><strong>Claude出力：</strong>description のみ（〜80字）。direction・value・見出しはGAS/HTML側が担う</li>
+          <li><strong>説明文：不要（確定）</strong> 記号（&gt;）+ 両軸スコアバーで視覚的に完結。テキスト説明はノイズになる</li>
+          <li><strong>Claude出力：</strong>description のみ（〜80字）。「どちらが高いか」はビジュアルが担い、Claudeは「それが実務でどういう状態か」のみ語る</li>
           <li><strong>最大表示本数：</strong>3本（kt / aj / kj 各1本）</li>
         </ul>
         <br>
