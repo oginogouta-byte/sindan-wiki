@@ -911,7 +911,7 @@
       <div class="section-header">
         <div class="section-eyebrow">System Flow</div>
         <h2 class="section-title">システムフロー</h2>
-        <p class="section-desc">診断完了からLINEでレポートURLが届くまでの流れ。</p>
+        <p class="section-desc">診断完了からレポートが届くまでの流れ。CVトリガーはUTAGE（500円）またはX（引用RT）の2案。</p>
       </div>
 
       <div class="flow">
@@ -919,49 +919,49 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c1)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">① 診断HTML（100問回答）</div>
-            <div class="flow-desc">ユーザーが100問に回答。完了時にセッションID + 回答データをGoogle Apps ScriptへPOST。</div>
+            <div class="flow-desc">ユーザーが100問に回答。完了時に診断ID + 回答データをGoogle Apps ScriptへPOST。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">② Google Sheets（データ保存）</div>
-            <div class="flow-desc">GASがスプレッドシートに1行書き込み。セッションIDをキーとして管理。</div>
+            <div class="flow-desc">GASがスプレッドシートに1行書き込み。診断IDをキーとして管理。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">③ UTAGEサンクスページ</div>
-            <div class="flow-desc">電話番号収集。URLパラメータ（?sid=xxxx）でセッションIDを引き継ぎ。</div>
+            <div class="flow-label">③ UTAGEサンクスページ（共通起点）</div>
+            <div class="flow-desc">診断完了後に遷移。2つのCVトリガーを提示する分岐点。診断IDをパラメータで引き継ぐ（技術検証中）。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c4)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">④ LINE登録</div>
-            <div class="flow-desc">LINEユーザーIDとセッションIDを紐づけ。</div>
+            <div class="flow-label">④ CVトリガー分岐（2案）</div>
+            <div class="flow-desc"><strong>案A（UTAGEドメイン）：</strong>500円決済フォーム → 決済完了 → メール・氏名取得 → stateで診断ID引き継ぎ。<br><strong>案B（Xドメイン）：</strong>固定ツイートのリンク → 引用RT → 診断IDと照合 → XStep DM送信。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c5)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">⑤ ページ生成（Claude API）</div>
-            <div class="flow-desc">スプレッドシートの回答データをClaude APIに渡してコンテンツを生成。ユニークIDでレポートレコードを保存。</div>
+            <div class="flow-label">⑤ GAS：診断ID × ユーザーID 紐づけ</div>
+            <div class="flow-desc">いずれのルートでも診断IDとユーザー情報をGASで照合・Sheetsに記録。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--accent)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">⑥ レポートURL送付（LINE Bot）</div>
-            <div class="flow-desc">個別レポートURL（例：yourdomain.com/report/abc123）をLINEでプッシュ送信。</div>
+            <div class="flow-label">⑥ Claude API：レポート生成</div>
+            <div class="flow-desc">3層変数（Layer1〜3）をClaude APIに渡してセクション別テキストを生成。Sheetsに保存 → 個別URL発行。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:#ffd110"></div></div>
           <div class="flow-content">
-            <div class="flow-label">⑦ レポートページ閲覧</div>
-            <div class="flow-desc">固定テンプレートHTMLがIDからデータを取得し、個別最適化されたコンテンツを表示。</div>
+            <div class="flow-label">⑦ レポート送付 → LINE登録CTA</div>
+            <div class="flow-desc">案A：メールで届く / 案B：XStep DMで届く。レポート末尾でLINE公式アカウントへ誘導。</div>
           </div>
         </div>
       </div>
@@ -1092,8 +1092,8 @@
         <tbody>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td>UTAGEのstate パラメータ動的埋め込み可否</td>
-            <td>UTAGE管理画面 / サポートへ確認</td>
+            <td>技術検証タスク5点（導線設計タブ参照）</td>
+            <td>UTAGEの動的ID付与・X API tier・XStep連携。CVトリガー確定の前提</td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
@@ -1102,17 +1102,12 @@
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td>ユーザー分類スキーマ（タイプ定義）</td>
-            <td>Claude APIプロンプト設計の前提</td>
-          </tr>
-          <tr>
-            <td class="priority-high">🔴 高</td>
             <td>Claude APIプロンプト設計（マークダウン）</td>
-            <td>3枚目×4・4枚目×1の計5本</td>
+            <td>診断サマリー×1・軸別評価×4・構造的特徴×1・伸びしろ×1の計7本</td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td>レポートページHTML実装（5枚横スクロール）</td>
+            <td>レポートページHTML実装（縦スクロール型）</td>
             <td>フェーズ1のゴール</td>
           </tr>
           <tr>
@@ -1123,17 +1118,17 @@
           <tr>
             <td class="priority-mid">🟡 中</td>
             <td>ホスティング先・ドメイン決定</td>
-            <td>GitHub Pages / Netlify 候補</td>
+            <td>Vercel（他サイトで実績あり）が有力候補</td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
-            <td>LINE Bot実装（フェーズ3）</td>
-            <td>follow イベント → 紐付け → push送信</td>
+            <td>CVトリガー確定後の連携実装（フェーズ3）</td>
+            <td>UTAGEルート or Xルート。技術検証結果で決定</td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
-            <td>UTAGE連携・エンドツーエンドテスト（フェーズ3）</td>
-            <td>全フロー通しの検証</td>
+            <td>エンドツーエンドテスト（フェーズ3）</td>
+            <td>診断 → レポート受け取りまで全フロー通しの検証</td>
           </tr>
         </tbody>
       </table>
@@ -1322,7 +1317,7 @@
       </a>
       <a href="#r-pages" class="nav-item">
         <span class="nav-dot" style="background:var(--c1)"></span>
-        各ページ詳細
+        各セクション詳細
       </a>
       <a href="#r-ux" class="nav-item">
         <span class="nav-dot" style="background:var(--c3)"></span>
@@ -1354,17 +1349,17 @@
       <div class="section-header">
         <div class="section-eyebrow">Report Design</div>
         <h2 class="section-title">レポート全体構成</h2>
-        <p class="section-desc">診断完了後にLINEで届く個別レポート。横スクロール・スワイプ型で全5枚構成。</p>
+        <p class="section-desc">縦スクロール型・個別レポート。性格分類ではなく「市場内の能力位置づけ」をパフォーマンス分析として提示する。</p>
       </div>
 
       <div class="callout">
-        <strong>設計思想：</strong>受検者が最も知りたいのは「自分は周囲よりAIを活用できているのか」という比較認知。この不安を1枚目で解消し、2枚目以降で数値・分析・行動喚起へと展開する。
+        <strong>設計思想：</strong>タイプ名なし。数字と言語化の組み合わせで「自分がどこにいて、何が強く、何がボトルネックか」を伝える。最初のビジュアルブロックで市場位置を即時把握させ、以降のセクションで根拠・構造・行動へと展開する。
       </div>
 
       <table class="score-table" style="margin-top:24px">
         <thead>
           <tr>
-            <th>ページ</th>
+            <th>セクション</th>
             <th>内容</th>
             <th>生成方法</th>
             <th>役割</th>
@@ -1372,116 +1367,126 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>1枚目</strong></td>
-            <td>上位X% ／ 4観点スコア内訳</td>
+            <td><strong>ビジュアルブロック</strong></td>
+            <td>AI戦闘力 / ランク / 上位X% / 4軸スコア</td>
             <td><span class="badge badge-done">自動計算</span></td>
-            <td>比較認知・不安の解消</td>
+            <td>市場内の位置を即時把握</td>
           </tr>
           <tr>
-            <td><strong>2枚目</strong></td>
-            <td>AI戦闘力 ／ スコア比較表 ／ レーダーチャート</td>
-            <td><span class="badge badge-done">自動計算</span></td>
-            <td>自分の数値を深掘り</td>
-          </tr>
-          <tr>
-            <td><strong>3枚目</strong></td>
-            <td>各観点に対する評価（アコーディオン）</td>
+            <td><strong>診断サマリー</strong></td>
+            <td>4軸全体像の総評（2〜3文）</td>
             <td><span class="badge badge-todo">Claude API</span></td>
-            <td>納得感・理由の提示</td>
+            <td>自分への評価を受け取る</td>
           </tr>
           <tr>
-            <td><strong>4枚目</strong></td>
-            <td>あなたの強みと弱み ／ これからの伸びしろ</td>
+            <td><strong>軸別評価</strong></td>
+            <td>知識力 / 思考力 / 活用力 / 判断力（H2 × 4）</td>
+            <td><span class="badge badge-todo">Claude API × 4</span></td>
+            <td>納得感・根拠の提示</td>
+          </tr>
+          <tr>
+            <td><strong>構造的な特徴</strong></td>
+            <td>GAPセクション（条件付き表示）+ 自己認識のズレ</td>
+            <td><span class="badge badge-todo">Claude API</span></td>
+            <td>盲点の可視化</td>
+          </tr>
+          <tr>
+            <td><strong>伸びしろ</strong></td>
+            <td>優先ポイント1〜2本 + 具体アクション</td>
             <td><span class="badge badge-todo">Claude API</span></td>
             <td>行動喚起</td>
-          </tr>
-          <tr>
-            <td><strong>5枚目</strong></td>
-            <td>SNS共有ボタン ／ PDFダウンロード</td>
-            <td><span class="badge badge-done">静的</span></td>
-            <td>拡散・保存</td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- PAGES DETAIL -->
+    <!-- SECTIONS DETAIL -->
     <section class="section" id="r-pages">
       <div class="section-header">
-        <div class="section-eyebrow">Pages</div>
-        <h2 class="section-title">各ページ詳細</h2>
+        <div class="section-eyebrow">Sections</div>
+        <h2 class="section-title">各セクション詳細</h2>
       </div>
 
       <div class="report-pages">
 
+        <!-- ビジュアルブロック -->
         <div class="report-page-card" style="--page-color: var(--c1)">
-          <div class="page-num">1</div>
+          <div class="page-num">①</div>
           <div class="page-body">
-            <div class="page-role">比較認知 · 不安の解消</div>
-            <div class="page-title">上位X% ／ 4観点スコア内訳</div>
+            <div class="page-role">自動計算 · 静的表示</div>
+            <div class="page-title">ビジュアルブロック</div>
             <ul class="page-items">
-              <li>全受検者中の相対順位（上位 X%）を大きく表示</li>
-              <li>知識力・思考力・活用力・判断力の各スコア（/125点）</li>
-              <li>受検者が最初に知りたい「自分は周囲と比べてどうか」に直接答える</li>
+              <li>AI戦闘力：X,XXX,XXX トークン（数値大きく表示）</li>
+              <li>ランク：S / A / B / C / D</li>
+              <li>上位 X%（全受検者中の相対位置）</li>
+              <li>4軸スコアサマリー（バーまたはレーダーチャート）</li>
             </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（各軸スコア・ランク・合計・上位X%）</div>
             <span class="page-gen">自動計算</span>
           </div>
         </div>
 
-        <div class="report-page-card" style="--page-color: var(--c4)">
-          <div class="page-num">2</div>
-          <div class="page-body">
-            <div class="page-role">数値の深掘り</div>
-            <div class="page-title">AI戦闘力 ／ スコア比較表 ／ レーダーチャート</div>
-            <ul class="page-items">
-              <li>AI戦闘力（数値）とランク（S〜D）を表示</li>
-              <li>観点別スコア比較表：自分のスコア vs 全体平均</li>
-              <li>レーダーチャート：自分スコア（塗りつぶし）+ 全体平均（線のみ）の2層表示</li>
-            </ul>
-            <span class="page-gen">自動計算</span>
-          </div>
-        </div>
-
-        <div class="report-page-card" style="--page-color: var(--c2)">
-          <div class="page-num">3</div>
-          <div class="page-body">
-            <div class="page-role">納得感 · 理由の提示</div>
-            <div class="page-title">各観点に対する評価（アコーディオン）</div>
-            <ul class="page-items">
-              <li>知識力・思考力・活用力・判断力をアコーディオン形式で表示</li>
-              <li>デフォルト：全閉じ、または最高スコアの観点のみ展開</li>
-              <li>タップで展開 → Claudeが生成した観点ごとの評価テキスト</li>
-              <li>各観点テキストの文字数・フォーマットは別途設計</li>
-            </ul>
-            <span class="page-gen">Claude API</span>
-          </div>
-        </div>
-
-        <div class="report-page-card" style="--page-color: var(--c3)">
-          <div class="page-num">4</div>
-          <div class="page-body">
-            <div class="page-role">行動喚起</div>
-            <div class="page-title">あなたの強みと弱み ／ これからの伸びしろ</div>
-            <ul class="page-items">
-              <li>4観点を横断した総合的な強みと弱みの評価</li>
-              <li>スコアに基づいた具体的な伸びしろ・改善ポイント</li>
-              <li>整合性チェック（トラップ問）の不整合結果をここに反映</li>
-            </ul>
-            <span class="page-gen">Claude API</span>
-          </div>
-        </div>
-
+        <!-- 診断サマリー -->
         <div class="report-page-card" style="--page-color: var(--c5)">
-          <div class="page-num">5</div>
+          <div class="page-num">②</div>
           <div class="page-body">
-            <div class="page-role">拡散 · 保存</div>
-            <div class="page-title">SNS共有 ／ PDFダウンロード</div>
+            <div class="page-role">Claude API · H1</div>
+            <div class="page-title">診断サマリー</div>
             <ul class="page-items">
-              <li>SNS共有ボタン（X / LINE など）</li>
-              <li>PDFダウンロード：スマートフォンのファイルに保存できる形式</li>
-              <li>実装方式はブラウザ印刷→PDF保存が現実的（サーバーサイド不要）</li>
+              <li>4軸の全体像を俯瞰した総評（2〜3文）</li>
+              <li>「全体を一言で表す文」として機能させる</li>
+              <li>数値ブロック直後に置くことで「自分のことを語られている」感を作る</li>
             </ul>
-            <span class="page-gen">静的</span>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・ランク・GAP3本）／ 目安：100〜150字</div>
+            <span class="page-gen">Claude API</span>
+          </div>
+        </div>
+
+        <!-- 軸別評価 -->
+        <div class="report-page-card" style="--page-color: var(--c2)">
+          <div class="page-num">③</div>
+          <div class="page-body">
+            <div class="page-role">Claude API × 4 · H1 > H2</div>
+            <div class="page-title">軸別評価（知識力 / 思考力 / 活用力 / 判断力）</div>
+            <ul class="page-items">
+              <li>各軸H2：スコアの意味（このレベルはどういう状態か）</li>
+              <li>サブカテゴリの偏りが何を示すか（最高サブ vs 最低サブの差）</li>
+              <li>実際のAI活用にどう現れるか（実務レベルでの言語化）</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ 各軸150〜200字</div>
+            <span class="page-gen">Claude API × 4</span>
+          </div>
+        </div>
+
+        <!-- 構造的な特徴 -->
+        <div class="report-page-card" style="--page-color: var(--c4)">
+          <div class="page-num">④</div>
+          <div class="page-body">
+            <div class="page-role">Claude API · H1 > H2 · 条件付き表示あり</div>
+            <div class="page-title">データが示す構造的な特徴</div>
+            <ul class="page-items">
+              <li><strong>GAPセクション（条件付き）：</strong>|GAP| ≥ 閾値（要確定・目安25点）の場合のみH2表示。kt_gap / aj_gap（⚠️最重要）/ kj_gapのうち有意なものを言語化。GAPがない場合はこのH2ごと非表示。</li>
+              <li><strong>自己認識のズレ：</strong>「今回X件の不整合が検出されました」→ 各グループ名をH3で展開し、そのズレが意味することを記述。不整合0件の場合はその旨を1文で示す。</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数）</div>
+            <span class="page-gen">Claude API</span>
+          </div>
+        </div>
+
+        <!-- 伸びしろ -->
+        <div class="report-page-card" style="--page-color: var(--c3)">
+          <div class="page-num">⑤</div>
+          <div class="page-body">
+            <div class="page-role">Claude API · H1 > H2</div>
+            <div class="page-title">伸びしろ</div>
+            <ul class="page-items">
+              <li>最も優先すべきポイントを1〜2本に絞って提示</li>
+              <li>ボトルネック解消で何が変わるかを具体的に記述</li>
+              <li>すぐ実行できる具体的アクションを添える</li>
+              <li>CTA（LINE登録）へのブリッジとして機能させる</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸）+ Layer2（最低サブ）／ 目安：200〜250字</div>
+            <span class="page-gen">Claude API</span>
           </div>
         </div>
 
@@ -1493,40 +1498,40 @@
       <div class="section-header">
         <div class="section-eyebrow">UX Design</div>
         <h2 class="section-title">UX設計</h2>
-        <p class="section-desc">横スクロール・スワイプ型で1画面＝1ページを徹底する。</p>
+        <p class="section-desc">縦スクロール型・パフォーマンス分析フレームで構成する。</p>
       </div>
 
       <div class="callout">
-        <strong>設計方針：</strong>シームレスな縦スクロールではなく、1枚ごとに画面を切り替えることで「今何の話をしているか」が明確になり、認知負荷を下げる。診断UIの「1問ずつ進む」体験と統一感を持たせる。
+        <strong>設計方針：</strong>情報密度を担保するため縦スクロール型を採用。セクション単位でコンテンツを区切り、ビジュアルブロック → テキスト分析 → 行動喚起 の順で自然に読み進められる構成にする。
       </div>
 
       <div class="flow" style="margin-top: 24px;">
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">横スクロール・スナップ方式</div>
-            <div class="flow-desc"><code>scroll-snap-type: x mandatory</code> を使用。スワイプで1枚ずつ吸着遷移する。</div>
+            <div class="flow-label">縦スクロール型</div>
+            <div class="flow-desc">スワイプで下にスクロールするシームレスな1ページ構成。情報密度を高く保てる。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">フルスクリーン設計</div>
-            <div class="flow-desc">各ページは <code>100vw × 100dvh</code>。コンテンツが1画面に収まるよう各ページのレイアウトを設計する。</div>
+            <div class="flow-label">セクション区切り</div>
+            <div class="flow-desc">H1見出しごとにセクションを区切り「今何の話をしているか」を明示する。ビジュアル要素と文章のコンビネーション。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">ページネーションドット</div>
-            <div class="flow-desc">現在位置を示すドットインジケーターを画面下部に配置。5枚中どこにいるかを常に表示。</div>
+            <div class="flow-label">条件付き表示</div>
+            <div class="flow-desc">GAPセクションは有意なGAPがある場合のみ表示。不整合0件の場合も1文で示す。コンテンツ量がユーザーによって変わる設計。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot"></div></div>
           <div class="flow-content">
             <div class="flow-label">モバイルファースト</div>
-            <div class="flow-desc">基本設計は375px〜のスマートフォン縦向きを想定。タップ・スワイプ操作を基準とする。</div>
+            <div class="flow-desc">基本設計は375px〜のスマートフォン縦向きを想定。タップ・スクロール操作を基準とする。</div>
           </div>
         </div>
       </div>
@@ -1541,13 +1546,13 @@
       </div>
 
       <div class="callout">
-        <strong>入力データ（確定）：</strong>4観点スコア・ユーザー分類タイプ・整合性チェック結果・上位X%。<strong>100問の生回答データは渡さない</strong>（ノイズが多く生成品質が下がるため）。
+        <strong>入力データ（確定）：</strong>3層変数アーキテクチャをそのまま渡す。Layer1（軸スコア・ランク・GAP3本）+ Layer2（サブカテゴリ12本・分散4本）+ Layer3（不整合グループ名・件数）。<strong>100問の生回答データは渡さない</strong>（ノイズが多く生成品質が下がるため）。
       </div>
 
       <table class="score-table" style="margin-top:20px">
         <thead>
           <tr>
-            <th>ページ</th>
+            <th>セクション</th>
             <th>生成内容</th>
             <th>Sheets保存列</th>
             <th>状態</th>
@@ -1555,26 +1560,38 @@
         </thead>
         <tbody>
           <tr>
-            <td>3枚目</td>
-            <td>知識力・思考力・活用力・判断力の観点評価テキスト（×4）</td>
-            <td>DK〜DN列</td>
-            <td><span class="badge badge-check">文字数未定</span></td>
+            <td>診断サマリー</td>
+            <td>4軸全体像の総評（2〜3文・100〜150字）</td>
+            <td>DK列</td>
+            <td><span class="badge badge-todo">プロンプト未設計</span></td>
           </tr>
           <tr>
-            <td>4枚目</td>
-            <td>強みと弱み・伸びしろテキスト（×1）</td>
-            <td>DO列</td>
+            <td>軸別評価</td>
+            <td>知識力・思考力・活用力・判断力の各軸評価テキスト（×4・各150〜200字）</td>
+            <td>DL〜DO列</td>
+            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+          </tr>
+          <tr>
+            <td>構造的な特徴</td>
+            <td>GAP言語化（条件付き）+ 自己認識のズレ</td>
+            <td>DP列</td>
+            <td><span class="badge badge-todo">プロンプト未設計</span></td>
+          </tr>
+          <tr>
+            <td>伸びしろ</td>
+            <td>優先ポイント1〜2本 + 具体アクション（200〜250字）</td>
+            <td>DQ列</td>
             <td><span class="badge badge-todo">プロンプト未設計</span></td>
           </tr>
         </tbody>
       </table>
 
       <div class="callout" style="margin-top:20px">
-        <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、4枚目の生成テキストに反映する。例：「確認してから使う」という問いへの回答が一貫していない場合、判断基準の曖昧さとして文章に組み込む。
+        <strong>整合性チェック（トラップ問）の活用：</strong>グループ内最大値 − 最小値 ≥ 2 の場合「不整合あり」と判定し、「構造的な特徴」セクションの自己認識ズレとして言語化する。例：「確認してから使う」という問いへの回答が一貫していない場合、判断基準の曖昧さとして文章に組み込む。
       </div>
 
       <div class="callout">
-        <strong>プロンプト管理方針（確定）：</strong>プロンプトはマークダウンファイルとして外部管理し、GASから参照する。ユーザー分類タイプ・スコア・整合性結果をテンプレートに差し込む形式。データ蓄積とともにプロンプトを精緻化していく。
+        <strong>プロンプト管理方針（確定）：</strong>プロンプトはマークダウンファイルとして外部管理し、GASから参照する。3層変数をテンプレートに差し込む形式。データ蓄積とともにプロンプトを精緻化していく。
       </div>
     </section>
 
@@ -1590,21 +1607,21 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ1 ― コアを完成させる</div>
-            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（5枚横スクロール）</div>
+            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ2 ― 生成をつなぐ</div>
-            <div class="flow-desc">Claude APIとデータを接続し、レポートが出力される状態にする。ユーザー分類スキーマ確定 / プロンプトマークダウン設計 / Claude API接続テスト / Sheets保存 → HTML差し込み</div>
+            <div class="flow-desc">Claude APIとデータを接続し、レポートが出力される状態にする。プロンプトマークダウン設計（計7本）/ Claude API接続テスト / Sheets保存 → HTML差し込み</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c4)"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ3 ― 動線を完結させる</div>
-            <div class="flow-desc">診断からレポート受け取りまで一気通貫で体験できる状態にする。UTAGE連携実装 / LINE Bot実装（follow → 紐付け → push送信）/ エンドツーエンドテスト</div>
+            <div class="flow-desc">診断からレポート受け取りまで一気通貫で体験できる状態にする。技術検証結果をもとにCVトリガー確定 / UTAGE連携実装 or X引用RT連携実装 / エンドツーエンドテスト</div>
           </div>
         </div>
       </div>
