@@ -407,6 +407,7 @@
   .priority-high { color: #a04870; font-weight: 700; }
   .priority-mid { color: #8a5820; }
   .priority-low { color: #2e7a5a; }
+  .priority-done { color: var(--muted); text-decoration: line-through; }
 
   /* ===== TODO LIST ===== */
   .todo-list { list-style: none; }
@@ -1101,9 +1102,14 @@
             <td>GWS管理者との確認が必要</td>
           </tr>
           <tr>
+            <td class="priority-done">✅ 完了</td>
+            <td>整合性チェック設問の再設計（4グループ）</td>
+            <td>思考-1（Q34/Q42/Q44）/ 活用-1（Q55/Q63/Q70）/ 活用-3（Q67/Q68/Q75）/ 判断-2（Q90/Q92/Q94）に差し替え完了。三観点（思考/活用/判断）で各3問・同重み・同テーマに統一</td>
+          </tr>
+          <tr>
             <td class="priority-high">🔴 高</td>
-            <td>Claude APIプロンプト設計（マークダウン）</td>
-            <td>診断サマリー×1・軸別評価×4・構造的特徴×1・伸びしろ×1の計7本</td>
+            <td>Claude API JSON設計（出力スキーマ確定済み）</td>
+            <td>JSON構造化出力（APIコール1回）。スキーマ確定済み → レポートタブ参照。プロンプト本文の記述が次タスク</td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
@@ -1888,7 +1894,7 @@
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
-        グループは<strong>8種（全3問統一）</strong>：判断-1（Q76/Q79/Q85）/ 判断-2（Q90/Q92/Q95）/ 思考-1（Q34/Q39/Q44）/ 思考-2（Q45/Q46/Q49）/ 活用-1（Q55/Q57/Q63）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q69）/ 観点またぎ（Q8/Q91/Q93）<br>
+        グループは<strong>8種（全3問統一）</strong>：判断-1（Q76/Q79/Q85）/ 判断-2（Q90/Q92/Q94）/ 思考-1（Q34/Q42/Q44）/ 思考-2（Q45/Q46/Q49）/ 活用-1（Q55/Q63/Q70）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q75）/ 観点またぎ（Q8/Q91/Q93）<br>
         ※ <strong>知識グループは廃止</strong>。知識の穴は行動認識の矛盾ではなくLayer2サブスコアで把握する。判断・思考・活用は人間の行動・処理パターンから出力されるものなのでズレが意味を持つ。
       </div>
 
@@ -1991,7 +1997,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ2 ― 生成をつなぐ</div>
-            <div class="flow-desc">Claude APIとデータを接続し、レポートが出力される状態にする。プロンプトマークダウン設計（計7本）/ Claude API接続テスト / Sheets保存 → HTML差し込み</div>
+            <div class="flow-desc">Claude APIとデータを接続し、レポートが出力される状態にする。Claude API JSON構造化出力設計（APIコール1回）/ Claude API接続テスト / Sheets保存 → HTML差し込み</div>
           </div>
         </div>
         <div class="flow-item">
@@ -2309,7 +2315,7 @@
         <div class="layer-card">
           <div class="layer-num">Layer 3 — 矛盾</div>
           <div class="layer-title">整合性チェック（自己認識と実態のズレ）</div>
-          <div class="layer-desc">9グループのトラップ問により「言っていることとやっていることの不一致」を検出。思考フレームの質が問われる核心部分。ここが最も「刺さる」個別要素。</div>
+          <div class="layer-desc">8グループのトラップ問により「言っていることとやっていることの不一致」を検出。思考フレームの質が問われる核心部分。ここが最も「刺さる」個別要素。</div>
           <div class="layer-example">例：判断-1グループ不整合 → 「AIの出力確認に対する判断基準がまだ自分の中で定まっていないサインです」</div>
         </div>
 
