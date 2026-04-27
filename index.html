@@ -926,8 +926,8 @@
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">② Google Sheets（データ保存）</div>
-            <div class="flow-desc">GASがスプレッドシートに1行書き込み。診断IDをキーとして管理。</div>
+            <div class="flow-label">② GAS：スコア計算 → Sheets保存</div>
+            <div class="flow-desc">POST受信後、4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出（3層変数生成）→ Sheetsに1行書き込み。診断IDをキーとして管理。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -955,7 +955,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--accent)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">⑥ Claude API：レポート生成</div>
-            <div class="flow-desc">3層変数（Layer1〜3）をClaude APIに渡してセクション別テキストを生成。Sheetsに保存 → 個別URL発行。</div>
+            <div class="flow-desc">SheetsからLayer1〜3の3層変数を取得し、Claude APIに単一リクエストとして渡してJSON一括生成（1回のみ）。生成結果をSheetsに保存 → 個別URL発行。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -968,7 +968,7 @@
       </div>
 
       <div class="callout">
-        <strong>ポイント：</strong>AI生成は閲覧時ではなく<strong>データ受信時（1回のみ）</strong>に実行。コスト固定・表示速度を確保。
+        <strong>ポイント：</strong>AI生成はレポート閲覧時ではなく<strong>CVトリガー後の1回のみ</strong>実行。コスト固定・表示速度を確保。生回答データ（100問）はClaudeに渡さず、3層変数に集約してから渡す。
       </div>
     </section>
 
