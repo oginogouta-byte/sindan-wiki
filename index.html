@@ -1160,9 +1160,14 @@
             <td>思考-1（Q34/Q42/Q44）/ 活用-1（Q55/Q57/Q59）/ 活用-3（Q67/Q68/Q75）/ 判断-2（Q90/Q92/Q94）に差し替え完了。各グループ「同一行動を別角度で聞く」構造に統一</td>
           </tr>
           <tr>
-            <td class="priority-high">🔴 高</td>
+            <td class="priority-done">✅ 完了</td>
             <td>Claude API JSON設計（出力スキーマ確定済み）</td>
-            <td>JSON構造化出力（APIコール1回）。スキーマ確定済み → レポートタブ参照。プロンプト本文の記述が次タスク</td>
+            <td>JSON構造化出力（APIコール1回）。スキーマ確定済み → レポートタブ参照</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>Claude APIプロンプト本文の記述</td>
+            <td>3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示。Claude＋ユーザー共同作業</td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
@@ -2140,14 +2145,14 @@
             <td>LINE紐付けフローの実現可否に直結。UTAGE管理者へ確認</td>
           </tr>
           <tr>
-            <td class="priority-high">🔴 高</td>
+            <td class="priority-done">✅ 完了</td>
             <td>ユーザー分類スキーマ（タイプ定義）</td>
-            <td>Claude APIプロンプトに組み込む前提で設計が必要</td>
+            <td>タイプ名なし・ランクなし確定。市場内の上位X%で位置づけを表現</td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
             <td>Claude APIプロンプト設計（マークダウン）</td>
-            <td>3枚目×4・4枚目×1の計5本。文字数・トーン含む</td>
+            <td>3層変数差し込み・ペルソナ・エッジケース指示。スキーマ確定済み → r-api参照。Claude＋ユーザー共同</td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
@@ -2157,17 +2162,17 @@
           <tr>
             <td class="priority-mid">🟡 中</td>
             <td>レポートページHTML実装</td>
-            <td>5枚横スクロール構成。フェーズ1のゴール</td>
+            <td>縦スクロール型・8セクション＋CTA構成。フェーズ1のゴール</td>
           </tr>
           <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>3枚目テキストの文字数・フォーマット</td>
-            <td>1画面に収まるボリューム感の設計が必要</td>
+            <td class="priority-done">✅ 完了</td>
+            <td>各セクションのテキスト文字数・フォーマット</td>
+            <td>全セクション字数確定済み → r-content参照（summary 100〜120字 / eval 80字 等）</td>
           </tr>
           <tr>
-            <td class="priority-mid">🟡 中</td>
+            <td class="priority-done">✅ 完了</td>
             <td>全体平均の初期値対応方針</td>
-            <td>ローンチ直後はデータ不足。ダミー値 or 一定数集まるまで非表示</td>
+            <td>N&lt;100：ランク帯ダミー値（S=3%/A=10%/B=30%/C=70%/D=90%）。N≥100でPERCENTRANK実値に切り替え</td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
