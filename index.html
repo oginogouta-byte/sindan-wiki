@@ -912,7 +912,7 @@
       <div class="section-header">
         <div class="section-eyebrow">System Flow</div>
         <h2 class="section-title">システムフロー</h2>
-        <p class="section-desc">診断完了からレポートが届くまでの流れ。CVトリガーはUTAGE（500円）またはX（引用RT）の2案。</p>
+        <p class="section-desc">診断完了 → 結果を見るためのCVアクション → レポート送付の流れ。結果はCVトリガー後に初めて届く設計。</p>
       </div>
 
       <div class="flow">
@@ -920,21 +920,21 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c1)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">① 診断HTML（100問回答）</div>
-            <div class="flow-desc">ユーザーが100問に回答。完了時に診断ID + 回答データをGoogle Apps ScriptへPOST。</div>
+            <div class="flow-desc">ユーザーが100問に回答。完了時に診断ID + 回答データをGoogle Apps ScriptへPOST。<strong>この時点でスコア・結果は表示しない。</strong></div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c2)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">② GAS：スコア計算 → Sheets保存</div>
-            <div class="flow-desc">POST受信後、4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出（3層変数生成）→ Sheetsに1行書き込み。診断IDをキーとして管理。</div>
+            <div class="flow-desc">POST受信後、4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出（3層変数生成）→ Sheetsに1行書き込み。診断IDをキーとして管理。結果はユーザーにはまだ届かない。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">③ UTAGEサンクスページ（共通起点）</div>
-            <div class="flow-desc">診断完了後に遷移。2つのCVトリガーを提示する分岐点。診断IDをパラメータで引き継ぐ（技術検証中）。</div>
+            <div class="flow-label">③ UTAGEサンクスページ（CVフック）</div>
+            <div class="flow-desc">診断完了後に遷移。<strong>「結果・レポートを受け取るには、引用RTするか500円支払ってください」</strong>と提示。結果を見たいという動機をCVに転換する起点。診断IDをパラメータで引き継ぐ（技術検証中）。</div>
           </div>
         </div>
         <div class="flow-item">
