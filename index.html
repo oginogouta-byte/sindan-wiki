@@ -1548,7 +1548,7 @@
               <li>「このスコアパターンの人が市場でどういう立ち位置にいるか」を言語化</li>
               <li>抽象的な褒め言葉・励ましは禁止。客観的・分析的なトーンで</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：100〜150字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：100〜120字</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
@@ -1566,7 +1566,7 @@
               <li><strong>④ 弱み：</strong>この軸の中で足を引っ張っている要因。実務への影響まで踏み込む（箇条書き・2〜3点）</li>
               <li><strong>⑤ 伸びしろ：</strong>この弱みを解消すると何が変わるか・具体的なアクション（文章）</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ 評価テキスト100字・アクション100字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ eval ~80字・strengths/weaknesses ~20字×2・growth ~80字</div>
             <span class="page-gen">Claude API × 4</span>
           </div>
         </div>
@@ -1579,7 +1579,7 @@
             <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
               <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。kt_gap / aj_gap（⚠️最重要・過信実行型の検知）/ kj_gap。GAPなし → このH2ごと非表示</li>
-              <li><strong>自己認識のズレ：</strong>不整合グループをH3で展開し「このズレが実務で何を意味するか」を記述。0件 → 「一貫した自己認識が確認されました」1文のみ</li>
+              <li><strong>自己認識のズレ：</strong>不整合グループを1枚カードで展開。カードタイトル（静的固定文言）＋ ①何が起きているか〜25字 ＋ ②状態の可能性〜35字。0件 → セクション非表示</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数）</div>
             <span class="page-gen">Claude API</span>
@@ -1597,7 +1597,7 @@
               <li>その課題を解消したら何が変わるかを具体的に記述</li>
               <li>「一人でやるのが難しい部分がある」という文脈を自然に作り、LINE登録への動機を醸成する</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸）+ Layer2（最低サブ・GAP）／ 目安：150〜200字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸・GAP）+ Layer2（最低サブ）／ priority_action ~30字 ＋ explanation 150〜180字</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
@@ -1731,7 +1731,7 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（2〜3文・100〜150字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（2〜3文・100〜120字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
           <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">禁止：褒め言葉・励まし・「素晴らしい」「頑張りましょう」。客観・分析トーンで。</div>
@@ -1747,10 +1747,10 @@
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
               <tr><td>サブスコア表示</td><td>サブカテゴリ名 + XX点 + 平均XX点 + アニメーションバー（×3サブ）</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>H3：評価</td><td>このスコアパターンが実務でどういう状態かを言語化（〜100字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>H3：強み</td><td>この軸内で機能している要因（箇条書き・2〜3点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>H3：弱み</td><td>この軸内で足を引っ張っている要因・実務への影響（箇条書き・2〜3点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>H3：伸びしろ</td><td>この弱みを解消すると何が変わるか・具体的アクション（文章・〜100字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：評価</td><td>このスコアパターンが実務でどういう状態かを言語化（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：強み</td><td>この軸内で機能している要因（箇条書き・各〜20字 × 2点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：弱み</td><td>この軸内で足を引っ張っている要因（箇条書き・各〜20字 × 2点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：伸びしろ</td><td>この弱みを解消すると何が変わるか（文章・〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1788,7 +1788,8 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr><td>本文</td><td>4軸横断で最優先の1課題 + 解消したら何が変わるか（文章・150〜200字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>priority_action</td><td>最優先の1課題（〜30字・デザイン上強調表示）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>explanation</td><td>その課題を解消すると何が変わるか・CTAブリッジ（150〜180字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
         </div>
