@@ -1768,12 +1768,13 @@
               <tr><td>H2：[GAP見出し]</td><td>HTML側が pair + direction から静的生成。例：「知識力 &gt; 思考力」「判断力 &gt; 活用力」― 絶対値≥25のペアのみ（最大3本）。0本 → このブロックごと非表示</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>スコアビジュアル</td><td>2軸のスコアバーを横並びで表示。記号（&gt;）で大小を示す。説明文なし・視覚的に完結</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>本文</td><td>このギャップが実務でどういう状態を生んでいるか（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（常時表示）</td></tr>
+              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（不整合1件以上のとき表示）</td></tr>
               <tr><td>H2：自己認識のズレ</td><td>―</td><td>―</td></tr>
-              <tr><td>説明文</td><td>「同じテーマへの複数の問いに回答が一致しない場合、自己認識のズレとして記録されます。」（〜40字・静的）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>件数表示</td><td>「今回 <strong>X件</strong> のズレが検出されました」― X = 不整合グループ数（0〜9）</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>H3：[グループ名]</td><td>このズレが実務で何を意味するか（〜60字）― グループ数分だけ展開</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>0件の場合</td><td>「一貫した自己認識が確認されました」1文のみ（説明文・件数表示・H3は非表示）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>件数表示</td><td>「今回 <strong>X件</strong> のズレが検出されました」― X = 不整合グループ数</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>カードタイトル</td><td>「〇〇に認識のズレが検知されました」― グループ固定文言（下表参照）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>本文①</td><td>何が起きているか（〜25字）― 事実の記述</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>本文②</td><td>ユーザーの状態の可能性（〜35字）― 「〜可能性があります」調</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>0件の場合</td><td>セクション自体を非表示（GAPと同様）</td><td><span class="badge badge-done">非表示</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1865,7 +1866,7 @@
           </tr>
           <tr>
             <td><code>self_gaps[]</code></td>
-            <td>配列 name + description 〜60字</td>
+            <td>配列 name + what_happening 〜25字 + possibility 〜35字</td>
           </tr>
           <tr>
             <td rowspan="2">これからのあなたへ</td>
@@ -1916,16 +1917,17 @@
     // 例：pair=aj, negative → 「判断力 > 活用力」
     "self_gaps": [
       {
-        "name": "string",        // グループ名（GAS側が判定）
-        "min": 1,                // グループ内最小回答値（GAS側が計算）
-        "max": 5,                // グループ内最大回答値（GAS側が計算）
-        "description": "string ~60字"  // Claude生成
+        "name": "string",              // グループ名（GAS側が判定）
+        "min": 1,                      // グループ内最小回答値（GAS側が計算）
+        "max": 5,                      // グループ内最大回答値（GAS側が計算）
+        "what_happening": "string ~25字",  // Claude生成：何が起きているか（事実）
+        "possibility":    "string ~35字"   // Claude生成：ユーザーの状態の可能性
       }
     ]
     // self_gaps は不整合グループ分（min≤2 かつ max≥4）。0件の場合は空配列
-    // min/maxをClaudeに渡すことで「揺れの幅」を把握させる
-    // ⚠️ Claudeへのプロンプト制約：過大/過小のどちらとも断定しない。
-    //    「この領域に認識のムラがある」としてフラットに語ること
+    // タイトル文言はHTML側がグループ名から静的生成
+    // ⚠️ Claudeへのプロンプト制約：断定・糾弾調にしない。
+    //    possibility は必ず「〜可能性があります」調で出力すること
   },
 
   "next_step": {
@@ -1954,16 +1956,31 @@
       <div style="margin-top:24px">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">自己認識のズレ 出力例</div>
 
+        <!-- カード構造説明 -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:10px">カード構造（確定）</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+            <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
+              <div style="color:var(--accent);font-weight:700;margin-bottom:4px">タイトル（静的・グループ固定）</div>
+              <div style="color:var(--text)">「AIを使った仕組みの構築・継続運用に認識のズレが検知されました」</div>
+            </div>
+            <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
+              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">① 何が起きているか（Claude・〜25字）</div>
+              <div style="color:var(--text)">「仕組みを作った経験と継続運用の経験が混在しています」</div>
+            </div>
+            <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
+              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">② ユーザーの状態の可能性（Claude・〜35字）</div>
+              <div style="color:var(--text)">「自動化を試みているが運用フェーズまで定着していない可能性があります」</div>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex;flex-direction:column;gap:16px">
 
           <!-- 0件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN A ― 不整合 0件</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">self_gaps: []（空配列）→ 静的テキストで代替</div>
-            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>「一貫した自己認識が確認されました。
-同じテーマへの複数の問いに対して
-回答が安定しており、自分のAI活用の
-実態を正しく把握できています。」</code></pre>
+            <div style="font-size:12px;color:var(--muted)">self_gaps: []（空配列）→ セクション自体を非表示（GAPと同様）</div>
           </div>
 
           <!-- 1件 -->
@@ -1971,10 +1988,9 @@
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN B ― 不整合 1件（判断-1）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
   "name": "判断-1",
-  "description": "AIの出力を確認してから使う行動について
-回答のブレが検出されました。「確認している」
-という認識と実際の行動が乖離している
-可能性があります。"  // 58字
+  "min": 1, "max": 5,
+  "what_happening": "確認する場面としない場面が混在しています",  // 22字
+  "possibility": "確認の意識はあるが自分の判断基準が定まっていない可能性があります"  // 33字
 }</code></pre>
           </div>
 
@@ -1983,46 +1999,55 @@
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN C ― 不整合 3件（判断-1 / 思考-2 / 活用-1）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>[
   {
-    "name": "判断-1",
-    "description": "AIの出力確認行動について回答のブレが
-見られます。できているときとできていない
-ときの差が大きく、習慣として定着して
-いない可能性があります。"  // 60字
+    "name": "判断-1", "min": 1, "max": 5,
+    "what_happening": "確認する場面としない場面が混在しています",
+    "possibility": "確認の意識はあるが習慣として定着していない可能性があります"
   },
   {
-    "name": "思考-2",
-    "description": "指示前のゴール・情報設計に関して回答が
-一貫していません。場面によって取り組み方
-が変わっており、意識的な型がまだ
-固まっていないと考えられます。"  // 60字
+    "name": "思考-2", "min": 2, "max": 4,
+    "what_happening": "設計してから取り組む場面とそうでない場面があります",
+    "possibility": "ゴール逆算の意識が状況依存になっている可能性があります"
   },
   {
-    "name": "活用-1",
-    "description": "AIを継続的に活用して成果を上げている
-かどうか、評価にブレがあります。成果の
-定義が曖昧なまま運用している可能性
-があります。"  // 52字
+    "name": "活用-1", "min": 1, "max": 5,
+    "what_happening": "日常定着の評価に大きなブレがあります",
+    "possibility": "活用の成果基準が曖昧なまま運用している可能性があります"
   }
 ]</code></pre>
           </div>
 
-          <!-- 観点またぎ（特殊ケース） -->
+          <!-- 観点またぎ -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN D ― 観点またぎ（特殊・知識×判断の2軸）</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">知識面での理解と判断場面での実践が乖離しているケース。「知っているがやっていない」状態を示す。</div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN D ― 観点またぎ（知識×判断の2軸またぎ）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
-  "name": "観点またぎ",
-  "description": "AIの得意・不得意への理解は高いと
-回答しつつ、判断場面では使い分けて
-いないと回答しています。知識と実践の
-間に乖離があります。"  // 57字
+  "name": "観点またぎ", "min": 1, "max": 5,
+  "what_happening": "AIの特性理解と実際の使い分けがかみ合っていません",
+  "possibility": "知識はあるが判断場面での応用に落とせていない可能性があります"
 }</code></pre>
           </div>
 
         </div>
 
+        <!-- グループ別タイトル固定文言 -->
+        <div style="margin-top:20px">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">グループ別タイトル固定文言</div>
+          <table class="score-table" style="font-size:12px">
+            <thead><tr><th>グループ</th><th>タイトル固定文言</th></tr></thead>
+            <tbody>
+              <tr><td>判断-1</td><td>AI出力を確認する行動に、場面によるムラが検知されました</td></tr>
+              <tr><td>判断-2</td><td>AIへの依存度の管理・監視行動にズレが検知されました</td></tr>
+              <tr><td>思考-1</td><td>指示の設計・改善プロセスに認識のズレが検知されました</td></tr>
+              <tr><td>思考-2</td><td>AIを使う前の思考設計の実践に認識のズレが検知されました</td></tr>
+              <tr><td>活用-1</td><td>AIの日常業務への定着度に認識のズレが検知されました</td></tr>
+              <tr><td>活用-2</td><td>職場でのAI活用推進・展開に認識のズレが検知されました</td></tr>
+              <tr><td>活用-3</td><td>AIを使った仕組みの構築・継続運用に認識のズレが検知されました</td></tr>
+              <tr><td>観点またぎ</td><td>AIの得意・不得意の理解と実際の使い分けにズレが検知されました</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
-          ※ description は〜60字・文章形式。「〜という認識と実態がズレている」「〜が習慣として定着していない」「〜が場面によってブレている」のいずれかのフレームで書く。断定・糾弾調にしない。
+          ※ what_happening は事実の記述（断定OK）。possibility は必ず「〜可能性があります」調で出力。断定・糾弾調にしない。
         </div>
       </div>
 
