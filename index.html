@@ -1033,6 +1033,59 @@
       <div class="callout" style="margin-top:20px">
         <strong>※ランク判定は内部スコア（500点満点）ベースで行い、ユーザーへの表示は戦闘力に変換する。</strong>境界値は実際のスコア分布データを取得後に調整予定。
       </div>
+
+      <!-- 想定ユーザー分布 -->
+      <div style="margin-top:28px;padding:20px 24px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">想定ユーザー分布（ダミー値）</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:18px">一般ビジネス層を想定した推定分布。N ≥ 100 達成後に PERCENTRANK 実値へ自動切り替え。</div>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <!-- S: 3% -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="rank-badge rank-s" style="width:36px;text-align:center;flex-shrink:0;font-size:12px">S</span>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;height:30px;position:relative">
+              <div style="width:3%;height:100%;background:rgba(122,94,0,0.55);border-radius:4px"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);width:100px;flex-shrink:0">3%　→　上位 約3%</span>
+          </div>
+          <!-- A: 7% -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="rank-badge rank-a" style="width:36px;text-align:center;flex-shrink:0;font-size:12px">A</span>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;height:30px">
+              <div style="width:7%;height:100%;background:rgba(88,88,168,0.55);border-radius:4px"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);width:100px;flex-shrink:0">7%　→　上位 約10%</span>
+          </div>
+          <!-- B: 20% -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="rank-badge rank-b" style="width:36px;text-align:center;flex-shrink:0;font-size:12px">B</span>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;height:30px">
+              <div style="width:20%;height:100%;background:rgba(46,122,90,0.55);border-radius:4px"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);width:100px;flex-shrink:0">20%　→　上位 約30%</span>
+          </div>
+          <!-- C: 40% -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="rank-badge rank-c" style="width:36px;text-align:center;flex-shrink:0;font-size:12px">C</span>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;height:30px">
+              <div style="width:40%;height:100%;background:rgba(138,88,32,0.55);border-radius:4px"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);width:100px;flex-shrink:0">40%　→　上位 約70%</span>
+          </div>
+          <!-- D: 30% -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="rank-badge rank-d" style="width:36px;text-align:center;flex-shrink:0;font-size:12px">D</span>
+            <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:4px;height:30px">
+              <div style="width:30%;height:100%;background:rgba(160,72,112,0.55);border-radius:4px"></div>
+            </div>
+            <span style="font-size:11px;color:var(--muted);width:100px;flex-shrink:0">30%　→　上位 約90%</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)">
+          C+D層が全体の約70%。上位X%表示がCVトリガーとして最も効く層。
+        </div>
+      </div>
     </section>
 
     <!-- STACK -->
@@ -2345,11 +2398,11 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>① ツール知識</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q1〜6</td>
-              <td>6問</td>
+              <td><strong>① ツール知識・基礎動向</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q1〜6, Q15,16,18,20,23</td>
+              <td>11問</td>
               <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
-              <td>何があるか知っているか</td>
+              <td>何があるか知っているか・基本的な関心習慣があるか</td>
             </tr>
             <tr>
               <td><strong>② 本質・限界理解</strong></td>
@@ -2359,11 +2412,11 @@
               <td>なぜそうなるかを理解しているか</td>
             </tr>
             <tr>
-              <td><strong>③ 動向・発展把握</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q15〜25</td>
-              <td>11問</td>
+              <td><strong>③ 発展・専門応用</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q17,19,21,22,24,25</td>
+              <td>6問</td>
               <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
-              <td>どこへ向かうかを追えているか</td>
+              <td>技術的概念を扱い・専門領域と組み合わせられるか</td>
             </tr>
           </tbody>
         </table>
@@ -2384,16 +2437,16 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>① 基本指示</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q26〜33</td>
-              <td>8問</td>
+              <td><strong>① 基本指示・入門活用</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q26〜33, Q38,39,40</td>
+              <td>11問</td>
               <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
-              <td>意図を正確に伝えられるか</td>
+              <td>意図を正確に伝えられるか・基礎的な活用習慣があるか</td>
             </tr>
             <tr>
               <td><strong>② 反復・改善</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q34〜44</td>
-              <td>11問</td>
+              <td style="font-size:12px;color:var(--muted)">Q34〜37, Q41〜44</td>
+              <td>8問</td>
               <td><span style="font-size:11px;color:#7c6eff;font-weight:700">中級</span></td>
               <td>対話を重ねて精度を上げられるか</td>
             </tr>
@@ -2426,14 +2479,14 @@
               <td><strong>① 時短・統合</strong></td>
               <td style="font-size:12px;color:var(--muted)">Q51〜61</td>
               <td>11問</td>
-              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">初〜中級</span></td>
+              <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
               <td>明確に速くなり業務に組み込まれているか</td>
             </tr>
             <tr>
               <td><strong>② スキル実行</strong></td>
               <td style="font-size:12px;color:var(--muted)">Q62〜69</td>
               <td>8問</td>
-              <td><span style="font-size:11px;color:#f4a733;font-weight:700">中〜上級</span></td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">中級</span></td>
               <td>自分にないスキルをAIで動かせているか</td>
             </tr>
             <tr>
@@ -2462,25 +2515,25 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>① 出力検証</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q76〜89</td>
-              <td>14問</td>
-              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">初〜中級</span></td>
-              <td>AIの出力を確認・検証する習慣があるか</td>
+              <td><strong>① 基本的な出力検証</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q76〜81, Q84〜87, Q89</td>
+              <td>11問</td>
+              <td><span style="font-size:11px;color:#36d399;font-weight:700">初級</span></td>
+              <td>AIの出力を確認・検証する基本習慣があるか</td>
             </tr>
             <tr>
-              <td><strong>② 役割分担</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q90〜95</td>
+              <td><strong>② 詳細検証・役割分担</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q82,83, Q90〜95</td>
+              <td>8問</td>
+              <td><span style="font-size:11px;color:#7c6eff;font-weight:700">中級</span></td>
+              <td>出典・著作権まで確認し、AIと人の役割を使い分けられるか</td>
+            </tr>
+            <tr>
+              <td><strong>③ 能動的判断・境界設計</strong></td>
+              <td style="font-size:12px;color:var(--muted)">Q88, Q96〜100</td>
               <td>6問</td>
-              <td><span style="font-size:11px;color:#f4a733;font-weight:700">中級</span></td>
-              <td>AIと人間の使い分けができているか</td>
-            </tr>
-            <tr>
-              <td><strong>③ 境界設計</strong></td>
-              <td style="font-size:12px;color:var(--muted)">Q96〜100</td>
-              <td>5問</td>
               <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
-              <td>人間が担うべき思考・判断を守れているか</td>
+              <td>AI推奨を自ら取捨選択し、判断領域・リスクを設計できるか</td>
             </tr>
           </tbody>
         </table>
@@ -2852,12 +2905,12 @@
         <tbody>
           <tr>
             <td><code>{{k_sub1}} / {{k_sub2}} / {{k_sub3}}</code></td>
-            <td>知識力サブ（①ツール知識 /6問 ②本質・限界理解 /8問 ③動向・発展把握 /11問）</td>
+            <td>知識力サブ（①ツール知識・基礎動向 /11問 ②本質・限界理解 /8問 ③発展・専門応用 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
             <td><code>{{t_sub1}} / {{t_sub2}} / {{t_sub3}}</code></td>
-            <td>思考力サブ（①基本指示 /8問 ②反復・改善 /11問 ③思考設計 /6問）</td>
+            <td>思考力サブ（①基本指示・入門活用 /11問 ②反復・改善 /8問 ③思考設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
@@ -2867,7 +2920,7 @@
           </tr>
           <tr>
             <td><code>{{j_sub1}} / {{j_sub2}} / {{j_sub3}}</code></td>
-            <td>判断力サブ（①出力検証 /14問 ②役割分担 /6問 ③境界設計 /5問）</td>
+            <td>判断力サブ（①基本的な出力検証 /11問 ②詳細検証・役割分担 /8問 ③能動的判断・境界設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
