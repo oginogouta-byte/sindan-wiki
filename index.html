@@ -2275,7 +2275,7 @@
           </div>
           <div class="step-body">
             <div class="step-title">評価変数アーキテクチャ確定</div>
-            <div class="step-desc">「タイプ名でClaude APIを動かす」設計から「3層変数でClaudeが直接解釈する」設計に移行。Layer1(5段階位置) × Layer2(サブ内訳+分散) × Layer3(整合性チェック) の構造で穴のない個別最適化を実現。タイプ名は表示ラベルとして補助的に使用。</div>
+            <div class="step-desc">「タイプ名でClaude APIを動かす」設計から「3層変数でClaudeが直接解釈する」設計に移行。Layer1(5段階位置) × Layer2(サブ内訳+分散) × Layer3(整合性チェック) の構造で穴のない個別最適化を実現。タイプ名なし・ランクなし確定（上位X%で市場内位置づけを表現）。</div>
             <div class="step-meta">
               <span class="badge badge-done">設計完了</span>
               <span style="font-size:12px;color:var(--muted);margin-left:10px">→ 「ユーザー分類スキーマ」「API入力変数設計」参照</span>
@@ -2319,11 +2319,11 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <div class="step-title">プロンプト設計（計5本）</div>
-            <div class="step-desc">観点評価×4・強み弱み×1のマークダウンファイルを設計。3層変数をどう渡せばClaudeが正しく解釈できるかの検証も含む。サンプル出力で品質確認。</div>
+            <div class="step-title">Claude APIプロンプト本文設計</div>
+            <div class="step-desc">単一APIコール・JSON構造化出力（スキーマ確定済み）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をマークダウンで記述。Claude＋ユーザー共同作業。</div>
             <div class="step-meta">
               <span class="badge badge-todo">未着手</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:10px">変数設計完了後に着手</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">レポートHTML完成後に着手</span>
             </div>
           </div>
         </div>
@@ -2347,10 +2347,10 @@
             <div class="step-num">7</div>
           </div>
           <div class="step-body">
-            <div class="step-title">レポートHTML実装（5枚横スクロール）</div>
-            <div class="step-desc">GAS APIからデータを受け取り、スコア表示・レーダーチャート・生成テキスト差し込みまで一気通貫で動く状態にする。</div>
+            <div class="step-title">レポートHTML実装（縦スクロール型・8セクション＋CTA）</div>
+            <div class="step-desc">GAS APIからデータを受け取り、スコア表示・レーダーチャート・生成テキスト差し込みまで一気通貫で動く状態にする。PhotoshopデザインをベースにHTMLトレースで実装。</div>
             <div class="step-meta">
-              <span class="badge badge-todo">未着手</span>
+              <span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span>
             </div>
           </div>
         </div>
