@@ -1771,10 +1771,10 @@
             <tbody>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差25点以上のペアのみ表示）</td></tr>
               <tr><td>H1：能力の偏り</td><td>セクションタイトル</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>(a) 構造説明・問題提示</td><td>このGAPが何を示すか・起きやすい問題（静的・ペアごとに固定）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>(b) 大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
-              <tr><td>(b) スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %で表示。2軸の%バー＋差分%を明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>(c) 本文</td><td>あなたが今どういう状態かの観察（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>概念説明（セクション冒頭1回）</td><td>「能力の偏り」とは何か・なぜ重要かを説明。ペアごとではなくセクション全体への前置き。ここで概念を理解した上で各カードを見る</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
+              <tr><td>スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %バー。2軸並列＋差分%を数値で明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>本文</td><td>あなたが今どういう状態かの観察（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（不整合1件以上のとき表示）</td></tr>
               <tr><td>H2：自己認識のズレ</td><td>―</td><td>―</td></tr>
               <tr><td>件数表示</td><td>「今回 <strong>X件</strong> のズレが検出されました」― X = 不整合グループ数</td><td><span class="badge badge-done">自動計算</span></td></tr>
@@ -1946,13 +1946,13 @@
       </div>
 
       <div class="callout" style="margin-top:20px">
-        <strong>GAPカード構造（確定）：</strong>
+        <strong>GAPセクション・カード構造（確定）：</strong>
         <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
           <li><strong>表示条件：</strong>絶対値 ≥ 25点（正負両方）のペアのみ。最大3本（ki / at / kt）。0本 → セクションごと非表示</li>
-          <li><strong>(a) 静的：</strong>ギャップの構造説明 ＋ 問題提示（ペアごとに固定テキスト）</li>
-          <li><strong>(b) 大なり小なり見出し：</strong>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」</li>
-          <li><strong>(b) スコアビジュアル：</strong>軸スコア ÷ 125 × 100 = %バー。2軸並列 ＋ 差分%を数値で明示</li>
-          <li><strong>(c) Claude出力：</strong>あなたが今どういう状態か（〜80字）。「どちらが高いか」はビジュアルが担い、Claudeは状態の観察に集中</li>
+          <li><strong>概念説明（セクション冒頭1回のみ）：</strong>「能力の偏り」とは何か・なぜ重要かを静的に配置。ペアごとには置かない</li>
+          <li><strong>大なり小なり見出し：</strong>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」</li>
+          <li><strong>スコアビジュアル：</strong>軸スコア ÷ 125 × 100 = %バー。2軸並列 ＋ 差分%を数値で明示</li>
+          <li><strong>Claude出力：</strong>あなたが今どういう状態か（〜80字）。Claudeは状態の観察に集中</li>
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
