@@ -852,7 +852,7 @@
       </a>
       <a href="#q-shiko" class="nav-item">
         <span class="nav-dot" style="background:var(--c2)"></span>
-        思考力 Q26〜50
+        指示力 Q26〜50
       </a>
       <a href="#q-katsuyo" class="nav-item">
         <span class="nav-dot" style="background:var(--c3)"></span>
@@ -860,7 +860,7 @@
       </a>
       <a href="#q-handan" class="nav-item">
         <span class="nav-dot" style="background:var(--c4)"></span>
-        判断力 Q76〜100
+        思考力 Q76〜100
       </a>
     </div>
   </nav>
@@ -884,7 +884,7 @@
         </div>
         <div class="overview-card" style="--card-color: var(--c2)">
           <div class="card-label">02</div>
-          <div class="card-title">思考力</div>
+          <div class="card-title">指示力</div>
           <div class="card-desc">AIへの指示を目的や文脈に応じてどれだけ深く考え、工夫して組み立てられているか</div>
           <div class="card-count">Q26〜Q50 / 25問</div>
         </div>
@@ -896,14 +896,14 @@
         </div>
         <div class="overview-card" style="--card-color: var(--c4)">
           <div class="card-label">04</div>
-          <div class="card-title">判断力</div>
+          <div class="card-title">思考力</div>
           <div class="card-desc">AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
           <div class="card-count">Q76〜Q100 / 25問</div>
         </div>
       </div>
 
       <div class="callout">
-        <strong>戦闘力の構造</strong>：知識力・思考力・活用力・判断力の4つが揃い、それらの合計が「AI戦闘力」として算出される。
+        <strong>戦闘力の構造</strong>：知識力・指示力・活用力・思考力の4つが揃い、それらの合計が「AI戦闘力」として算出される。
       </div>
     </section>
 
@@ -983,7 +983,7 @@
       <div class="callout" style="margin-bottom:20px">
         <strong>戦闘力の算出式（軸別加算型）：</strong><br>
         <code style="display:block;margin-top:8px;font-size:14px;letter-spacing:.03em">各軸トークン = round( (軸スコア ÷ 125)³ × 249,999 )</code>
-        <code style="display:block;margin-top:4px;font-size:14px;letter-spacing:.03em">AI戦闘力（総合）= 知識力 + 思考力 + 活用力 + 判断力（各軸トークンの合計）</code>
+        <code style="display:block;margin-top:4px;font-size:14px;letter-spacing:.03em">AI戦闘力（総合）= 知識力 + 指示力 + 活用力 + 思考力（各軸トークンの合計）</code>
         <p style="margin-top:8px;font-size:13px;color:var(--muted)">4軸それぞれで3乗変換し合算。各軸最大 <strong style="color:var(--text)">249,999トークン</strong>、総合最大 <strong style="color:var(--text)">999,999トークン</strong>。バックエンドは生スコア（1〜5）保持、表示変換はフロント側で実施。</p>
       </div>
 
@@ -1157,7 +1157,7 @@
           <tr>
             <td class="priority-done">✅ 完了</td>
             <td>整合性チェック設問の再設計（4グループ）</td>
-            <td>思考-1（Q34/Q42/Q44）/ 活用-1（Q55/Q57/Q59）/ 活用-3（Q67/Q68/Q75）/ 判断-2（Q90/Q92/Q94）に差し替え完了。各グループ「同一行動を別角度で聞く」構造に統一</td>
+            <td>指示-1（Q34/Q42/Q44）/ 活用-1（Q55/Q57/Q59）/ 活用-3（Q67/Q68/Q75）/ 思考-2（Q90/Q92/Q94）に差し替え完了。各グループ「同一行動を別角度で聞く」構造に統一</td>
           </tr>
           <tr>
             <td class="priority-done">✅ 完了</td>
@@ -1244,12 +1244,12 @@
         </ul>
       </div>
 
-      <!-- 思考力 -->
+      <!-- 指示力 -->
       <div class="dim-block" id="q-shiko">
         <div class="dim-header">
           <div class="dim-icon" style="background:#ff6e9c20; color:#ff6e9c">思</div>
           <div>
-            <div class="dim-title">思考力</div>
+            <div class="dim-title">指示力</div>
             <div class="dim-range">Q26〜Q50 — AIへの指示を目的や文脈に応じてどれだけ深く考え、工夫して組み立てられているか</div>
           </div>
         </div>
@@ -1320,12 +1320,12 @@
         </ul>
       </div>
 
-      <!-- 判断力 -->
+      <!-- 思考力 -->
       <div class="dim-block" id="q-handan">
         <div class="dim-header">
           <div class="dim-icon" style="background:#4ec9f020; color:#4ec9f0">判</div>
           <div>
-            <div class="dim-title">判断力</div>
+            <div class="dim-title">思考力</div>
             <div class="dim-range">Q76〜Q100 — AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
           </div>
         </div>
@@ -1563,7 +1563,7 @@
           <div class="page-num">4</div>
           <div class="page-body">
             <div class="page-role">Claude API × 4 · H1 > H2</div>
-            <div class="page-title">軸別評価（知識力 / 思考力 / 活用力 / 判断力）</div>
+            <div class="page-title">軸別評価（知識力 / 指示力 / 活用力 / 思考力）</div>
             <ul class="page-items">
               <li><strong>① サブカテゴリスコア：</strong>3サブの点数を自分 vs 全体平均で並べて表示（アニメーションバー）。これがClaudeの評価の「根拠」になる</li>
               <li><strong>② 評価テキスト：</strong>このスコアパターンが実務でどういう状態を示しているかを言語化（文章）</li>
@@ -1583,7 +1583,7 @@
             <div class="page-role">Claude API · 条件付き表示あり</div>
             <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
-              <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。kt_gap / aj_gap（⚠️最重要・過信実行型の検知）/ kj_gap。GAPなし → このH2ごと非表示</li>
+              <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
               <li><strong>自己認識のズレ：</strong>不整合グループを1枚カードで展開。カードタイトル（静的固定文言）＋ ①何が起きているか〜25字 ＋ ②状態の可能性〜35字。0件 → セクション非表示</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数）</div>
@@ -1691,7 +1691,7 @@
             <tbody>
               <tr><td>メイン数値</td><td>上位 <strong>X</strong> %</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>サブテキスト</td><td>全受検者 N人中の位置</td><td><span class="badge badge-check">データ蓄積後</span></td></tr>
-              <tr><td>4軸サマリー</td><td>知識力 XX点 / 思考力 XX点 / 活用力 XX点 / 判断力 XX点</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>4軸サマリー</td><td>知識力 XX点 / 指示力 XX点 / 活用力 XX点 / 思考力 XX点</td><td><span class="badge badge-done">自動計算</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1747,7 +1747,7 @@
       <div style="margin-bottom:24px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 4</div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：軸別詳細評価　／　H2：知識力・思考力・活用力・判断力（×4）</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：軸別詳細評価　／　H2：知識力・指示力・活用力・思考力（×4）</div>
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
@@ -1770,7 +1770,7 @@
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差25点以上のペアのみ表示）</td></tr>
-              <tr><td>H2：[GAP見出し]</td><td>HTML側が pair + direction から静的生成。例：「知識力 &gt; 思考力」「判断力 &gt; 活用力」― 絶対値≥25のペアのみ（最大3本）。0本 → このブロックごと非表示</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>H2：[GAP見出し]</td><td>HTML側が pair + direction から静的生成。例：「知識力 &gt; 指示力」「思考力 &gt; 活用力」― 絶対値≥25のペアのみ（最大3本）。0本 → このブロックごと非表示</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>スコアビジュアル</td><td>2軸のスコアバーを横並びで表示。記号（&gt;）で大小を示す。説明文なし・視覚的に完結</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>本文</td><td>このギャップが実務でどういう状態を生んでいるか（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（不整合1件以上のとき表示）</td></tr>
@@ -1903,9 +1903,9 @@
 
   "axes": {
     "knowledge":    { "eval": "string ~80字", "strengths": ["~20字", "~20字"], "weaknesses": ["~20字", "~20字"], "growth": "string ~80字" },
-    "thinking":     { /* 同構造 */ },
+    "instruction":     { /* 同構造 */ },
     "application":  { /* 同構造 */ },
-    "judgment":     { /* 同構造 */ }
+    "thinking":     { /* 同構造 */ }
   },
 
   "structure": {
@@ -1919,8 +1919,8 @@
     ],
     // gaps は絶対値25点以上のペアのみ（正負両方）。0件の場合は空配列
     // 見出し文言はHTML側が pair + direction から静的生成
-    // 例：pair=kt, positive → 「知識力 > 思考力」
-    // 例：pair=aj, negative → 「判断力 > 活用力」
+    // 例：pair=ki, positive → 「知識力 > 指示力」
+    // 例：pair=at, negative → 「思考力 > 活用力」
     "self_gaps": [
       {
         "name": "string",              // グループ名（GAS側が判定）
@@ -1947,7 +1947,7 @@
         <strong>GAPの表示仕様（確定）：</strong>
         <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
           <li><strong>表示条件：</strong>絶対値 ≥ 25点（正負両方。逆方向GAPも個別最適の対象）</li>
-          <li><strong>見出し：</strong>HTML側が pair + direction から静的生成。例：kt×positive → 「知識力 &gt; 思考力」/ aj×negative → 「判断力 &gt; 活用力」</li>
+          <li><strong>見出し：</strong>HTML側が pair + direction から静的生成。例：kt×positive → 「知識力 &gt; 指示力」/ aj×negative → 「思考力 &gt; 活用力」</li>
           <li><strong>色分け：</strong>各軸の既存カラーをそのまま左右に使用（デザイン側が制御）</li>
           <li><strong>説明文：不要（確定）</strong> 記号（&gt;）+ 両軸スコアバーで視覚的に完結。テキスト説明はノイズになる</li>
           <li><strong>Claude出力：</strong>description のみ（〜80字）。「どちらが高いか」はビジュアルが担い、Claudeは「それが実務でどういう状態か」のみ語る</li>
@@ -1955,7 +1955,7 @@
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
-        グループは<strong>8種（全3問統一）</strong>：判断-1（Q76/Q79/Q85）/ 判断-2（Q90/Q92/Q94）/ 思考-1（Q34/Q42/Q44）/ 思考-2（Q45/Q46/Q49）/ 活用-1（Q55/Q57/Q59）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q75）/ 観点またぎ（Q8/Q91/Q93）<br>
+        グループは<strong>8種（全3問統一）</strong>：思考-1（Q76/Q79/Q85）/ 思考-2（Q90/Q92/Q94）/ 指示-1（Q34/Q42/Q44）/ 指示-2（Q45/Q46/Q49）/ 活用-1（Q55/Q57/Q59）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q75）/ 観点またぎ（Q8/Q91/Q93）<br>
         ※ <strong>知識グループは廃止</strong>。知識の穴は行動認識の矛盾ではなくLayer2サブスコアで把握する。判断・思考・活用は人間の行動・処理パターンから出力されるものなのでズレが意味を持つ。
       </div>
 
@@ -1991,9 +1991,9 @@
 
           <!-- 1件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN B ― 不整合 1件（判断-1）</div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN B ― 不整合 1件（思考-1）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
-  "name": "判断-1",
+  "name": "思考-1",
   "min": 1, "max": 5,
   "what_happening": "確認する場面としない場面が混在しています",  // 22字
   "possibility": "確認の意識はあるが自分の判断基準が定まっていない可能性があります"  // 33字
@@ -2002,15 +2002,15 @@
 
           <!-- 複数件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN C ― 不整合 3件（判断-1 / 思考-2 / 活用-1）</div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN C ― 不整合 3件（思考-1 / 指示-2 / 活用-1）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>[
   {
-    "name": "判断-1", "min": 1, "max": 5,
+    "name": "思考-1", "min": 1, "max": 5,
     "what_happening": "確認する場面としない場面が混在しています",
     "possibility": "確認の意識はあるが習慣として定着していない可能性があります"
   },
   {
-    "name": "思考-2", "min": 2, "max": 4,
+    "name": "指示-2", "min": 2, "max": 4,
     "what_happening": "設計してから取り組む場面とそうでない場面があります",
     "possibility": "ゴール逆算の意識が状況依存になっている可能性があります"
   },
@@ -2040,10 +2040,10 @@
           <table class="score-table" style="font-size:12px">
             <thead><tr><th>グループ</th><th>タイトル固定文言</th></tr></thead>
             <tbody>
-              <tr><td>判断-1</td><td>AI出力を確認する行動に、場面によるムラが検知されました</td></tr>
-              <tr><td>判断-2</td><td>AIへの依存度の管理・監視行動にズレが検知されました</td></tr>
-              <tr><td>思考-1</td><td>指示の設計・改善プロセスに認識のズレが検知されました</td></tr>
-              <tr><td>思考-2</td><td>AIを使う前の思考設計の実践に認識のズレが検知されました</td></tr>
+              <tr><td>思考-1</td><td>AI出力を確認する行動に、場面によるムラが検知されました</td></tr>
+              <tr><td>思考-2</td><td>AIへの依存度の管理・監視行動にズレが検知されました</td></tr>
+              <tr><td>指示-1</td><td>指示の設計・改善プロセスに認識のズレが検知されました</td></tr>
+              <tr><td>指示-2</td><td>AIを使う前の指示設計の実践に認識のズレが検知されました</td></tr>
               <tr><td>活用-1</td><td>AIの日常業務への定着度に認識のズレが検知されました</td></tr>
               <tr><td>活用-2</td><td>職場でのAI活用推進・展開に認識のズレが検知されました</td></tr>
               <tr><td>活用-3</td><td>AIを使った仕組みの構築・継続運用に認識のズレが検知されました</td></tr>
@@ -2259,7 +2259,7 @@
           </div>
           <div class="step-body">
             <div class="step-title">各軸のサブカテゴリ確定</div>
-            <div class="step-desc">知識力・思考力・活用力・判断力の各25問を3サブカテゴリ（初級→中級→上級の難易度帯）に分類完了。サブスコアとその内部分散がLayer 2変数の核となる。<br>
+            <div class="step-desc">知識力・指示力・活用力・思考力の各25問を3サブカテゴリ（初級→中級→上級の難易度帯）に分類完了。サブスコアとその内部分散がLayer 2変数の核となる。<br>
             <span style="color:#36d399;font-size:12px;font-weight:700;margin-top:6px;display:block">✦ 追加設計：同じ回答10回連続で確認ポップアップを表示し、惰性回答を防止する（診断HTML実装項目）</span></div>
             <div class="step-meta">
               <span class="badge badge-done">完了</span>
@@ -2391,15 +2391,15 @@
         <div class="layer-card">
           <div class="layer-num">Layer 2 — パターン</div>
           <div class="layer-title">ユーザー分類タイプ（サブカテゴリのパターンから判定）</div>
-          <div class="layer-desc">軸スコアの合計ではなく、サブカテゴリの組み合わせパターンから分類タイプを付与。「思考設計（高）× 時短実感（低）」と「時短実感（高）× 思考設計（低）」は同じ合計でも異なるタイプとして評価する。分類アルゴリズムは別途設計中。</div>
-          <div class="layer-example">例：思考設計（高）× スキル実行（高）× 量産統合（高）→ 上級活用型</div>
+          <div class="layer-desc">軸スコアの合計ではなく、サブカテゴリの組み合わせパターンから分類タイプを付与。「指示設計（高）× 時短実感（低）」と「時短実感（高）× 指示設計（低）」は同じ合計でも異なるタイプとして評価する。分類アルゴリズムは別途設計中。</div>
+          <div class="layer-example">例：指示設計（高）× スキル実行（高）× 量産統合（高）→ 上級活用型</div>
         </div>
 
         <div class="layer-card">
           <div class="layer-num">Layer 3 — 矛盾</div>
           <div class="layer-title">整合性チェック（自己認識と実態のズレ）</div>
           <div class="layer-desc">8グループのトラップ問により「言っていることとやっていることの不一致」を検出。思考フレームの質が問われる核心部分。ここが最も「刺さる」個別要素。</div>
-          <div class="layer-example">例：判断-1グループ不整合 → 「AIの出力確認に対する判断基準がまだ自分の中で定まっていないサインです」</div>
+          <div class="layer-example">例：思考-1グループ不整合 → 「AIの出力確認に対する判断基準がまだ自分の中で定まっていないサインです」</div>
         </div>
 
       </div>
@@ -2452,12 +2452,12 @@
         </table>
       </div>
 
-      <!-- 思考力 -->
+      <!-- 指示力 -->
       <div class="dim-block">
         <div class="dim-header">
           <div class="dim-icon" style="background:#ff6e9c20;color:#ff6e9c">思</div>
           <div>
-            <div class="dim-title">思考力 Q26〜Q50</div>
+            <div class="dim-title">指示力 Q26〜Q50</div>
             <div class="dim-range">AIへの指示を目的や文脈に応じて深く考え、工夫して組み立てられているか</div>
           </div>
         </div>
@@ -2481,7 +2481,7 @@
               <td>対話を重ねて精度を上げられるか</td>
             </tr>
             <tr>
-              <td><strong>③ 思考設計</strong></td>
+              <td><strong>③ 指示設計</strong></td>
               <td style="font-size:12px;color:var(--muted)">Q45〜50</td>
               <td>6問</td>
               <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
@@ -2530,12 +2530,12 @@
         </table>
       </div>
 
-      <!-- 判断力 -->
+      <!-- 思考力 -->
       <div class="dim-block">
         <div class="dim-header">
           <div class="dim-icon" style="background:#4ec9f020;color:#4ec9f0">判</div>
           <div>
-            <div class="dim-title">判断力 Q76〜Q100</div>
+            <div class="dim-title">思考力 Q76〜Q100</div>
             <div class="dim-range">AIの出力をどれだけ自ら検証し、品質・正確性・リスクを見極められているか</div>
           </div>
         </div>
@@ -2559,7 +2559,7 @@
               <td>出典・著作権まで確認し、AIと人の役割を使い分けられるか</td>
             </tr>
             <tr>
-              <td><strong>③ 能動的判断・境界設計</strong></td>
+              <td><strong>③ 能動的検証・境界設計</strong></td>
               <td style="font-size:12px;color:var(--muted)">Q88, Q96〜100</td>
               <td>6問</td>
               <td><span style="font-size:11px;color:#ff6e9c;font-weight:700">上級</span></td>
@@ -2593,11 +2593,11 @@
         </div>
         <div class="chain-arrow-col">
           <div class="chain-arrow">→</div>
-          <div class="chain-gap-label">K-T GAP</div>
+          <div class="chain-gap-label">K-I GAP</div>
         </div>
         <div class="chain-node">
           <div class="chain-node-role">DESIGN</div>
-          <div class="chain-node-name" style="color:#7c6eff">思考力 T</div>
+          <div class="chain-node-name" style="color:#7c6eff">指示力 I</div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px">指示を設計する</div>
         </div>
         <div class="chain-arrow-col">
@@ -2611,11 +2611,11 @@
         </div>
         <div class="chain-arrow-col">
           <div class="chain-arrow">→</div>
-          <div class="chain-gap-label">A-J GAP</div>
+          <div class="chain-gap-label">A-T GAP</div>
         </div>
         <div class="chain-node">
           <div class="chain-node-role">VERIFY</div>
-          <div class="chain-node-name" style="color:#4ec9f0">判断力 J</div>
+          <div class="chain-node-name" style="color:#4ec9f0">思考力 T</div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px">出力を検証する</div>
         </div>
       </div>
@@ -2656,7 +2656,7 @@
         <div class="gap-pattern danger">
           <div>
             <div class="gap-formula" style="color:#ff6e9c">A高 × J低 ⚠️</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:3px">活用力≥87 かつ 判断力≤49</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">活用力≥87 かつ 思考力≤49</div>
           </div>
           <div class="gap-meaning">
             <strong>過信実行型 — 最も危険なパターン</strong>
@@ -2666,7 +2666,7 @@
         <div class="gap-pattern">
           <div>
             <div class="gap-formula" style="color:#7c6eff">K高 × T低</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 思考力≤49</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 指示力≤49</div>
           </div>
           <div class="gap-meaning">
             <strong>知識偏重型 — インプット過多パターン</strong>
@@ -2676,7 +2676,7 @@
         <div class="gap-pattern">
           <div>
             <div class="gap-formula" style="color:#7c6eff">K高 × J低</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 判断力≤49</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 思考力≤49</div>
           </div>
           <div class="gap-meaning">
             <strong>知識過信型 — 盲点パターン</strong>
@@ -2720,8 +2720,8 @@
           <div class="ax-row">
             <span class="ax m">K</span><span class="ax m">T</span><span class="ax h">A</span><span class="ax l">J</span>
           </div>
-          <div class="tc-desc">活用量は多いが判断力が著しく低い。AI出力を検証せず使い続けるリスクが高い。最優先で判断力強化が必要。</div>
-          <div class="tc-edge">コア課題：A-J GAP の解消（検証習慣の定着）</div>
+          <div class="tc-desc">活用量は多いが思考力が著しく低い。AI出力を検証せず使い続けるリスクが高い。最優先で思考力強化が必要。</div>
+          <div class="tc-edge">コア課題：A-T GAP の解消（検証習慣の定着）</div>
         </div>
 
         <div class="type-card tc-a">
@@ -2732,7 +2732,7 @@
           <div class="ax-row">
             <span class="ax h">K</span><span class="ax h">T</span><span class="ax l">A</span><span class="ax l">J</span>
           </div>
-          <div class="tc-desc">知識と思考設計は高いが実際の活用量がほぼゼロ。「理解している」が「やっていない」状態。手を動かすことが唯一の打ち手。</div>
+          <div class="tc-desc">知識と指示設計は高いが実際の活用量がほぼゼロ。「理解している」が「やっていない」状態。手を動かすことが唯一の打ち手。</div>
           <div class="tc-edge">コア課題：活用力の量的拡大（まず使う回数を増やす）</div>
         </div>
 
@@ -2744,8 +2744,8 @@
           <div class="ax-row">
             <span class="ax h">K</span><span class="ax l">T</span><span class="ax l">A</span><span class="ax m">J</span>
           </div>
-          <div class="tc-desc">知識は豊富だが指示設計（思考力）と実践（活用力）が弱い。情報を収集・蓄積するが「では何をAIに頼むか」が設計できていない。</div>
-          <div class="tc-edge">コア課題：K-T GAP の解消（知識→指示への変換）</div>
+          <div class="tc-desc">知識は豊富だが指示設計（指示力）と実践（活用力）が弱い。情報を収集・蓄積するが「では何をAIに頼むか」が設計できていない。</div>
+          <div class="tc-edge">コア課題：K-I GAP の解消（知識→指示への変換）</div>
         </div>
 
         <div class="type-card tc-a">
@@ -2756,7 +2756,7 @@
           <div class="ax-row">
             <span class="ax h">K</span><span class="ax m">T</span><span class="ax l">A</span><span class="ax h">J</span>
           </div>
-          <div class="tc-desc">知識と判断力は高いが活用力が低い。「AIの正確性・リスクを知っているから慎重になりすぎる」パターン。実践量を増やすことで急成長が見込める。</div>
+          <div class="tc-desc">知識と思考力は高いが活用力が低い。「AIの正確性・リスクを知っているから慎重になりすぎる」パターン。実践量を増やすことで急成長が見込める。</div>
           <div class="tc-edge">コア課題：心理的ブレーキの除去・活用量の増加</div>
         </div>
 
@@ -2867,24 +2867,24 @@
 
       <div class="gap-vars">
         <div class="gap-var">
-          <div class="gap-var-name">{{kt_gap}}</div>
-          <div class="gap-var-eq">= 知識力 − 思考力（/125）</div>
+          <div class="gap-var-name">{{ki_gap}}</div>
+          <div class="gap-var-eq">= 知識力 − 指示力（/125）</div>
           <div class="gap-var-interp">
             <span>＋大 → 知識先行：情報はある、指示設計が弱い</span>
             <span>−大 → 思考先行：設計力あり、インプット不足</span>
           </div>
         </div>
         <div class="gap-var">
-          <div class="gap-var-name">{{aj_gap}}</div>
-          <div class="gap-var-eq">= 活用力 − 判断力（/125）</div>
+          <div class="gap-var-name">{{at_gap}}</div>
+          <div class="gap-var-eq">= 活用力 − 思考力（/125）</div>
           <div class="gap-var-interp">
             <span>＋大 → 活用先行：量は出る、検証が甘い ⚠️</span>
             <span>−大 → 判断先行：慎重だが実践量が少ない</span>
           </div>
         </div>
         <div class="gap-var">
-          <div class="gap-var-name">{{kj_gap}}</div>
-          <div class="gap-var-eq">= 知識力 − 判断力（/125）</div>
+          <div class="gap-var-name">{{kt_gap}}</div>
+          <div class="gap-var-eq">= 知識力 − 思考力（/125）</div>
           <div class="gap-var-interp">
             <span>＋大 → 知識過信：知ってるが検証しない</span>
             <span>−大 → 慎重無知：検証するが知識が薄い</span>
@@ -2894,7 +2894,7 @@
 
       <div class="callout" style="margin-top:8px">
         <strong>Claude APIへ渡す変数（分類関連）：</strong><br>
-        <code>{{user_type}}</code>　<code>{{k_score}}</code>　<code>{{t_score}}</code>　<code>{{a_score}}</code>　<code>{{j_score}}</code>　<code>{{kt_gap}}</code>　<code>{{aj_gap}}</code>　<code>{{kj_gap}}</code><br>
+        <code>{{user_type}}</code>　<code>{{k_score}}</code>　<code>{{i_score}}</code>　<code>{{a_score}}</code>　<code>{{t_score}}</code>　<code>{{ki_gap}}</code>　<code>{{at_gap}}</code>　<code>{{kt_gap}}</code><br>
         これらにサブカテゴリスコア・整合性チェック結果・上位X%を加えた計11〜12変数がプロンプトに差し込まれる。
       </div>
     </section>
@@ -2919,7 +2919,7 @@
           <tr><td><code>{{rank}}</code></td><td>ランク（S / A / B / C / D）</td><td>Sheets DD列</td></tr>
           <tr><td><code>{{total_score}}</code></td><td>合計スコア（/500）</td><td>Sheets DB列</td></tr>
           <tr><td><code>{{percentile}}</code></td><td>全体の上位X%（例：12.4）</td><td>Sheets DG列（PERCENTRANK）</td></tr>
-          <tr><td><code>{{k_score}} / {{t_score}} / {{a_score}} / {{j_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CX〜DA列</td></tr>
+          <tr><td><code>{{k_score}} / {{i_score}} / {{a_score}} / {{t_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CX〜DA列</td></tr>
           <tr><td><code>{{k_level}} / {{t_level}} / {{a_level}} / {{j_level}}</code></td><td>各軸の5段階レベル（1〜5）</td><td>GAS計算（スコアをレンジで変換）</td></tr>
         </tbody>
       </table>
@@ -2940,7 +2940,7 @@
           </tr>
           <tr>
             <td><code>{{t_sub1}} / {{t_sub2}} / {{t_sub3}}</code></td>
-            <td>思考力サブ（①基本指示・入門活用 /11問 ②反復・改善 /8問 ③思考設計 /6問）</td>
+            <td>指示力サブ（①基本指示・入門活用 /11問 ②反復・改善 /8問 ③指示設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
@@ -2950,7 +2950,7 @@
           </tr>
           <tr>
             <td><code>{{j_sub1}} / {{j_sub2}} / {{j_sub3}}</code></td>
-            <td>判断力サブ（①基本的な出力検証 /11問 ②詳細検証・役割分担 /8問 ③能動的判断・境界設計 /6問）</td>
+            <td>思考力サブ（①基本的な出力検証 /11問 ②詳細検証・役割分担 /8問 ③能動的検証・境界設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
@@ -2988,20 +2988,20 @@
         <thead><tr><th>変数名</th><th>計算式</th><th>正値の意味</th><th>負値の意味</th></tr></thead>
         <tbody>
           <tr>
-            <td><code>{{kt_gap}}</code></td>
-            <td>知識力 − 思考力</td>
+            <td><code>{{ki_gap}}</code></td>
+            <td>知識力 − 指示力</td>
             <td>知識先行（情報はある、指示に変換できない）</td>
             <td>思考先行（設計力あり、インプット不足）</td>
           </tr>
           <tr>
-            <td><code>{{aj_gap}}</code></td>
-            <td>活用力 − 判断力</td>
+            <td><code>{{at_gap}}</code></td>
+            <td>活用力 − 思考力</td>
             <td style="color:#ff6e9c;font-weight:700">活用先行・過信実行 ⚠️（検証が追いつかない）</td>
             <td>判断先行（慎重だが実践量が少ない）</td>
           </tr>
           <tr>
-            <td><code>{{kj_gap}}</code></td>
-            <td>知識力 − 判断力</td>
+            <td><code>{{kt_gap}}</code></td>
+            <td>知識力 − 思考力</td>
             <td>知識過信（知ってるが出力を信用しすぎる）</td>
             <td>慎重無知（検証は丁寧だが知識基盤が薄い）</td>
           </tr>
@@ -3037,8 +3037,8 @@
  - サブカテゴリ偏り: {{k_var}}
 
 【認知チェーン】
-K-T GAP: {{kt_gap}}（知識→思考の変換ギャップ）
-K-J GAP: {{kj_gap}}（知識と検証の整合）
+K-I GAP: {{ki_gap}}（知識→指示の変換ギャップ）
+K-T GAP: {{kt_gap}}（知識と検証の整合）
 
 【自己認識】
 整合性チェック不整合: {{inconsistency}}（{{inconsistency_count}}件）
