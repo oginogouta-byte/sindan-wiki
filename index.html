@@ -1156,13 +1156,23 @@
           </tr>
           <tr>
             <td class="priority-done">✅ 完了</td>
-            <td>整合性チェック設問の再設計（4グループ）</td>
-            <td>指示-1（Q34/Q42/Q44）/ 活用-1（Q55/Q57/Q59）/ 活用-3（Q67/Q68/Q75）/ 思考-2（Q90/Q92/Q94）に差し替え完了。各グループ「同一行動を別角度で聞く」構造に統一</td>
+            <td>回答の一貫性チェック グループ構成（3×3）設計</td>
+            <td>3軸×3グループ=9グループ構成に確定。観点またぎを思考-3に移管。活用力3グループはそのまま維持。バッジ3×3・軸ごと色分け・ニューモフィズム設計確定</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>指示-3グループの設計</td>
+            <td>指示力の3グループ目が未確定。観点またぎを思考-3に移管したため、指示力に新グループが必要。設問番号・テーマ・難易度を決める</td>
           </tr>
           <tr>
             <td class="priority-done">✅ 完了</td>
-            <td>Claude API JSON設計（出力スキーマ確定済み）</td>
-            <td>JSON構造化出力（APIコール1回）。スキーマ確定済み → レポートタブ参照</td>
+            <td>回答の一貫性セクション UI設計</td>
+            <td>構成確定：固定文→バッジ3×3→Claude評価文（80〜120字）。固定文：「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</td>
+          </tr>
+          <tr>
+            <td class="priority-done">✅ 完了</td>
+            <td>Claude API JSONスキーマ確定・更新</td>
+            <td>self_gaps[]（グループ別テキスト生成）を廃止。consistency_eval（80〜120字・単一評価文）に変更。バッジ表示状態はGAS計算。APIコール1回。→ レポートタブ参照</td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
@@ -2142,9 +2152,19 @@
             <td>タイプ名なし・ランクなし確定。市場内の上位X%で位置づけを表現</td>
           </tr>
           <tr>
+            <td class="priority-done">✅ 完了</td>
+            <td>回答の一貫性 セクションUI設計</td>
+            <td>構成確定：固定文→バッジ3×3→Claude評価文（80〜120字）。APIスキーマもself_gaps廃止→consistency_eval単一フィールドに更新済み → r-content参照</td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td>指示-3グループの設計</td>
+            <td>指示力の3グループ目が未確定。3×3構成の完成に必要</td>
+          </tr>
+          <tr>
             <td class="priority-high">🔴 高</td>
             <td>Claude APIプロンプト設計（マークダウン）</td>
-            <td>3層変数差し込み・ペルソナ・エッジケース指示。スキーマ確定済み → r-api参照。Claude＋ユーザー共同</td>
+            <td>3層変数差し込み・ペルソナ・エッジケース指示。スキーマ確定済み（consistency_eval含む）→ r-api参照。Claude＋ユーザー共同</td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
@@ -2159,7 +2179,7 @@
           <tr>
             <td class="priority-done">✅ 完了</td>
             <td>各セクションのテキスト文字数・フォーマット</td>
-            <td>全セクション字数確定済み → r-content参照（summary 100〜120字 / eval 80字 等）</td>
+            <td>全セクション字数確定済み → r-content参照（summary 100〜120字 / eval 80字 / consistency_eval 80〜120字 等）</td>
           </tr>
           <tr>
             <td class="priority-done">✅ 完了</td>
@@ -2311,7 +2331,7 @@
           </div>
           <div class="step-body">
             <div class="step-title">Claude APIプロンプト本文設計</div>
-            <div class="step-desc">単一APIコール・JSON構造化出力（スキーマ確定済み）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をマークダウンで記述。Claude＋ユーザー共同作業。</div>
+            <div class="step-desc">単一APIコール・JSON構造化出力。スキーマ更新済み（self_gaps廃止→consistency_eval追加）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をマークダウンで記述。Claude＋ユーザー共同作業。</div>
             <div class="step-meta">
               <span class="badge badge-todo">未着手</span>
               <span style="font-size:12px;color:var(--muted);margin-left:10px">レポートHTML完成後に着手</span>
@@ -2389,9 +2409,9 @@
 
         <div class="layer-card">
           <div class="layer-num">Layer 3 — 矛盾</div>
-          <div class="layer-title">整合性チェック（自己認識と実態のズレ）</div>
-          <div class="layer-desc">8グループのトラップ問により「言っていることとやっていることの不一致」を検出。思考フレームの質が問われる核心部分。ここが最も「刺さる」個別要素。</div>
-          <div class="layer-example">例：思考-1グループ不整合 → 「AIの出力確認に対する判断基準がまだ自分の中で定まっていないサインです」</div>
+          <div class="layer-title">回答の一貫性チェック（同テーマの回答のブレを検出）</div>
+          <div class="layer-desc">指示力・活用力・思考力の3軸×3グループ=9グループで「同じ行動テーマの設問に対して回答が矛盾している」状態を検出。バッジ3×3で視覚化し、Claude APIが80〜120字の単一評価文を生成。</div>
+          <div class="layer-example">例：思考力のバッジが1/3 → 「AIの出力確認や判断管理に関して、場面によって行動がバラついている可能性があります」</div>
         </div>
 
       </div>
