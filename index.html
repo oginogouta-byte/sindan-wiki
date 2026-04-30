@@ -1775,12 +1775,11 @@
               <tr><td>大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
               <tr><td>スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %バー。2軸並列＋差分%を数値で明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>本文</td><td>あなたが今どういう状態かの観察（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 自己認識のズレ（不整合1件以上のとき表示）</td></tr>
-              <tr><td>H2：自己認識のズレ</td><td>―</td><td>―</td></tr>
-              <tr><td>件数表示</td><td>「今回 <strong>X件</strong> のズレが検出されました」― X = 不整合グループ数</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>カードタイトル</td><td>「〇〇に認識のズレが検知されました」― グループ固定文言（下表参照）</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>本文①</td><td>何が起きているか（〜25字）― 事実の記述</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>本文②</td><td>ユーザーの状態の可能性（〜35字）― 「〜可能性があります」調</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 回答の一貫性（不整合1件以上のとき表示）</td></tr>
+              <tr><td>H2：回答の一貫性</td><td>―</td><td>―</td></tr>
+              <tr><td>固定文</td><td>「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>バッジグリッド（3×3）</td><td>軸ごと色分け・ニューモフィズム（凸=一貫・凹=不整合）・軸ラベル + N/3数値表示</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>評価文</td><td>セクション全体の評価（80〜120字）― 称賛または不整合指摘。断定せず、原因A（行動のバラつき）・B（解釈の違い）を踏まえたトーン</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr><td>0件の場合</td><td>セクション自体を非表示（GAPと同様）</td><td><span class="badge badge-done">非表示</span></td></tr>
             </tbody>
           </table>
@@ -1873,8 +1872,8 @@
             <td rowspan="2">DP列</td>
           </tr>
           <tr>
-            <td><code>self_gaps[]</code></td>
-            <td>配列 name + what_happening 〜25字 + possibility 〜35字</td>
+            <td><code>consistency_eval</code></td>
+            <td>文章 80〜120字（回答の一貫性セクション・単一評価文）</td>
           </tr>
           <tr>
             <td rowspan="2">これからのあなたへ</td>
@@ -1923,19 +1922,11 @@
     // 見出し文言はHTML側が pair + direction から静的生成
     // 例：pair=ki, positive → 「知識力 > 指示力」
     // 例：pair=at, negative → 「思考力 > 活用力」
-    "self_gaps": [
-      {
-        "name": "string",              // グループ名（GAS側が判定）
-        "min": 1,                      // グループ内最小回答値（GAS側が計算）
-        "max": 5,                      // グループ内最大回答値（GAS側が計算）
-        "what_happening": "string ~25字",  // Claude生成：何が起きているか（事実）
-        "possibility":    "string ~35字"   // Claude生成：ユーザーの状態の可能性
-      }
-    ]
-    // self_gaps は不整合グループ分（min≤2 かつ max≥4）。0件の場合は空配列
-    // タイトル文言はHTML側がグループ名から静的生成
-    // ⚠️ Claudeへのプロンプト制約：断定・糾弾調にしない。
-    //    possibility は必ず「〜可能性があります」調で出力すること
+    "consistency_eval": "string"  // Claude生成：80〜120字・回答の一貫性セクション用・単一評価文
+    // バッジ表示状態（凸/凹）はGASが9グループ×一貫判定で計算・Sheets保存。Claude出力には含めない
+    // ClaudeへはLayer3（不整合グループ名・件数・min/max）を渡し評価文1本を生成させる
+    // 0件の場合は空文字「""」でよい（HTML側でセクション非表示）
+    // ⚠️ プロンプト制約：断定・糾弾調にしない。原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現
   },
 
   "next_step": {
