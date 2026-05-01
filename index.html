@@ -810,6 +810,7 @@
   <button class="tab-btn" data-pane="algo">評価軸設計</button>
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
+  <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
 </div>
 
 <!-- ==================== PANE: 診断設計 ==================== -->
@@ -3646,6 +3647,350 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 
   </main>
 </div><!-- /pane-audit -->
+
+
+<!-- ==================== PANE: UTAGEオプトイン用レポート ==================== -->
+<div id="pane-optin" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">UTAGEオプトイン用</div>
+      <div class="sub">サンクスページ設計</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">設計</div>
+      <a href="#optin-overview" class="nav-item active">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        概要・境界線
+      </a>
+      <a href="#optin-params" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        URLパラメータ仕様
+      </a>
+      <a href="#optin-layout" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        ページ構成
+      </a>
+      <a href="#optin-js" class="nav-item">
+        <span class="nav-dot" style="background:var(--c5)"></span>
+        JS実装仕様
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- 概要・境界線 -->
+    <section class="section" id="optin-overview">
+      <div class="section-header">
+        <div class="section-eyebrow">Overview</div>
+        <h2 class="section-title">概要・GASとJSの境界線</h2>
+        <p class="section-desc">診断完了後にリダイレクトされるUTAGEサンクスページ。GASフェーズ1が終わった後のページであり、GASとの通信は発生しない。カスタムJSがURLパラメータを読むだけ。</p>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 16px;color:var(--text)">処理タイムライン</h3>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--c5)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">診断HTML（100問回答完了）</div>
+            <div class="flow-desc">回答データ・診断ID・タイムスタンプを GAS へ POST</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--c4)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">GAS フェーズ1 ← ここで GAS の関与は一旦終わる</div>
+            <div class="flow-desc">4軸スコア・ランク・サブカテゴリ・分散・GAP・整合性・PERCENTRANK を計算 → Sheets保存 → URLパラメータ付きで UTAGE サンクスページへリダイレクト</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--accent)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">UTAGEサンクスページ ← GAS と無関係。JSのみで完結</div>
+            <div class="flow-desc">カスタムJSがURLパラメータを読んで数値を表示。外部APIコールなし・同時アクセス安全（クライアントサイドのみ）</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--c2)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">CV（500円決済 or 引用RT）</div>
+            <div class="flow-desc">ユーザーがCTAを踏む → GASフェーズ2が起動</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--c4)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">GAS フェーズ2</div>
+            <div class="flow-desc">診断ID × ユーザーID 紐づけ → Claude API 呼び出し → レポートURL 発行 → Mailchimp / X DM で送付</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot" style="background:var(--c3)"></div>
+          <div class="flow-line"></div>
+          <div class="flow-content">
+            <div class="flow-label">レポートページ（フル）</div>
+            <div class="flow-desc">全セクション・Claude API 生成テキスト・トークン表示</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:8px">
+        <strong>重要：</strong>サンクスページは「GASフェーズ1が終わった後のページ」であり、フェーズ2とは無関係。URLパラメータに含まれる6値だけで全て完結する。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">サンクスページとレポートページの違い</h3>
+      <table class="score-table">
+        <thead><tr><th>項目</th><th>サンクスページ（UTAGE）</th><th>レポートページ（Vercel）</th></tr></thead>
+        <tbody>
+          <tr><td>データ取得元</td><td>URLパラメータ（6値）</td><td>REPORT_DATA（GAS注入）</td></tr>
+          <tr><td>軸スコア表示</td><td><code>k / 125</code>（生スコア）</td><td><code>token / 249,999</code>（変換済み）</td></tr>
+          <tr><td>テキスト内容</td><td>サンプル文 ＋ CSSブラー</td><td>Claude API 生成テキスト</td></tr>
+          <tr><td>GAS通信</td><td>なし</td><td>あり（生成時1回のみ）</td></tr>
+          <tr><td>ホスティング</td><td>UTAGEドメイン</td><td>Vercel（予定）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- URLパラメータ仕様 -->
+    <section class="section" id="optin-params">
+      <div class="section-header">
+        <div class="section-eyebrow">URL Parameters</div>
+        <h2 class="section-title">URLパラメータ仕様</h2>
+        <p class="section-desc">GASフェーズ1がリダイレクト時に付与する6つのパラメータ。サンクスページのJSが読み取る全データがこれで完結する。</p>
+      </div>
+
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>パラメータ</th><th>意味</th><th>型・範囲</th><th>表示形式</th><th>例</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>total</code></td>
+            <td>AI戦闘力トークン（4軸合算）</td>
+            <td>整数 0〜999,999</td>
+            <td>カンマ区切り数値</td>
+            <td><code>724,320</code></td>
+          </tr>
+          <tr>
+            <td><code>pct</code></td>
+            <td>上位X%</td>
+            <td>小数（≥10→1桁 / &lt;10→2桁）</td>
+            <td><code>XX.X%</code> または <code>X.XX%</code></td>
+            <td><code>23.0%</code> / <code>0.28%</code></td>
+          </tr>
+          <tr>
+            <td><code>k</code></td>
+            <td>知識力スコア</td>
+            <td>整数 0〜125</td>
+            <td><code>XX / 125</code> ＋ゲージ</td>
+            <td><code>90 / 125</code></td>
+          </tr>
+          <tr>
+            <td><code>i</code></td>
+            <td>指示力スコア</td>
+            <td>整数 0〜125</td>
+            <td><code>XX / 125</code> ＋ゲージ</td>
+            <td><code>75 / 125</code></td>
+          </tr>
+          <tr>
+            <td><code>a</code></td>
+            <td>活用力スコア</td>
+            <td>整数 0〜125</td>
+            <td><code>XX / 125</code> ＋ゲージ</td>
+            <td><code>110 / 125</code></td>
+          </tr>
+          <tr>
+            <td><code>t</code></td>
+            <td>思考力スコア</td>
+            <td>整数 0〜125</td>
+            <td><code>XX / 125</code> ＋ゲージ</td>
+            <td><code>87 / 125</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>URLサンプル：</strong><br>
+        <code style="font-size:13px;word-break:break-all">https://school.addness.co.jp/page/[サンクスページID]?total=724320&pct=23&k=90&i=75&a=110&t=87</code>
+      </div>
+
+      <div class="callout" style="margin-top:16px">
+        <strong>注意：</strong>軸スコアは生スコア（0〜125）。レポートページで使うトークン値（0〜249,999）とは別物。サンクスページのカードは <code>/ 125</code> 表示であり、レポートの <code>/ 249,999</code> とは使い分ける。
+      </div>
+    </section>
+
+
+    <!-- ページ構成 -->
+    <section class="section" id="optin-layout">
+      <div class="section-header">
+        <div class="section-eyebrow">Page Layout</div>
+        <h2 class="section-title">ページ構成</h2>
+        <p class="section-desc">JS動的ゾーンとブラーゾーンの境界線。カードグリッド（4軸スコア）まで動的表示し、以降は全てサンプルテキスト＋CSSブラー。</p>
+      </div>
+
+      <table class="score-table" style="margin-bottom:32px">
+        <thead><tr><th>ゾーン</th><th>内容</th><th>実装</th><th>GAS関与</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--c3);font-weight:700">表示ゾーン①</td>
+            <td>AI戦闘力トークン ＋ 上位X%</td>
+            <td>URLパラメータ → カスタムJS</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <td style="color:var(--c3);font-weight:700">表示ゾーン②</td>
+            <td>4軸スコアカード（2×2グリッド）<br>知識力・指示力・活用力・思考力 各 XX/125 ＋ゲージバー</td>
+            <td>URLパラメータ → カスタムJS</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);font-weight:700">ブラーゾーン</td>
+            <td>総評テキスト・軸別評価×4・GAP分析・一貫性評価・次のステップ</td>
+            <td>静的サンプルテキスト ＋ <code>filter: blur(6px)</code></td>
+            <td>なし（静的HTML）</td>
+          </tr>
+          <tr>
+            <td style="color:var(--c2);font-weight:700">CTA</td>
+            <td>「500円 or 引用RTで全部見る」</td>
+            <td>静的テキスト ＋ ボタン</td>
+            <td>なし</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 16px;color:var(--text)">ページ縦構造イメージ</h3>
+
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:13px;margin-bottom:24px">
+        <div style="background:rgba(46,122,90,0.08);border-left:4px solid var(--c3);padding:14px 20px">
+          <div style="font-weight:700;color:var(--c3);margin-bottom:4px">▼ JS 動的ゾーン（URLパラメータから生成）</div>
+          <div style="color:var(--muted)">AI戦闘力 <strong style="color:var(--text)">724,320</strong> トークン　　上位 <strong style="color:var(--text)">23.0%</strong></div>
+        </div>
+        <div style="background:rgba(46,122,90,0.04);border-left:4px solid var(--c3);padding:14px 20px;border-top:1px solid var(--border)">
+          <div style="font-weight:700;color:var(--c3);margin-bottom:8px">4軸スコアカード（2×2グリッド）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px">知識力</div>
+              <div style="font-weight:700">90 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:72%;height:4px;background:var(--c1);border-radius:2px"></div></div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px">指示力</div>
+              <div style="font-weight:700">75 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:60%;height:4px;background:var(--c2);border-radius:2px"></div></div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px">活用力</div>
+              <div style="font-weight:700">110 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:88%;height:4px;background:var(--c3);border-radius:2px"></div></div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px">思考力</div>
+              <div style="font-weight:700">87 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:70%;height:4px;background:var(--c5);border-radius:2px"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(96,96,122,0.06);border-left:4px solid var(--muted);padding:14px 20px;border-top:1px solid var(--border)">
+          <div style="font-weight:700;color:var(--muted);margin-bottom:6px">▼ ブラーゾーン（サンプルテキスト + filter:blur）</div>
+          <div style="filter:blur(4px);color:var(--text);line-height:1.8;font-size:13px">
+            あなたの診断結果を詳しく分析しました。知識力・指示力・活用力・思考力のバランスから、AIを活用する上での強みと改善ポイントが明らかになっています。特に活用力において突出した特徴が見られ、日常業務へのAI統合において高い実践力を持っています。一方で知識と指示のギャップが認知チェーンの詰まりを生んでいる可能性があり…
+          </div>
+        </div>
+        <div style="background:rgba(160,72,112,0.06);border-left:4px solid var(--c2);padding:14px 20px;border-top:1px solid var(--border)">
+          <div style="font-weight:700;color:var(--c2);margin-bottom:4px">▼ CTA</div>
+          <div style="color:var(--muted);font-size:13px">「500円 or 引用RTで全部見る」ボタン</div>
+        </div>
+      </div>
+
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>ブラーゾーンの設計意図：</strong>「中身はあるが見えない」状態を作ることでレポートへの期待感を最大化する。API生成は不要で、それらしい文体のサンプルテキストを静的に埋めてCSSブラーをかけるだけ。実装コストがほぼゼロ。
+      </div>
+    </section>
+
+
+    <!-- JS実装仕様 -->
+    <section class="section" id="optin-js">
+      <div class="section-header">
+        <div class="section-eyebrow">JS Implementation</div>
+        <h2 class="section-title">JS実装仕様</h2>
+        <p class="section-desc">UTAGEカスタムJSに貼り付けるコードの仕様。Vue.jsのレンダリング完了を待ってから実行するため setTimeout(fn, 300) が必須。</p>
+      </div>
+
+      <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06);margin-bottom:24px">
+        <strong style="color:#a04870">注意（検証済み）：</strong>UTAGEはVue.jsでクライアントサイドレンダリングしている。スクリプトがページロード時に即実行するとDOMがまだ存在せず、<code>getElementById</code> が <code>null</code> を返す。<code>setTimeout(fn, 300)</code> で300ms待ってから実行すること。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">必要なID一覧</h3>
+      <table class="score-table" style="margin-bottom:24px">
+        <thead><tr><th>要素ID</th><th>表示内容</th><th>パラメータ</th></tr></thead>
+        <tbody>
+          <tr><td><code>st-total-tokens</code></td><td>AI戦闘力トークン（カンマ区切り）</td><td><code>total</code></td></tr>
+          <tr><td><code>st-percentile</code></td><td>上位X%</td><td><code>pct</code></td></tr>
+          <tr><td><code>st-score-k</code></td><td>知識力スコア数値</td><td><code>k</code></td></tr>
+          <tr><td><code>st-gauge-k</code></td><td>知識力ゲージ幅（width: XX%）</td><td><code>k</code></td></tr>
+          <tr><td><code>st-score-i</code></td><td>指示力スコア数値</td><td><code>i</code></td></tr>
+          <tr><td><code>st-gauge-i</code></td><td>指示力ゲージ幅</td><td><code>i</code></td></tr>
+          <tr><td><code>st-score-a</code></td><td>活用力スコア数値</td><td><code>a</code></td></tr>
+          <tr><td><code>st-gauge-a</code></td><td>活用力ゲージ幅</td><td><code>a</code></td></tr>
+          <tr><td><code>st-score-t</code></td><td>思考力スコア数値</td><td><code>t</code></td></tr>
+          <tr><td><code>st-gauge-t</code></td><td>思考力ゲージ幅</td><td><code>t</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">UTAGEカスタムJS（貼り付け用）</h3>
+      <div style="background:var(--text);border-radius:8px;padding:20px;margin-bottom:24px;overflow-x:auto">
+        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">setTimeout(function () {
+  var p = new URLSearchParams(window.location.search);
+
+  function set(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+  function setWidth(id, pct) {
+    var el = document.getElementById(id);
+    if (el) el.style.width = pct + '%';
+  }
+
+  var total = parseInt(p.get('total') || 0);
+  var pct   = parseFloat(p.get('pct')   || 0);
+  var k = parseInt(p.get('k') || 0);
+  var i = parseInt(p.get('i') || 0);
+  var a = parseInt(p.get('a') || 0);
+  var t = parseInt(p.get('t') || 0);
+
+  set('st-total-tokens', total.toLocaleString());
+  set('st-percentile',   pct >= 10 ? pct.toFixed(1) + '%' : pct.toFixed(2) + '%');
+
+  set('st-score-k', k);  setWidth('st-gauge-k', Math.round(k / 125 * 100));
+  set('st-score-i', i);  setWidth('st-gauge-i', Math.round(i / 125 * 100));
+  set('st-score-a', a);  setWidth('st-gauge-a', Math.round(a / 125 * 100));
+  set('st-score-t', t);  setWidth('st-gauge-t', Math.round(t / 125 * 100));
+
+}, 300);</pre>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">ブラーゾーンのCSS</h3>
+      <div style="background:var(--text);border-radius:8px;padding:20px;margin-bottom:24px">
+        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">.st-blur-zone {
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}</pre>
+      </div>
+
+      <div class="callout">
+        <strong>実装上のポイント：</strong>ブラーゾーン全体を <code>.st-blur-zone</code> で囲むだけでよい。テキストの内容は「それらしい文体のダミー文」でよく、Claude API 生成は不要。ユーザーには「内容はあるが見えない」状態が伝わればよい。
+      </div>
+    </section>
+
+  </main>
+</div><!-- /pane-optin -->
 
 
 <script>
