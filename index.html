@@ -809,6 +809,7 @@
   <button class="tab-btn" data-pane="report">レポート</button>
   <button class="tab-btn" data-pane="algo">評価軸設計</button>
   <button class="tab-btn" data-pane="dousen">導線設計</button>
+  <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
 </div>
 
 <!-- ==================== PANE: 診断設計 ==================== -->
@@ -3316,6 +3317,335 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 
   </main>
 </div><!-- /pane-dousen -->
+
+
+<!-- ==================== PANE: アルゴリズム整頓 ==================== -->
+<div id="pane-audit" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">アルゴリズム整頓</div>
+      <div class="sub">GAP・整合性チェックの設計審査</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">設計審査</div>
+      <a href="#audit-gap" class="nav-item active">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        GAP分析設計
+      </a>
+      <a href="#audit-consistency" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        整合性チェック
+      </a>
+      <a href="#audit-issues" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>
+        未解決課題
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- GAP分析設計 -->
+    <section class="section" id="audit-gap">
+      <div class="section-header">
+        <div class="section-eyebrow">Gap Analysis</div>
+        <h2 class="section-title">GAP分析設計</h2>
+        <p class="section-desc">4軸間の乖離を検出し「認知チェーンの詰まり」を可視化するロジック。3ペア × 正逆方向で最大6パターンの乖離を検知する。</p>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPペアと設計意図</h3>
+      <table class="score-table" style="margin-bottom:32px">
+        <thead>
+          <tr><th>ペア</th><th>計算式</th><th>正方向（+25以上）の意味</th><th>逆方向（−25以下）の意味</th><th>状態</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>K-I GAP</strong></td>
+            <td>知識力 − 指示力</td>
+            <td>知識はあるのに指示で活かせない（知識の空転）</td>
+            <td>指示力が突出・知識の裏付けが薄い</td>
+            <td><span class="badge badge-check">逆方向未定義</span></td>
+          </tr>
+          <tr>
+            <td><strong>A-T GAP</strong></td>
+            <td>活用力 − 思考力</td>
+            <td>使いまくっているが思考・検証が追いついていない（過信実行型）</td>
+            <td>思考・検証過剰・実行が伴わない（評論型）</td>
+            <td><span class="badge badge-check">逆方向未定義</span></td>
+          </tr>
+          <tr>
+            <td><strong>K-T GAP</strong></td>
+            <td>知識力 − 思考力</td>
+            <td>知識があるのに出力検証・判断が弱い（思考処理不全）</td>
+            <td>思考力は高いが知識基盤が薄い</td>
+            <td><span class="badge badge-check">逆方向未定義</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>検知しない3ペアについて：</strong>I-A / I-T / A-K は現在対象外。選定した3ペアは「知識→指示→活用→検証」という認知チェーンの詰まり場所を特定する意図で選ばれている。残りのペアを将来追加するかは後工程で判断する。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">⚠️ 単位の不一致：分散 vs GAP</h3>
+
+      <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06)">
+        <strong style="color:#a04870">要対応：</strong>Claude API へ渡す変数に単位が混在している。プロンプトか GAS のどちらかで統一する必要がある。
+      </div>
+
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>変数種別</th><th>計算方法</th><th>スケール</th><th>保存列</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>各軸の分散</strong></td>
+            <td>Sub最大率 − Sub最小率<br><span style="font-size:12px;color:var(--muted)">各Subスコアをそれぞれの最大値で割った比率の差</span></td>
+            <td><strong>0〜1（比率差）</strong></td>
+            <td>ED〜EG</td>
+          </tr>
+          <tr>
+            <td><strong>GAP（3ペア）</strong></td>
+            <td>軸Aスコア − 軸Bスコア<br><span style="font-size:12px;color:var(--muted)">生スコアのまま引き算</span></td>
+            <td><strong>−125〜+125（生スコア差）</strong></td>
+            <td>EH〜EJ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px">例：分散 <code>0.23</code>（比率差23%）と GAP <code>40</code>（点差40点）はどちらも「40」という数値で保存されうるが意味が全く異なる。</p>
+
+      <table class="score-table" style="margin-bottom:32px">
+        <thead><tr><th>解決案</th><th>内容</th><th>メリット</th><th>デメリット</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>案A：GAPも比率化</td>
+            <td><code>(K-I) ÷ 125</code> で 0〜1 に正規化</td>
+            <td>分散と同スケール・プロンプトがシンプル</td>
+            <td>点数差の直感的な感覚が消える</td>
+          </tr>
+          <tr>
+            <td>案B：プロンプトで単位を明記</td>
+            <td>「分散は比率差(0〜1)、GAPは点数差(/125)」と記述</td>
+            <td>既存の計算ロジックを変更しなくてよい</td>
+            <td>プロンプトが長くなる・誤解リスクが残る</td>
+          </tr>
+          <tr>
+            <td>案C：分散も点数化</td>
+            <td>Sub率差 × 軸最大スコア(125)で点数換算</td>
+            <td>GAP と同スケールで直感的</td>
+            <td>Sub の問数が軸によって異なる（11/8/6問）ため Max が揃わない</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPしきい値：≥25点の根拠</h3>
+      <table class="score-table" style="margin-bottom:16px">
+        <thead><tr><th>項目</th><th>値</th></tr></thead>
+        <tbody>
+          <tr><td>現在のしきい値</td><td>絶対値 ≥ 25点（生スコア差）</td></tr>
+          <tr><td>全体スケール</td><td>各軸 0〜125点（最大差 125点）</td></tr>
+          <tr><td>しきい値の比率</td><td>25 ÷ 125 = <strong>20%</strong></td></tr>
+          <tr><td>現時点の根拠</td><td>データなし（設計上の仮設定）</td></tr>
+        </tbody>
+      </table>
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>課題：</strong>N &lt; 100 のダミー期間中は適切さを検証できない。初期ユーザーデータが蓄積した時点で「何%に GAP が検出されているか」を確認し調整できるよう、GAS 側で集計できる構造を持っておくことを推奨する。
+      </div>
+    </section>
+
+
+    <!-- 整合性チェック設計 -->
+    <section class="section" id="audit-consistency">
+      <div class="section-header">
+        <div class="section-eyebrow">Consistency Check</div>
+        <h2 class="section-title">整合性チェック設計</h2>
+        <p class="section-desc">指示力・活用力・思考力の3軸 × 3グループ = 9グループで、テーマ内の回答の矛盾を検出する。知識力グループは廃止（Layer2サブスコアで代替）。</p>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">9グループ構成</h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>軸</th><th>グループ</th><th>設問</th><th>テーマ</th><th>難易度</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3" style="font-weight:700;color:var(--c2)">指示力</td><td>指示-1</td><td>Q34 / Q39 / Q44</td><td>指示を構造的に組み立てる</td><td>中</td></tr>
+          <tr><td>指示-2</td><td>Q45 / Q46 / Q49</td><td>AIを使う前に設計する</td><td>上</td></tr>
+          <tr><td>指示-3</td><td>Q35 / Q42 / Q47</td><td>指示の質を意図的に高めている</td><td>中〜上</td></tr>
+          <tr><td rowspan="3" style="font-weight:700;color:var(--c3)">活用力</td><td>活用-1</td><td>Q55 / Q57 / Q63</td><td>AIを継続活用して成果を上げている</td><td>初〜中</td></tr>
+          <tr><td>活用-2</td><td>Q72 / Q73 / Q74</td><td>職場でAI活用を推進・展開している</td><td>上</td></tr>
+          <tr><td>活用-3</td><td>Q67 / Q68 / Q69</td><td>AIを組み合わせて実行・自動化している</td><td>中</td></tr>
+          <tr><td rowspan="3" style="font-weight:700;color:var(--c5)">思考力</td><td>思考-1</td><td>Q76 / Q79 / Q85</td><td>AIの出力を確認してから使う</td><td>中</td></tr>
+          <tr><td>思考-2</td><td>Q90 / Q92 / Q95</td><td>AIに任せすぎない・人が判断する</td><td>中</td></tr>
+          <tr><td>思考-3</td><td>Q8 / Q91 / Q93</td><td>AIの得意・不得意を踏まえて使い方を変える</td><td>中</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>知識力グループを廃止した理由：</strong>知識の「穴」は行動の矛盾として現れにくく、整合性で検知できない。知識の偏りは Layer2 サブカテゴリスコアで把握するため、このチェックから除外した。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">検出ロジック</h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>グループ内の回答パターン</th><th>条件</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>ネガとポジが共存</td><td><code>min ≤ 2</code> かつ <code>max ≥ 4</code></td><td><strong>不整合あり</strong></td></tr>
+          <tr><td>全問中立</td><td><code>min = max = 3</code></td><td>整合（中立）</td></tr>
+          <tr><td>全問ポジ寄り</td><td><code>min ≥ 4</code></td><td>整合（一貫ポジ）</td></tr>
+          <tr><td>全問ネガ寄り</td><td><code>max ≤ 2</code></td><td>整合（一貫ネガ）</td></tr>
+          <tr><td>ポジ寄りグラデーション（例：4, 3, 3）</td><td><code>min = 3, max = 4</code></td><td>整合（強度差・矛盾ではない）</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">⚠️ 検出感度の課題</h3>
+      <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06)">
+        <strong style="color:#a04870">懸念：</strong>3問グループで「1問ネガ＋1問ポジ＋1問中立」でも不整合と判定される。感度が高すぎると大多数のユーザーが「不整合あり」になる可能性がある。
+      </div>
+
+      <p style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">具体的な発火パターン</p>
+      <table class="score-table" style="margin-bottom:20px">
+        <thead><tr><th>回答例（指示-3）</th><th>min</th><th>max</th><th>判定</th><th>実態</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Q35=1, Q42=5, Q47=3</td><td>1</td><td>5</td>
+            <td><span class="badge badge-check">不整合</span></td>
+            <td>明確な矛盾</td>
+          </tr>
+          <tr>
+            <td>Q35=1, Q42=4, Q47=3</td><td>1</td><td>4</td>
+            <td><span class="badge badge-check">不整合</span></td>
+            <td>微妙（Q47=3は中立）</td>
+          </tr>
+          <tr>
+            <td>Q35=2, Q42=4, Q47=3</td><td>2</td><td>4</td>
+            <td><span class="badge badge-check">不整合</span></td>
+            <td>やや矛盾あり</td>
+          </tr>
+          <tr>
+            <td>Q35=3, Q42=4, Q47=4</td><td>3</td><td>4</td>
+            <td><span class="badge badge-done">整合</span></td>
+            <td>グラデーション（正常）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:14px;font-weight:700;margin:0 0 8px;color:var(--text)">感度調整の選択肢</p>
+      <table class="score-table" style="margin-bottom:32px">
+        <thead><tr><th>案</th><th>条件変更</th><th>効果</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>現行維持</td>
+            <td><code>min≤2 AND max≥4</code></td>
+            <td>検出数多め・Claude の判断力に委ねる</td>
+          </tr>
+          <tr>
+            <td>厳格化①：差幅を追加</td>
+            <td><code>min≤2 AND max≥4 AND (max−min ≥ 3)</code></td>
+            <td>差が3以上のみ検出・中立混在の誤発火を除外</td>
+          </tr>
+          <tr>
+            <td>厳格化②：過半数ルール</td>
+            <td>3問中2問以上がネガ、かつ1問以上がポジ（またはその逆）</td>
+            <td>1問の外れ値では発火しない・より安定</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">0件ハンドリング</h3>
+      <table class="score-table" style="margin-bottom:16px">
+        <thead><tr><th>パターン</th><th>現在の設計</th><th>課題</th><th>提案</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>不整合 0件</td>
+            <td>セクション丸ごと非表示</td>
+            <td>「一貫性が高い」というポジティブな特徴が消える</td>
+            <td>全バッジ ● で「すべて一貫」として表示する</td>
+          </tr>
+          <tr>
+            <td>不整合 1〜9件</td>
+            <td>バッジ表示 + Claude評価文（80〜120字）</td>
+            <td>—</td>
+            <td>現行維持</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout" style="border-left-color:var(--c3)">
+        <strong>提案：</strong>0件のとき「あなたは3軸すべてで一貫した回答をしています。」という静的テキストとともに全バッジ ● で表示する。非表示より「強みの確認」として見せた方が納得感が上がり、CTA への橋渡しにもなる。
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">Claude への入力情報の不足</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:16px">Layer3 として渡す変数は「不整合グループ名・件数・min/max 値」。ただし設問の向き（ポジティブ方向か否か）の情報がないため、Claude は min/max が何を意味するか判断できない。</p>
+      <table class="score-table" style="margin-bottom:16px">
+        <thead><tr><th>設問例</th><th>min=1 の意味</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>「指示の前に目的を整理する」(Q47)</td><td>全然しない → 明確なネガ</td><td>ポジティブ方向</td></tr>
+          <tr><td>（仮）「雑に使うこともある」系の問</td><td>全然しない → 実はポジ</td><td>ネガティブ方向</td></tr>
+        </tbody>
+      </table>
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>対応方針（現在）：</strong>プロンプトに「断定しない・認識のムラとしてフラットに語る」制約を入れることで対処。設問の向き情報を渡すことは実装コスト対比で見合わないため、現時点では行わない。
+      </div>
+    </section>
+
+
+    <!-- 未解決課題 -->
+    <section class="section" id="audit-issues">
+      <div class="section-header">
+        <div class="section-eyebrow">Open Issues</div>
+        <h2 class="section-title">未解決課題一覧</h2>
+        <p class="section-desc">GAS設計書・Claude API プロンプト作成前に方針を決める必要がある項目。</p>
+      </div>
+
+      <table class="score-table">
+        <thead>
+          <tr><th>#</th><th>課題</th><th>影響範囲</th><th>優先度</th><th>状態</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>分散とGAPの単位統一</strong><br><span style="font-size:12px;color:var(--muted)">分散=比率差(0〜1) / GAP=生スコア差(0〜125) が混在</span></td>
+            <td>GAS設計 / プロンプト</td>
+            <td><span class="priority-high">🔴 高</span></td>
+            <td><span class="badge badge-todo">未決定</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>整合性チェックの検出感度調整</strong><br><span style="font-size:12px;color:var(--muted)">3問1件発火の現行ロジックを厳格化するか検討（差幅 or 過半数ルール）</span></td>
+            <td>GAS設計 / レポートUI</td>
+            <td><span class="priority-high">🔴 高</span></td>
+            <td><span class="badge badge-todo">未決定</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>GAP逆方向の意味づけ定義</strong><br><span style="font-size:12px;color:var(--muted)">−25以下のときの解釈をプロンプトに明記する必要あり</span></td>
+            <td>Claude APIプロンプト</td>
+            <td><span class="priority-mid">🟡 中</span></td>
+            <td><span class="badge badge-todo">未定義</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>整合性0件時の表示方針</strong><br><span style="font-size:12px;color:var(--muted)">非表示 or 「全一貫」として全バッジ ● で表示するか</span></td>
+            <td>レポートUI</td>
+            <td><span class="priority-mid">🟡 中</span></td>
+            <td><span class="badge badge-todo">未決定</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>GAPしきい値の検証プラン</strong><br><span style="font-size:12px;color:var(--muted)">25点はデータなしの仮設定。N≥100到達後に検証する仕組みを GAS に組む</span></td>
+            <td>GAS / 運用</td>
+            <td><span class="priority-low">🟢 低</span></td>
+            <td><span class="badge badge-todo">後工程</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>検知しないGAPペア（I-A / I-T / A-K）の扱い</strong><br><span style="font-size:12px;color:var(--muted)">意図的除外か将来追加候補かを設計書に明記する</span></td>
+            <td>設計ドキュメント</td>
+            <td><span class="priority-low">🟢 低</span></td>
+            <td><span class="badge badge-todo">未明記</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div><!-- /pane-audit -->
 
 
 <script>
