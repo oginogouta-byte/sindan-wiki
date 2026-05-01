@@ -1518,21 +1518,15 @@
           </tr>
           <tr>
             <td><strong>[1] 点数と戦闘力</strong></td>
-            <td>AI戦闘力トークン / 4軸詳細スコア（/125）</td>
-            <td><span class="badge badge-done">自動計算</span></td>
-            <td>数値の根拠を見せる</td>
+            <td>AI戦闘力トークン / 4軸詳細スコア（/249,999）+ 総合評価テキスト（<code>summary</code>）</td>
+            <td><span class="badge badge-done">自動計算</span> + <span class="badge badge-todo">Claude API</span></td>
+            <td>数値の根拠を見せる + 言語化で没入</td>
           </tr>
           <tr>
             <td><strong>[2] レーダーチャート</strong></td>
-            <td>自分 vs 全体平均・4軸の差異</td>
+            <td>自分 vs 全体平均・4軸の差異（トグルあり）</td>
             <td><span class="badge badge-done">自動計算</span></td>
             <td>平均との乖離を可視化</td>
-          </tr>
-          <tr>
-            <td><strong>[3] 総評</strong></td>
-            <td>4軸全体像の総評（2〜3文）</td>
-            <td><span class="badge badge-todo">Claude API</span></td>
-            <td>「自分のことを語られている」体験</td>
           </tr>
           <tr>
             <td><strong>[4] 軸別評価 × 4</strong></td>
@@ -1594,8 +1588,8 @@
             <div class="page-role">自動計算 + Claude API</div>
             <div class="page-title">点数と戦闘力</div>
             <ul class="page-items">
-              <li>AI戦闘力：X,XXX,XXX トークン（数値大きく・アニメーション込み）</li>
-              <li>4軸詳細スコア（/125点）</li>
+              <li>AI戦闘力：XXX,XXX トークン（数値大きく表示）</li>
+              <li>4軸詳細スコア（/249,999・トークン値）</li>
               <li>ランク表示なし</li>
               <li><strong>総合評価テキスト：</strong>このスコアパターンの市場内立ち位置を言語化（216〜240字・<code>summary</code>）</li>
             </ul>
@@ -1620,23 +1614,7 @@
           </div>
         </div>
 
-        <!-- 総評 -->
-        <div class="report-page-card" style="--page-color: var(--c2)">
-          <div class="page-num">3</div>
-          <div class="page-body">
-            <div class="page-role">Claude API · H1</div>
-            <div class="page-title">総評</div>
-            <ul class="page-items">
-              <li>4軸全体像を俯瞰した総評（2〜3文）</li>
-              <li>「このスコアパターンの人が市場でどういう立ち位置にいるか」を言語化</li>
-              <li>抽象的な褒め言葉・励ましは禁止。客観的・分析的なトーンで</li>
-            </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：216〜240字</div>
-            <span class="page-gen">Claude API</span>
-          </div>
-        </div>
-
-        <!-- 軸別評価 -->
+        <!-- 軸別評価（Section 4 — HTMLではsec-axes） -->
         <div class="report-page-card" style="--page-color: var(--c2)">
           <div class="page-num">4</div>
           <div class="page-body">
@@ -1713,7 +1691,7 @@
       </div>
 
       <div class="callout">
-        <strong>設計方針：</strong>情報密度を担保するため縦スクロール型を採用。セクション単位でコンテンツを区切り、ビジュアルゾーン（FV〜2）→ テキスト分析ゾーン（3〜6）→ CTA の順で自然に読み進められる構成にする。
+        <strong>設計方針：</strong>情報密度を担保するため縦スクロール型を採用。セクション単位でコンテンツを区切り、ビジュアルゾーン（FV・1・2）→ テキスト分析ゾーン（4〜6）→ CTA の順で自然に読み進められる構成にする。
       </div>
       <div class="callout" style="margin-top:8px">
         <strong>デザイン品質方針：</strong>診断ページ（index.html）のビジュアル水準を前提とする。一般ユーザーはAI診断の良し悪しを判断する軸を持っていないため、デザインの先進性・精緻さが「このサービスはすごい」という認知を直接作る。市場にほぼ競合が存在しない今、このレポートが業界の基準になる。レーダーチャート・スコアバーはデフォルトライブラリを使わず、診断ページと同世界観のカスタムビジュアルで構築する。
@@ -1784,7 +1762,7 @@
             <thead><tr><th>要素</th><th>テキスト</th><th>種別</th></tr></thead>
             <tbody>
               <tr><td>メイン数値</td><td>XXX,XXX トークン</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>4軸詳細</td><td>知識力 XX / 125点（×4軸）</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>4軸詳細</td><td>知識力 XX,XXX / 249,999（×4軸・トークン値）</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>総合評価テキスト（<code>summary</code>）</td><td>このスコアパターンが市場でどういう立ち位置か（216〜240字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
@@ -1804,21 +1782,6 @@
               <tr><td>凡例</td><td>● あなた　◯ 全体平均</td><td><span class="badge badge-done">静的ラベル</span></td></tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Section 3 -->
-      <div style="margin-bottom:24px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 3</div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：診断サマリー</div>
-          <table class="score-table" style="margin:0">
-            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
-            <tbody>
-              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（216〜240字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-            </tbody>
-          </table>
-          <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">禁止：褒め言葉・励まし・「素晴らしい」「頑張りましょう」。客観・分析トーンで。</div>
         </div>
       </div>
 
@@ -2268,24 +2231,24 @@
             <td>
               <strong>軸スコア表示の分母：/249,999 vs /125点</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                HTML Section 1 はトークン値(0〜249,999)で表示している（HTML実装が正）。wiki・SPEC の一部に "/125点" の記述が残存する可能性がある。実装完了後にwiki・SPEC側を合わせる。
+                HTML Section 1 はトークン値(0〜249,999)で表示（HTML実装が正）。wiki・Content Spec の "/125点" 記述を "/249,999" に修正済み。
               </span>
             </td>
-            <td>wiki セクション詳細 / SPEC.md</td>
+            <td>wiki セクション詳細 / Content Spec</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">実装完了後にwiki/SPEC修正</span></td>
+            <td><span class="badge badge-done">修正済み（2026-05-02）</span></td>
           </tr>
           <tr>
             <td>5</td>
             <td>
               <strong>Section 3「診断サマリー」がHTML上に存在しない</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                wiki 8セクション構成表には Section [3] 診断サマリーが記載されているが、HTML の実装構成は FV → Sec1 → Sec2(レーダー) → Sec4(軸別) → Sec5 → Sec6 → CTA であり Section 3 に相当するDOMが存在しない。サマリーは Section 1 の <code>.score-summary</code> に統合済みの可能性が高い。wiki構成表を実装完了後に修正する。
+                HTML実装構成は FV → Sec1 → Sec2(レーダー) → Sec4 → Sec5 → Sec6 → CTA。Section 3 DOM なし。総合評価テキスト（summary）は Section 1 の <code>.score-summary</code> に統合。wiki 構成表・Content Spec から Section 3 を削除済み。
               </span>
             </td>
-            <td>wiki セクション構成表</td>
+            <td>wiki セクション構成表 / Content Spec</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">実装完了後にwiki修正</span></td>
+            <td><span class="badge badge-done">修正済み（2026-05-02）</span></td>
           </tr>
           <tr>
             <td>6</td>
