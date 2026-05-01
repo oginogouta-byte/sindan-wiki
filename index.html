@@ -933,8 +933,8 @@
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
-            <div class="flow-label">③ UTAGEサンクスページ（CVフック）</div>
-            <div class="flow-desc">診断完了後に遷移。<strong>「結果・レポートを受け取るには、引用RTするか500円支払ってください」</strong>と提示。結果を見たいという動機をCVに転換する起点。診断IDをパラメータで引き継ぐ（技術検証中）。</div>
+            <div class="flow-label">③ UTAGEサンクスページ（部分表示 → CVフック）</div>
+            <div class="flow-desc">GASがスコア計算完了後、主要数値をURLパラメータに付与してリダイレクト。ページ上部に<strong>AI戦闘力・上位X%・4軸スコア（数値）を表示</strong>。詳細評価テキスト部分はサンプル文＋CSSブラーで「中身はあるが見えない」状態にし、CVへの動機を最大化する。<br>実装：UTAGEカスタムJS（setTimeout + URLSearchParams）でパラメータ読み取り → DOM書込。外部API呼び出しなし・同時アクセス安全（検証済み）。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -3140,8 +3140,8 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <!-- UTAGE サンクスページ（共通起点） -->
         <div style="background:rgba(88,88,168,0.07);border:2px solid var(--accent);border-radius:12px;padding:10px 20px;text-align:center;min-width:210px">
           <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:2px">UTAGE</div>
-          <div style="font-weight:700;font-size:13px;color:var(--text)">サンクスページ</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">2つの取得方法を提示</div>
+          <div style="font-weight:700;font-size:13px;color:var(--text)">サンクスページ（部分表示）</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">数値表示（URLパラメータ）＋詳細モザイク → CV提示</div>
         </div>
 
         <!-- FORK ⊓ -->
