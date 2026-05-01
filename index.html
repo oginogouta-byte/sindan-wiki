@@ -879,7 +879,7 @@
       <div class="section-header">
         <div class="section-eyebrow">Overview</div>
         <h1 class="section-title">全体設計</h1>
-        <p class="section-desc">スキルプラスのAI活用度診断ツール。100問の回答から個別最適化されたレポートをLINEで送付する。</p>
+        <p class="section-desc">スキルプラスのAI活用度診断ツール。100問の回答から個別最適化されたレポートを生成し、UTAGEまたはX（引用RT）経由でURLを届ける。レポート末尾でLINE公式アカウントへ誘導してリストを獲得する。LINEでのレポート送付は行わない。</p>
       </div>
 
       <div class="overview-grid">
@@ -991,7 +991,7 @@
         <strong>戦闘力の算出式（軸別加算型）：</strong><br>
         <code style="display:block;margin-top:8px;font-size:14px;letter-spacing:.03em">各軸トークン = round( (軸スコア ÷ 125)³ × 249,999 )</code>
         <code style="display:block;margin-top:4px;font-size:14px;letter-spacing:.03em">AI戦闘力（総合）= 知識力 + 指示力 + 活用力 + 思考力（各軸トークンの合計）</code>
-        <p style="margin-top:8px;font-size:13px;color:var(--muted)">4軸それぞれで3乗変換し合算。各軸最大 <strong style="color:var(--text)">249,999トークン</strong>、総合最大 <strong style="color:var(--text)">999,999トークン</strong>。バックエンドは生スコア（1〜5）保持、表示変換はフロント側で実施。</p>
+        <p style="margin-top:8px;font-size:13px;color:var(--muted)">4軸それぞれで3乗変換し合算。各軸最大 <strong style="color:var(--text)">249,999トークン</strong>、総合最大 <strong style="color:var(--text)">999,999トークン</strong>。GASがトークン変換まで計算しREPORT_DATAに注入。フロントは表示のみ。</p>
       </div>
 
       <table class="score-table">
@@ -1038,7 +1038,7 @@
       </table>
 
       <div class="callout" style="margin-top:20px">
-        <strong>※ランク判定は内部スコア（500点満点）ベースで行い、ユーザーへの表示は戦闘力に変換する。</strong>境界値は実際のスコア分布データを取得後に調整予定。
+        <strong>※ランクはレポートに表示しない（確定）。</strong>ランクは内部計算・GAS保存用途のみ。ユーザーへは「上位X%」（全受検者中の相対位置）のみを表示する。境界値は実際のスコア分布データを取得後に調整予定。
       </div>
 
       <!-- 想定ユーザー分布 -->
@@ -1119,8 +1119,8 @@
         </div>
         <div class="tech-card">
           <div class="tech-role">レポートページ Hosting</div>
-          <div class="tech-name">GitHub Pages / Netlify</div>
-          <div class="tech-status"><span class="badge badge-check">未確定</span></div>
+          <div class="tech-name">Vercel</div>
+          <div class="tech-status"><span class="badge badge-check">未確定（有力候補）</span></div>
         </div>
         <div class="tech-card">
           <div class="tech-role">メール送付（案A）</div>
