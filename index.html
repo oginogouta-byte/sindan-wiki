@@ -1957,28 +1957,29 @@
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
-        グループは<strong>8種（全3問統一）</strong>：思考-1（Q76/Q79/Q85）/ 思考-2（Q90/Q92/Q94）/ 指示-1（Q34/Q42/Q44）/ 指示-2（Q45/Q46/Q49）/ 活用-1（Q55/Q57/Q59）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q75）/ 観点またぎ（Q8/Q91/Q93）<br>
-        ※ <strong>知識グループは廃止</strong>。知識の穴は行動認識の矛盾ではなくLayer2サブスコアで把握する。判断・思考・活用は人間の行動・処理パターンから出力されるものなのでズレが意味を持つ。
+        グループは<strong>9種・3軸×3グループ</strong>（全3問統一）：思考-1（Q76/Q79/Q85）/ 思考-2（Q90/Q92/Q95）/ 思考-3（Q8/Q91/Q93）/ 指示-1（Q34/Q39/Q44）/ 指示-2（Q45/Q46/Q49）/ 指示-3（未確定）/ 活用-1（Q55/Q57/Q63）/ 活用-2（Q72/Q73/Q74）/ 活用-3（Q67/Q68/Q69）<br>
+        ※ <strong>知識グループは廃止</strong>。知識の穴は行動認識の矛盾ではなくLayer2サブスコアで把握する。旧「観点またぎ」は思考-3に統合（Q8は知識力設問だが思考-3グループへ配置）。
       </div>
 
       <div style="margin-top:24px">
-        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">自己認識のズレ 出力例</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">回答の一貫性 レポート構造</div>
 
-        <!-- カード構造説明 -->
+        <!-- レポート表示構造 -->
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
-          <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:10px">カード構造（確定）</div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:10px">レポート表示構造（確定）</div>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
             <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
-              <div style="color:var(--accent);font-weight:700;margin-bottom:4px">タイトル（静的・グループ固定）</div>
-              <div style="color:var(--text)">「AIを使った仕組みの構築・継続運用に認識のズレが検知されました」</div>
+              <div style="color:var(--accent);font-weight:700;margin-bottom:4px">固定文（静的）</div>
+              <div style="color:var(--text)">「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</div>
             </div>
             <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
-              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">① 何が起きているか（Claude・〜25字）</div>
-              <div style="color:var(--text)">「仕組みを作った経験と継続運用の経験が混在しています」</div>
+              <div style="color:var(--muted);font-size:11px;margin-bottom:4px">バッジグリッド（3×3・ニューモフィズム）</div>
+              <div style="color:var(--text);font-family:monospace">指示力 [●][●][○]  2/3<br>活用力 [●][●][●]  3/3<br>思考力 [●][○][○]  1/3</div>
+              <div style="color:var(--muted);margin-top:4px">※ 軸ごとに色分け。一貫グループ=凸（埋まり）、不整合グループ=凹（空き）。GASが9グループ×判定で計算しSheetsに保存</div>
             </div>
             <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
-              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">② ユーザーの状態の可能性（Claude・〜35字）</div>
-              <div style="color:var(--text)">「自動化を試みているが運用フェーズまで定着していない可能性があります」</div>
+              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">評価文（Claude API・<code>consistency_eval</code>・80〜120字）</div>
+              <div style="color:var(--text)">「指示設計と出力確認に関して、場面による行動のバラつきが検知されました。意識はあるが習慣として定着していない可能性があります。実行の基準を明確にすることで一貫性は高まります。」</div>
             </div>
           </div>
         </div>
@@ -1988,74 +1989,59 @@
           <!-- 0件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN A ― 不整合 0件</div>
-            <div style="font-size:12px;color:var(--muted)">self_gaps: []（空配列）→ セクション自体を非表示（GAPと同様）</div>
+            <div style="font-size:12px;color:var(--muted)">consistency_eval: ""（空文字）→ セクション自体を非表示（GAPと同様）</div>
           </div>
 
           <!-- 1件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN B ― 不整合 1件（思考-1）</div>
-            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
-  "name": "思考-1",
-  "min": 1, "max": 5,
-  "what_happening": "確認する場面としない場面が混在しています",  // 22字
-  "possibility": "確認の意識はあるが自分の判断基準が定まっていない可能性があります"  // 33字
-}</code></pre>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Claudeへの入力（Layer3）：グループ名「思考-1」・min=1・max=5</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>// Claude出力（consistency_eval のみ・1本）
+"AIの出力確認行動に場面によるムラが検知されました。確認の意識はあるが基準が定まっていない可能性があります。"
+// 83字</code></pre>
           </div>
 
           <!-- 複数件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
             <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN C ― 不整合 3件（思考-1 / 指示-2 / 活用-1）</div>
-            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>[
-  {
-    "name": "思考-1", "min": 1, "max": 5,
-    "what_happening": "確認する場面としない場面が混在しています",
-    "possibility": "確認の意識はあるが習慣として定着していない可能性があります"
-  },
-  {
-    "name": "指示-2", "min": 2, "max": 4,
-    "what_happening": "設計してから取り組む場面とそうでない場面があります",
-    "possibility": "ゴール逆算の意識が状況依存になっている可能性があります"
-  },
-  {
-    "name": "活用-1", "min": 1, "max": 5,
-    "what_happening": "日常定着の評価に大きなブレがあります",
-    "possibility": "活用の成果基準が曖昧なまま運用している可能性があります"
-  }
-]</code></pre>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Claudeへの入力（Layer3）：不整合グループ名・件数・各min/max をまとめて渡す</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>// Claude出力（consistency_eval のみ・1本）
+"出力確認・設計・日常定着の3領域で回答のブレが検知されました。意識と実践の間にギャップがあり、場面によって行動基準が変わっている可能性があります。"
+// 72字（実際は80〜120字目安）</code></pre>
           </div>
 
-          <!-- 観点またぎ -->
+          <!-- 思考-3 例 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN D ― 観点またぎ（知識×判断の2軸またぎ）</div>
-            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>{
-  "name": "観点またぎ", "min": 1, "max": 5,
-  "what_happening": "AIの特性理解と実際の使い分けがかみ合っていません",
-  "possibility": "知識はあるが判断場面での応用に落とせていない可能性があります"
-}</code></pre>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN D ― 思考-3（AIの得意・不得意に関するブレ）</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">旧「観点またぎ」が思考-3 に統合（Q8/Q91/Q93）</div>
+            <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>// Claude出力（consistency_eval のみ・1本）
+"AIの特性理解と実際の使い方に一貫性のなさが検知されました。知識と実践の接続が場面によって異なっている可能性があります。"
+// 58字（実際は80〜120字目安）</code></pre>
           </div>
 
         </div>
 
         <!-- グループ別タイトル固定文言 -->
         <div style="margin-top:20px">
-          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">グループ別タイトル固定文言</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">グループ別バッジラベル（9種・バッジグリッド表示用）</div>
           <table class="score-table" style="font-size:12px">
-            <thead><tr><th>グループ</th><th>タイトル固定文言</th></tr></thead>
+            <thead><tr><th>グループ</th><th>設問</th><th>バッジラベル（短縮表示）</th></tr></thead>
             <tbody>
-              <tr><td>思考-1</td><td>AI出力を確認する行動に、場面によるムラが検知されました</td></tr>
-              <tr><td>思考-2</td><td>AIへの依存度の管理・監視行動にズレが検知されました</td></tr>
-              <tr><td>指示-1</td><td>指示の設計・改善プロセスに認識のズレが検知されました</td></tr>
-              <tr><td>指示-2</td><td>AIを使う前の指示設計の実践に認識のズレが検知されました</td></tr>
-              <tr><td>活用-1</td><td>AIの日常業務への定着度に認識のズレが検知されました</td></tr>
-              <tr><td>活用-2</td><td>職場でのAI活用推進・展開に認識のズレが検知されました</td></tr>
-              <tr><td>活用-3</td><td>AIを使った仕組みの構築・継続運用に認識のズレが検知されました</td></tr>
-              <tr><td>観点またぎ</td><td>AIの得意・不得意の理解と実際の使い分けにズレが検知されました</td></tr>
+              <tr><td>思考-1</td><td>Q76/Q79/Q85</td><td>出力確認</td></tr>
+              <tr><td>思考-2</td><td>Q90/Q92/Q95</td><td>依存管理</td></tr>
+              <tr><td>思考-3</td><td>Q8/Q91/Q93</td><td>特性応用</td></tr>
+              <tr><td>指示-1</td><td>Q34/Q39/Q44</td><td>指示設計</td></tr>
+              <tr><td>指示-2</td><td>Q45/Q46/Q49</td><td>事前設計</td></tr>
+              <tr><td>指示-3</td><td>未確定</td><td>未確定</td></tr>
+              <tr><td>活用-1</td><td>Q55/Q57/Q63</td><td>日常定着</td></tr>
+              <tr><td>活用-2</td><td>Q72/Q73/Q74</td><td>組織展開</td></tr>
+              <tr><td>活用-3</td><td>Q67/Q68/Q69</td><td>仕組み化</td></tr>
             </tbody>
           </table>
         </div>
 
         <div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
-          ※ what_happening は事実の記述（断定OK）。possibility は必ず「〜可能性があります」調で出力。断定・糾弾調にしない。
+          ※ Claude APIにはグループ名・件数・各グループのmin/maxをまとめて渡し、<code>consistency_eval</code>（単一評価文80〜120字）を1本生成させる。グループ別テキスト生成（旧 self_gaps）は廃止。断定・糾弾調にせず、原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現にする。
         </div>
       </div>
 
@@ -2402,9 +2388,9 @@
 
         <div class="layer-card">
           <div class="layer-num">Layer 2 — パターン</div>
-          <div class="layer-title">ユーザー分類タイプ（サブカテゴリのパターンから判定）</div>
-          <div class="layer-desc">軸スコアの合計ではなく、サブカテゴリの組み合わせパターンから分類タイプを付与。「指示設計（高）× 時短実感（低）」と「時短実感（高）× 指示設計（低）」は同じ合計でも異なるタイプとして評価する。分類アルゴリズムは別途設計中。</div>
-          <div class="layer-example">例：指示設計（高）× スキル実行（高）× 量産統合（高）→ 上級活用型</div>
+          <div class="layer-title">サブカテゴリ内訳 + 軸内分散（どうやって到達したか）</div>
+          <div class="layer-desc">軸スコア合計だけでは見えない「偏り」を検出する。「指示設計（高）× 基本指示（低）」と「全サブ均等中位」は同じ合計でもClaudeへの入力文脈が変わる。分類タイプ名はGAS内部計算のみ。Claudeにはサブスコア12本と分散4本を直接渡す。</div>
+          <div class="layer-example">例：指示力 72/125 → 基本指示（低）/ 反復改善（中）/ 指示設計（高）→ 「型は持っているが入門層で詰まっている」と解釈</div>
         </div>
 
         <div class="layer-card">
@@ -2614,7 +2600,7 @@
         </div>
         <div class="chain-arrow-col">
           <div class="chain-arrow">→</div>
-          <div class="chain-gap-label">T-A GAP</div>
+          <div class="chain-gap-label" style="color:var(--muted);opacity:.4">—</div>
         </div>
         <div class="chain-node">
           <div class="chain-node-role">EXECUTE</div>
@@ -2667,7 +2653,7 @@
       <div class="gap-patterns">
         <div class="gap-pattern danger">
           <div>
-            <div class="gap-formula" style="color:#ff6e9c">A高 × J低 ⚠️</div>
+            <div class="gap-formula" style="color:#ff6e9c">A高 × T低 ⚠️</div>
             <div style="font-size:10px;color:var(--muted);margin-top:3px">活用力≥87 かつ 思考力≤49</div>
           </div>
           <div class="gap-meaning">
@@ -2677,7 +2663,7 @@
         </div>
         <div class="gap-pattern">
           <div>
-            <div class="gap-formula" style="color:#7c6eff">K高 × T低</div>
+            <div class="gap-formula" style="color:#7c6eff">K高 × I低</div>
             <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 指示力≤49</div>
           </div>
           <div class="gap-meaning">
@@ -2687,7 +2673,7 @@
         </div>
         <div class="gap-pattern">
           <div>
-            <div class="gap-formula" style="color:#7c6eff">K高 × J低</div>
+            <div class="gap-formula" style="color:#7c6eff">K高 × T低</div>
             <div style="font-size:10px;color:var(--muted);margin-top:3px">知識力≥87 かつ 思考力≤49</div>
           </div>
           <div class="gap-meaning">
@@ -2697,8 +2683,8 @@
         </div>
         <div class="gap-pattern">
           <div>
-            <div class="gap-formula" style="color:#4ec9f0">K高・J高 × A低</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:3px">K≥80 かつ J≥80 かつ A≤49</div>
+            <div class="gap-formula" style="color:#4ec9f0">K高・T高 × A低</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">K≥80 かつ T≥80 かつ A≤49</div>
           </div>
           <div class="gap-meaning">
             <strong>慎重未実践型 — 理解はある、手が動かないパターン</strong>
@@ -2718,7 +2704,7 @@
             <div class="tc-rule">R0</div>
           </div>
           <div class="ax-row">
-            <span class="ax h">K</span><span class="ax h">T</span><span class="ax h">A</span><span class="ax h">J</span>
+            <span class="ax h">K</span><span class="ax h">I</span><span class="ax h">A</span><span class="ax h">T</span>
           </div>
           <div class="tc-desc">4軸すべて高水準。思考フレームとAI実行能力の両輪が回っている。AIを完全に武器化できている層。</div>
           <div class="tc-edge">成長の次の壁：差別化・組織展開・領域の深化</div>
@@ -2730,7 +2716,7 @@
             <div class="tc-rule">R1</div>
           </div>
           <div class="ax-row">
-            <span class="ax m">K</span><span class="ax m">T</span><span class="ax h">A</span><span class="ax l">J</span>
+            <span class="ax m">K</span><span class="ax m">I</span><span class="ax h">A</span><span class="ax l">T</span>
           </div>
           <div class="tc-desc">活用量は多いが思考力が著しく低い。AI出力を検証せず使い続けるリスクが高い。最優先で思考力強化が必要。</div>
           <div class="tc-edge">コア課題：A-T GAP の解消（検証習慣の定着）</div>
@@ -2742,7 +2728,7 @@
             <div class="tc-rule">R2</div>
           </div>
           <div class="ax-row">
-            <span class="ax h">K</span><span class="ax h">T</span><span class="ax l">A</span><span class="ax l">J</span>
+            <span class="ax h">K</span><span class="ax h">I</span><span class="ax l">A</span><span class="ax l">T</span>
           </div>
           <div class="tc-desc">知識と指示設計は高いが実際の活用量がほぼゼロ。「理解している」が「やっていない」状態。手を動かすことが唯一の打ち手。</div>
           <div class="tc-edge">コア課題：活用力の量的拡大（まず使う回数を増やす）</div>
@@ -2754,7 +2740,7 @@
             <div class="tc-rule">R3</div>
           </div>
           <div class="ax-row">
-            <span class="ax h">K</span><span class="ax l">T</span><span class="ax l">A</span><span class="ax m">J</span>
+            <span class="ax h">K</span><span class="ax l">I</span><span class="ax l">A</span><span class="ax m">T</span>
           </div>
           <div class="tc-desc">知識は豊富だが指示設計（指示力）と実践（活用力）が弱い。情報を収集・蓄積するが「では何をAIに頼むか」が設計できていない。</div>
           <div class="tc-edge">コア課題：K-I GAP の解消（知識→指示への変換）</div>
@@ -2766,7 +2752,7 @@
             <div class="tc-rule">R4</div>
           </div>
           <div class="ax-row">
-            <span class="ax h">K</span><span class="ax m">T</span><span class="ax l">A</span><span class="ax h">J</span>
+            <span class="ax h">K</span><span class="ax m">I</span><span class="ax l">A</span><span class="ax h">T</span>
           </div>
           <div class="tc-desc">知識と思考力は高いが活用力が低い。「AIの正確性・リスクを知っているから慎重になりすぎる」パターン。実践量を増やすことで急成長が見込める。</div>
           <div class="tc-edge">コア課題：心理的ブレーキの除去・活用量の増加</div>
@@ -2778,7 +2764,7 @@
             <div class="tc-rule">R5</div>
           </div>
           <div class="ax-row">
-            <span class="ax l">K</span><span class="ax l">T</span><span class="ax h">A</span><span class="ax m">J</span>
+            <span class="ax l">K</span><span class="ax l">I</span><span class="ax h">A</span><span class="ax m">T</span>
           </div>
           <div class="tc-desc">知識・思考フレームなしに感覚でAIを動かしている。実践量はある。知識と思考を体系化すれば一気に上位に食い込める伸びしろ最大層。</div>
           <div class="tc-edge">コア課題：フレームワークの獲得（知識・指示設計の強化）</div>
@@ -2790,7 +2776,7 @@
             <div class="tc-rule">R6</div>
           </div>
           <div class="ax-row">
-            <span class="ax m">K</span><span class="ax m">T</span><span class="ax m">A</span><span class="ax m">J</span>
+            <span class="ax m">K</span><span class="ax m">I</span><span class="ax m">A</span><span class="ax m">T</span>
           </div>
           <div class="tc-desc">4軸が中程度でバランスよく揃っている。突出した強みも弱みもない安定型。次の突破口をどの軸に置くかが成長の鍵。</div>
           <div class="tc-edge">コア課題：どれか1軸を意識的に伸ばして突破口をつくる</div>
@@ -2802,10 +2788,10 @@
             <div class="tc-rule">R7</div>
           </div>
           <div class="ax-row">
-            <span class="ax l">K</span><span class="ax l">T</span><span class="ax m">A</span><span class="ax l">J</span>
+            <span class="ax l">K</span><span class="ax l">I</span><span class="ax m">A</span><span class="ax l">T</span>
           </div>
-          <div class="tc-desc">なんとなく使っている段階。活用量は中程度あるが知識・思考・判断のすべてが低い。全方位での基礎固めが優先。</div>
-          <div class="tc-edge">コア課題：全軸の底上げ（特に知識と判断の基礎）</div>
+          <div class="tc-desc">なんとなく使っている段階。活用量は中程度あるが知識・指示・思考のすべてが低い。全方位での基礎固めが優先。</div>
+          <div class="tc-edge">コア課題：全軸の底上げ（特に知識と思考の基礎）</div>
         </div>
 
         <div class="type-card tc-dim">
@@ -2814,7 +2800,7 @@
             <div class="tc-rule">R8</div>
           </div>
           <div class="ax-row">
-            <span class="ax l">K</span><span class="ax l">T</span><span class="ax l">A</span><span class="ax l">J</span>
+            <span class="ax l">K</span><span class="ax l">I</span><span class="ax l">A</span><span class="ax l">T</span>
           </div>
           <div class="tc-desc">AI活用がこれから始まる段階。4軸すべてが低水準。今が最も伸びやすいフェーズ。基礎の知識インプットから丁寧に展開する。</div>
           <div class="tc-edge">コア課題：まず使い始めること・知識の土台構築</div>
@@ -2828,42 +2814,42 @@
       <div class="algo-rules">
         <div class="algo-rule">
           <div class="rule-num">R0</div>
-          <div class="rule-cond">K<strong>≥87</strong> AND T<strong>≥87</strong> AND A<strong>≥87</strong> AND J<strong>≥87</strong></div>
+          <div class="rule-cond">K<strong>≥87</strong> AND I<strong>≥87</strong> AND A<strong>≥87</strong> AND T<strong>≥87</strong></div>
           <div class="rule-type" style="color:#f4a733">→ 上級完成型</div>
         </div>
         <div class="algo-rule r-warn">
           <div class="rule-num">R1</div>
-          <div class="rule-cond">A<strong>≥87</strong> AND J<span class="warn">≤49</span></div>
+          <div class="rule-cond">A<strong>≥87</strong> AND T<span class="warn">≤49</span></div>
           <div class="rule-type" style="color:#ff6e9c">→ 過信実行型 ⚠️</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R2</div>
-          <div class="rule-cond">K<strong>≥87</strong> AND T<strong>≥75</strong> AND A<span class="warn">≤55</span> AND J<span class="warn">≤55</span></div>
+          <div class="rule-cond">K<strong>≥87</strong> AND I<strong>≥75</strong> AND A<span class="warn">≤55</span> AND T<span class="warn">≤55</span></div>
           <div class="rule-type" style="color:#7c6eff">→ 評論家型</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R3</div>
-          <div class="rule-cond">K<strong>≥87</strong> AND T<span class="warn">≤55</span> AND A<span class="warn">≤65</span></div>
+          <div class="rule-cond">K<strong>≥87</strong> AND I<span class="warn">≤55</span> AND A<span class="warn">≤65</span></div>
           <div class="rule-type" style="color:#7c6eff">→ 知識偏重型</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R4</div>
-          <div class="rule-cond">K<strong>≥80</strong> AND J<strong>≥80</strong> AND A<span class="warn">≤55</span></div>
+          <div class="rule-cond">K<strong>≥80</strong> AND T<strong>≥80</strong> AND A<span class="warn">≤55</span></div>
           <div class="rule-type" style="color:#7c6eff">→ 慎重未実践型</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R5</div>
-          <div class="rule-cond">K<span class="warn">≤55</span> AND T<span class="warn">≤55</span> AND A<strong>≥75</strong></div>
+          <div class="rule-cond">K<span class="warn">≤55</span> AND I<span class="warn">≤55</span> AND A<strong>≥75</strong></div>
           <div class="rule-type" style="color:#4ec9f0">→ 直感実行型</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R6</div>
-          <div class="rule-cond">max(K,T,A,J) − min(K,T,A,J) <strong>≤28</strong> AND total <strong>≥150</strong></div>
+          <div class="rule-cond">max(K,I,A,T) − min(K,I,A,T) <strong>≤28</strong> AND total <strong>≥150</strong></div>
           <div class="rule-type" style="color:#4ade80">→ 均等発展型</div>
         </div>
         <div class="algo-rule">
           <div class="rule-num">R7</div>
-          <div class="rule-cond">K<span class="warn">≤55</span> AND T<span class="warn">≤55</span> AND A 50〜74 AND J<span class="warn">≤55</span></div>
+          <div class="rule-cond">K<span class="warn">≤55</span> AND I<span class="warn">≤55</span> AND A 50〜74 AND T<span class="warn">≤55</span></div>
           <div class="rule-type" style="color:var(--muted)">→ 感覚実践型</div>
         </div>
         <div class="algo-rule">
@@ -2906,8 +2892,9 @@
 
       <div class="callout" style="margin-top:8px">
         <strong>Claude APIへ渡す変数（分類関連）：</strong><br>
-        <code>{{user_type}}</code>　<code>{{k_score}}</code>　<code>{{i_score}}</code>　<code>{{a_score}}</code>　<code>{{t_score}}</code>　<code>{{ki_gap}}</code>　<code>{{at_gap}}</code>　<code>{{kt_gap}}</code><br>
-        これらにサブカテゴリスコア・整合性チェック結果・上位X%を加えた計11〜12変数がプロンプトに差し込まれる。
+        <code>{{k_score}}</code>　<code>{{i_score}}</code>　<code>{{a_score}}</code>　<code>{{t_score}}</code>　<code>{{ki_gap}}</code>　<code>{{at_gap}}</code>　<code>{{kt_gap}}</code><br>
+        これらにサブカテゴリスコア・整合性チェック結果・上位X%を加えた計10〜11変数がプロンプトに差し込まれる。<br>
+        <span style="color:var(--muted);font-size:12px">※ <code>user_type</code> はGAS内部計算・Sheets保存のみ。Claudeには渡さない（3層変数で直接生成するため）。</span>
       </div>
     </section>
 
@@ -2932,7 +2919,7 @@
           <tr><td><code>{{total_score}}</code></td><td>合計スコア（/500）</td><td>Sheets DB列</td></tr>
           <tr><td><code>{{percentile}}</code></td><td>全体の上位X%（例：12.4）</td><td>Sheets DG列（PERCENTRANK）</td></tr>
           <tr><td><code>{{k_score}} / {{i_score}} / {{a_score}} / {{t_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CX〜DA列</td></tr>
-          <tr><td><code>{{k_level}} / {{t_level}} / {{a_level}} / {{j_level}}</code></td><td>各軸の5段階レベル（1〜5）</td><td>GAS計算（スコアをレンジで変換）</td></tr>
+          <tr><td><code>{{k_level}} / {{i_level}} / {{a_level}} / {{t_level}}</code></td><td>各軸の5段階レベル（1〜5）</td><td>GAS計算（スコアをレンジで変換）</td></tr>
         </tbody>
       </table>
       <div style="font-size:12px;color:var(--muted);margin-top:8px;padding:0 4px">
@@ -2951,7 +2938,7 @@
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
-            <td><code>{{t_sub1}} / {{t_sub2}} / {{t_sub3}}</code></td>
+            <td><code>{{i_sub1}} / {{i_sub2}} / {{i_sub3}}</code></td>
             <td>指示力サブ（①基本指示・入門活用 /11問 ②反復・改善 /8問 ③指示設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
@@ -2961,12 +2948,12 @@
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
-            <td><code>{{j_sub1}} / {{j_sub2}} / {{j_sub3}}</code></td>
+            <td><code>{{t_sub1}} / {{t_sub2}} / {{t_sub3}}</code></td>
             <td>思考力サブ（①基本的な出力検証 /11問 ②詳細検証・役割分担 /8問 ③能動的検証・境界設計 /6問）</td>
             <td>GAS：対象設問を合算</td>
           </tr>
           <tr>
-            <td><code>{{k_var}} / {{t_var}} / {{a_var}} / {{j_var}}</code></td>
+            <td><code>{{k_var}} / {{i_var}} / {{a_var}} / {{t_var}}</code></td>
             <td>各軸の回答分散（サブカテゴリ内 最大スコア率 − 最小スコア率）</td>
             <td>GAS計算</td>
           </tr>
@@ -2984,15 +2971,23 @@
           <tr>
             <td><code>{{inconsistency}}</code></td>
             <td>不整合グループ名（カンマ区切り、なければ「なし」）</td>
-            <td>Sheets DF列</td>
+            <td>Sheets DE列</td>
           </tr>
           <tr>
             <td><code>{{inconsistency_count}}</code></td>
             <td>不整合グループ数（0〜9）</td>
-            <td>GAS計算</td>
+            <td>Sheets EK列</td>
+          </tr>
+          <tr>
+            <td><code>{{inconsistency_details}}</code></td>
+            <td>不整合グループ別の min/max（例：「思考-1: min=1, max=5 / 活用-1: min=2, max=5」）。Claudeが揺れの幅を把握するために渡す</td>
+            <td>GAS計算（不整合グループのみ）</td>
           </tr>
         </tbody>
       </table>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;padding:0 4px">
+        ⚠️ Claudeへのプロンプト制約：min/maxから過大評価・過小評価のどちらとも断定しない。「この領域に認識のムラがある」としてフラットに語る。スコアを補正しない（フラグとして渡すのみ）。
+      </div>
 
       <!-- Cross-axis GAPs -->
       <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">Cross-axis GAP ── 認知チェーンの詰まり</h3>
@@ -3021,14 +3016,14 @@
       </table>
 
       <!-- Supplementary -->
-      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">補助変数 ── 表示用ラベル</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">補助変数 ── 内部管理用（Claude API には渡さない）</h3>
       <table class="score-table">
         <thead><tr><th>変数名</th><th>内容</th><th>役割</th></tr></thead>
         <tbody>
           <tr>
-            <td><code>{{user_type}}</code></td>
+            <td><code>user_type</code>（内部）</td>
             <td>分類タイプ名（上級完成型 / 過信実行型 など）</td>
-            <td>レポートの見出し・ユーザー向け表示ラベル。<strong>生成の主役ではない。</strong></td>
+            <td>GAS内部計算・Sheets保存のみ。<strong>Claude APIには渡さない。レポートにも表示しない。</strong>3層変数を直接渡す設計に移行済み。</td>
           </tr>
         </tbody>
       </table>
@@ -3043,9 +3038,9 @@
 
 【知識力】
 スコア: {{k_score}}/125（レベル {{k_level}}/5）
- - ①ツール知識: {{k_sub1}}点（/30）
- - ②本質・限界理解: {{k_sub2}}点（/40）
- - ③動向・発展把握: {{k_sub3}}点（/55）
+ - ①ツール知識・基礎動向（11問）: {{k_sub1}}点（/55）
+ - ②本質・限界理解（8問）: {{k_sub2}}点（/40）
+ - ③発展・専門応用（6問）: {{k_sub3}}点（/30）
  - サブカテゴリ偏り: {{k_var}}
 
 【認知チェーン】
