@@ -941,7 +941,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c4)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">④ CVトリガー分岐（2案）</div>
-            <div class="flow-desc"><strong>案A（UTAGEドメイン）：</strong>500円決済フォーム → 決済完了 → メール・氏名取得 → stateで診断ID引き継ぎ。<br><strong>案B（Xドメイン）：</strong>固定ツイートのリンク → 引用RT → 診断IDと照合 → XStep DM送信。</div>
+            <div class="flow-desc"><strong>案A（500円決済）：</strong>UTAGEの決済フォーム → 決済完了 → メールアドレス・氏名取得 → GASがSheets照合 → <strong>Mailchimpでレポートの個別URLをメール送付。</strong><br><strong>案B（X引用RT）：</strong>固定ツイートのリンク → 引用RTを投稿 → X APIでユーザー特定・診断IDと照合 → XのDMでレポートURL送付。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -961,8 +961,8 @@
         <div class="flow-item">
           <div class="flow-left"><div class="flow-dot" style="background:#ffd110"></div></div>
           <div class="flow-content">
-            <div class="flow-label">⑦ レポート送付 → LINE登録CTA</div>
-            <div class="flow-desc">案A：メールで届く / 案B：XStep DMで届く。レポート末尾でLINE公式アカウントへ誘導。</div>
+            <div class="flow-label">⑦ レポート送付 → LINE登録CTA（リスト獲得）</div>
+            <div class="flow-desc">案A：Mailchimpでメール送付 / 案B：XのDMで送付。レポート末尾にLINE公式アカウントへの登録CTAを設置し、リストを獲得する。LINEでの送付は行わない。</div>
           </div>
         </div>
       </div>
@@ -1116,12 +1116,17 @@
           <div class="tech-status"><span class="badge badge-check">未確定</span></div>
         </div>
         <div class="tech-card">
-          <div class="tech-role">LINE Bot</div>
-          <div class="tech-name">LINE Messaging API</div>
+          <div class="tech-role">メール送付（案A）</div>
+          <div class="tech-name">Mailchimp</div>
           <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
         </div>
         <div class="tech-card">
-          <div class="tech-role">ユーザー管理・LP</div>
+          <div class="tech-role">LINE登録CTA・リスト獲得</div>
+          <div class="tech-name">LINE公式アカウント</div>
+          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-role">ユーザー管理・LP・決済</div>
           <div class="tech-name">UTAGE</div>
           <div class="tech-status"><span class="badge badge-done">運用中</span></div>
         </div>
@@ -3171,7 +3176,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <div style="background:rgba(46,122,90,0.08);border:2px solid var(--c3);border-radius:0 0 10px 10px;padding:8px 8px;text-align:center;width:100%;box-sizing:border-box">
               <div style="font-size:10px;color:var(--c3);font-weight:700;margin-bottom:2px">DELIVER</div>
               <div style="font-size:12px;font-weight:700;color:var(--text)">📧 メールで届く</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:2px">UTAGEステップ配信</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">Mailchimp（メール送付）</div>
             </div>
             <div style="width:2px;height:14px;background:var(--border)"></div>
 
