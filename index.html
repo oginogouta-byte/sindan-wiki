@@ -1587,15 +1587,16 @@
         <div class="report-page-card" style="--page-color: var(--c1)">
           <div class="page-num">1</div>
           <div class="page-body">
-            <div class="page-role">自動計算</div>
+            <div class="page-role">自動計算 + Claude API</div>
             <div class="page-title">点数と戦闘力</div>
             <ul class="page-items">
               <li>AI戦闘力：X,XXX,XXX トークン（数値大きく・アニメーション込み）</li>
               <li>4軸詳細スコア（/125点）</li>
               <li>ランク表示なし</li>
+              <li><strong>総合評価テキスト：</strong>このスコアパターンの市場内立ち位置を言語化（216〜240字・<code>summary</code>）</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（戦闘力・4軸スコア）</div>
-            <span class="page-gen">自動計算</span>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（戦闘力・4軸スコア）+ summary（Claude API）</div>
+            <span class="page-gen">自動計算 + Claude API</span>
           </div>
         </div>
 
@@ -1626,7 +1627,7 @@
               <li>「このスコアパターンの人が市場でどういう立ち位置にいるか」を言語化</li>
               <li>抽象的な褒め言葉・励ましは禁止。客観的・分析的なトーンで</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：100〜120字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（4軸スコア・GAP3本・上位X%）／ 目安：216〜240字</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
@@ -1780,9 +1781,10 @@
             <tbody>
               <tr><td>メイン数値</td><td>XXX,XXX トークン</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>4軸詳細</td><td>知識力 XX / 125点（×4軸）</td><td><span class="badge badge-done">自動計算</span></td></tr>
+              <tr><td>総合評価テキスト（<code>summary</code>）</td><td>このスコアパターンが市場でどういう立ち位置か（216〜240字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
-          <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">ランク（S/A/B/C/D）は表示しない。</div>
+          <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">ランク（S/A/B/C/D）は表示しない。文字数ルール：半角=0.5字・全角=1字。フォント：Zen Kaku Gothic New Bold / 14px / 行高1.75 / letter-spacing 0.05em。</div>
         </div>
       </div>
 
@@ -1809,7 +1811,7 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（2〜3文・100〜120字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>本文</td><td>このスコアパターンが市場でどういう立ち位置か（216〜240字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
           <div class="callout" style="margin-top:12px;margin-bottom:0;font-size:12px">禁止：褒め言葉・励まし・「素晴らしい」「頑張りましょう」。客観・分析トーンで。</div>
@@ -1917,7 +1919,7 @@
           <tr>
             <td>診断サマリー</td>
             <td><code>summary</code></td>
-            <td>文章 100〜120字</td>
+            <td>文章 216〜240字</td>
             <td>DK列</td>
           </tr>
           <tr>
@@ -1973,7 +1975,7 @@
       <div style="margin-top:24px">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">JSON出力スキーマ（確定）</div>
         <pre style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px;line-height:1.7;overflow-x:auto;color:var(--text)"><code>{
-  "summary": "string  // 100〜120字・全体総評",
+  "summary": "string  // 216〜240字・総合評価テキスト（Section 1 表示）",
 
   "axes": {
     "knowledge":    { "eval": "string ~80字", "strengths": ["~20字", "~20字"], "weaknesses": ["~20字", "~20字"], "growth": "string ~80字" },
