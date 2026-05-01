@@ -824,7 +824,7 @@
   <nav class="sidebar">
     <div class="sidebar-logo">
       <div class="title">AI戦闘力診断</div>
-      <div class="sub">設計 Wiki v1.4 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
+      <div class="sub">設計 Wiki v1.5 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
     </div>
 
     <div class="nav-section">
@@ -3751,8 +3751,12 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-overview">
       <div class="section-header">
         <div class="section-eyebrow">Overview</div>
-        <h2 class="section-title">概要・GASとJSの境界線</h2>
-        <p class="section-desc">診断完了後にリダイレクトされるUTAGEサンクスページ。GASフェーズ1が終わった後のページであり、GASとの通信は発生しない。カスタムJSがURLパラメータを読むだけ。</p>
+        <h2 class="section-title">概要・設計方針</h2>
+        <p class="section-desc">診断完了後にリダイレクトされるUTAGEサンクスページ。<strong>専用HTMLは別途作成せず、実装中の report.html をそのまま使用する。</strong> UTAGEのカスタムJSがURLパラメータを読んでreport.htmlの既存DOMに値を注入し、Section 2以降を非表示にする。</p>
+      </div>
+
+      <div class="callout" style="border-left-color:#ff6e9c;background:rgba(255,110,156,0.06);margin-bottom:24px">
+        <strong style="color:#ff6e9c">⚠️ 検証必要：</strong>UTAGEのカスタムJSから report.html の DOM に値注入・セクション制御ができるかは技術検証が必要。report.html が UTAGE ドメイン外でホストされる場合はクロスオリジン制限が発生する可能性がある。
       </div>
 
       <h3 style="font-size:15px;font-weight:700;margin:0 0 16px;color:var(--text)">処理タイムライン</h3>
@@ -3779,7 +3783,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <div class="flow-line"></div>
           <div class="flow-content">
             <div class="flow-label">UTAGEサンクスページ ← GAS と無関係。JSのみで完結</div>
-            <div class="flow-desc">カスタムJSがURLパラメータを読んで数値を表示。外部APIコールなし・同時アクセス安全（クライアントサイドのみ）</div>
+            <div class="flow-desc">report.html を表示。カスタムJSがURLパラメータを読んでFV〜sec-score（AI戦闘力セクション）の各DOMに値を注入。sec-radar以降は非表示。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -3803,24 +3807,26 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <div class="flow-line"></div>
           <div class="flow-content">
             <div class="flow-label">レポートページ（フル）</div>
-            <div class="flow-desc">全セクション・Claude API 生成テキスト・トークン表示</div>
+            <div class="flow-desc">同じ report.html を全セクション表示。Claude API 生成テキスト・全トークン表示。</div>
           </div>
         </div>
       </div>
 
       <div class="callout" style="margin-top:8px">
-        <strong>重要：</strong>サンクスページは「GASフェーズ1が終わった後のページ」であり、フェーズ2とは無関係。URLパラメータに含まれる6値だけで全て完結する。
+        <strong>重要：</strong>サンクスページとフルレポートは同じ report.html を使用。<code>unlock</code> URLパラメータの有無でセクション表示範囲を切り替える設計。サンクスページ = <code>unlock=preview</code>（FV〜sec-score のみ）、フルレポート = <code>unlock=full</code> またはパラメータなし（全セクション）。
       </div>
 
       <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">サンクスページとレポートページの違い</h3>
       <table class="score-table">
-        <thead><tr><th>項目</th><th>サンクスページ（UTAGE）</th><th>レポートページ（Vercel）</th></tr></thead>
+        <thead><tr><th>項目</th><th>サンクスページ（UTAGE・unlock=preview）</th><th>レポートページ（Vercel・フル）</th></tr></thead>
         <tbody>
-          <tr><td>データ取得元</td><td>URLパラメータ（6値）</td><td>REPORT_DATA（GAS注入）</td></tr>
-          <tr><td>軸スコア表示</td><td><code>k / 125</code>（生スコア）</td><td><code>token / 249,999</code>（変換済み）</td></tr>
-          <tr><td>テキスト内容</td><td>サンプル文 ＋ CSSブラー</td><td>Claude API 生成テキスト</td></tr>
+          <tr><td>使用ファイル</td><td colspan="2" style="text-align:center"><strong>同じ report.html</strong></td></tr>
+          <tr><td>データ取得元</td><td>URLパラメータ（<code>total / pct / k / i / a / t / unlock</code>）→ JS注入</td><td>REPORT_DATA（GAS注入・全フィールド）</td></tr>
+          <tr><td>軸スコア表示</td><td colspan="2" style="text-align:center">トークン値（0〜249,999）・分母 /249,999（report.html実装に統一）</td></tr>
+          <tr><td>⚠️ URL param の <code>k/i/a/t</code></td><td>生スコア（0〜125）をJSでトークンに変換して注入</td><td>GASが直接REPORT_DATAに注入（変換済みトークン値）</td></tr>
+          <tr><td>表示セクション</td><td>FV + sec-score のみ。sec-radar以降は非表示</td><td>全セクション（7つ）</td></tr>
+          <tr><td>テキスト内容</td><td>summary等はブラー（サンプル文静的）</td><td>Claude API 生成テキスト</td></tr>
           <tr><td>GAS通信</td><td>なし</td><td>あり（生成時1回のみ）</td></tr>
-          <tr><td>ホスティング</td><td>UTAGEドメイン</td><td>Vercel（予定）</td></tr>
         </tbody>
       </table>
     </section>
@@ -3831,64 +3837,74 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <div class="section-header">
         <div class="section-eyebrow">URL Parameters</div>
         <h2 class="section-title">URLパラメータ仕様</h2>
-        <p class="section-desc">GASフェーズ1がリダイレクト時に付与する6つのパラメータ。サンクスページのJSが読み取る全データがこれで完結する。</p>
+        <p class="section-desc">GASフェーズ1がリダイレクト時に付与するパラメータ。<code>k/i/a/t</code> は生スコア（0〜125）で渡し、JS側でトークン値に変換して report.html の DOM に注入する。</p>
       </div>
 
       <table class="score-table" style="margin-bottom:20px">
-        <thead><tr><th>パラメータ</th><th>意味</th><th>型・範囲</th><th>表示形式</th><th>例</th></tr></thead>
+        <thead><tr><th>パラメータ</th><th>意味</th><th>GASが渡す値</th><th>JSでの変換・注入先</th><th>例</th></tr></thead>
         <tbody>
           <tr>
             <td><code>total</code></td>
             <td>AI戦闘力トークン（4軸合算）</td>
             <td>整数 0〜999,999</td>
-            <td>カンマ区切り数値</td>
-            <td><code>724,320</code></td>
+            <td>そのまま → <code>fv-score-tokens</code> / <code>fv-total-val</code></td>
+            <td><code>724320</code></td>
           </tr>
           <tr>
             <td><code>pct</code></td>
-            <td>上位X%</td>
-            <td>小数（≥10→1桁 / &lt;10→2桁）</td>
-            <td><code>XX.X%</code> または <code>X.XX%</code></td>
-            <td><code>23.0%</code> / <code>0.28%</code></td>
+            <td>上位X%（小数）</td>
+            <td>小数（≥10→toFixed(1) / &lt;10→toFixed(2)）</td>
+            <td>そのまま → <code>fv-rank-val</code></td>
+            <td><code>23.0</code> / <code>0.28</code></td>
           </tr>
           <tr>
             <td><code>k</code></td>
-            <td>知識力スコア</td>
+            <td>知識力スコア（生）</td>
             <td>整数 0〜125</td>
-            <td><code>XX / 125</code> ＋ゲージ</td>
-            <td><code>90 / 125</code></td>
+            <td>トークン換算 → <code>score-knowledge</code> / <code>pct-knowledge</code> / <code>gauge-knowledge</code></td>
+            <td><code>90</code></td>
           </tr>
           <tr>
             <td><code>i</code></td>
-            <td>指示力スコア</td>
+            <td>指示力スコア（生）</td>
             <td>整数 0〜125</td>
-            <td><code>XX / 125</code> ＋ゲージ</td>
-            <td><code>75 / 125</code></td>
+            <td>トークン換算 → <code>score-instruction</code> / <code>pct-instruction</code> / <code>gauge-instruction</code></td>
+            <td><code>75</code></td>
           </tr>
           <tr>
             <td><code>a</code></td>
-            <td>活用力スコア</td>
+            <td>活用力スコア（生）</td>
             <td>整数 0〜125</td>
-            <td><code>XX / 125</code> ＋ゲージ</td>
-            <td><code>110 / 125</code></td>
+            <td>トークン換算 → <code>score-application</code> / <code>pct-application</code> / <code>gauge-application</code></td>
+            <td><code>110</code></td>
           </tr>
           <tr>
             <td><code>t</code></td>
-            <td>思考力スコア</td>
+            <td>思考力スコア（生）</td>
             <td>整数 0〜125</td>
-            <td><code>XX / 125</code> ＋ゲージ</td>
-            <td><code>87 / 125</code></td>
+            <td>トークン換算 → <code>score-thinking</code> / <code>pct-thinking</code> / <code>gauge-thinking</code></td>
+            <td><code>87</code></td>
+          </tr>
+          <tr>
+            <td><code>unlock</code></td>
+            <td>表示セクション制御</td>
+            <td>文字列</td>
+            <td><code>preview</code> → FV+sec-score のみ表示、それ以降 display:none<br><code>full</code> / なし → 全セクション表示</td>
+            <td><code>preview</code></td>
           </tr>
         </tbody>
       </table>
 
       <div class="callout" style="border-left-color:var(--c4)">
-        <strong>URLサンプル：</strong><br>
-        <code style="font-size:13px;word-break:break-all">https://school.addness.co.jp/page/[サンクスページID]?total=724320&pct=23&k=90&i=75&a=110&t=87</code>
+        <strong>URLサンプル（サンクスページ）：</strong><br>
+        <code style="font-size:13px;word-break:break-all">https://[report.htmlのURL]?total=724320&pct=23.0&k=90&i=75&a=110&t=87&unlock=preview</code>
       </div>
 
-      <div class="callout" style="margin-top:16px">
-        <strong>注意：</strong>軸スコアは生スコア（0〜125）。レポートページで使うトークン値（0〜249,999）とは別物。サンクスページのカードは <code>/ 125</code> 表示であり、レポートの <code>/ 249,999</code> とは使い分ける。
+      <div class="callout" style="margin-top:12px;border-left-color:#ff6e9c;background:rgba(255,110,156,0.06)">
+        <strong style="color:#ff6e9c">⚠️ スケール変換（重要）：</strong>
+        GASが渡す <code>k/i/a/t</code> は生スコア（0〜125）。report.html の <code>sec-score</code> は <strong>トークン値（0〜249,999）</strong> で表示する。
+        JS側でトークン換算してから DOM に注入すること。<br>
+        <code style="display:block;margin-top:8px">token = Math.round(Math.pow(rawScore / 125, 3) * 249999)</code>
       </div>
     </section>
 
@@ -3897,36 +3913,42 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-layout">
       <div class="section-header">
         <div class="section-eyebrow">Page Layout</div>
-        <h2 class="section-title">ページ構成</h2>
-        <p class="section-desc">JS動的ゾーンとブラーゾーンの境界線。カードグリッド（4軸スコア）まで動的表示し、以降は全てサンプルテキスト＋CSSブラー。</p>
+        <h2 class="section-title">ページ構成（report.html のセクション制御）</h2>
+        <p class="section-desc">report.html を <code>unlock=preview</code> で表示したときのセクション可視状態。FV + sec-score（AI戦闘力セクション）のみ表示。sec-radar 以降は非表示。</p>
       </div>
 
       <table class="score-table" style="margin-bottom:32px">
-        <thead><tr><th>ゾーン</th><th>内容</th><th>実装</th><th>GAS関与</th></tr></thead>
+        <thead><tr><th>report.html セクション</th><th>サンクスページでの状態</th><th>値の供給元</th></tr></thead>
         <tbody>
           <tr>
-            <td style="color:var(--c3);font-weight:700">表示ゾーン①</td>
-            <td>AI戦闘力トークン ＋ 上位X%</td>
-            <td>URLパラメータ → カスタムJS</td>
-            <td>なし</td>
+            <td style="color:var(--c3);font-weight:700">FV（#sec-fv）</td>
+            <td>表示 — ピラミッド・合計トークン・上位X%</td>
+            <td>URLパラメータ → JS注入</td>
           </tr>
           <tr>
-            <td style="color:var(--c3);font-weight:700">表示ゾーン②</td>
-            <td>4軸スコアカード（2×2グリッド）<br>知識力・指示力・活用力・思考力 各 XX/125 ＋ゲージバー</td>
-            <td>URLパラメータ → カスタムJS</td>
-            <td>なし</td>
+            <td style="color:var(--c3);font-weight:700">Section 1（#sec-score）<br><small>AI戦闘力 / 点数と戦闘力</small></td>
+            <td>表示 — 4軸トークン値 + ゲージ<br><small>※ .score-summary（Claude API テキスト）はブラー</small></td>
+            <td>URLパラメータ → JS変換・注入</td>
           </tr>
           <tr>
-            <td style="color:var(--muted);font-weight:700">ブラーゾーン</td>
-            <td>総評テキスト・軸別評価×4・GAP分析・一貫性評価・次のステップ</td>
-            <td>静的サンプルテキスト ＋ <code>filter: blur(6px)</code></td>
-            <td>なし（静的HTML）</td>
+            <td style="color:var(--muted);font-weight:700">Section 2（#sec-radar）</td>
+            <td>非表示（display:none）</td>
+            <td>—</td>
           </tr>
           <tr>
-            <td style="color:var(--c2);font-weight:700">CTA</td>
-            <td>「500円 or 引用RTで全部見る」</td>
-            <td>静的テキスト ＋ ボタン</td>
-            <td>なし</td>
+            <td style="color:var(--muted);font-weight:700">Section 4（#sec-axes）</td>
+            <td>非表示（display:none）</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);font-weight:700">Section 5・6（#sec-feature / #sec-next）</td>
+            <td>非表示（display:none）</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td style="color:var(--c2);font-weight:700">CTA（#sec-cta）</td>
+            <td>表示（「フルレポートを見る」ボタン）</td>
+            <td>静的テキスト</td>
           </tr>
         </tbody>
       </table>
@@ -3935,48 +3957,47 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 
       <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:13px;margin-bottom:24px">
         <div style="background:rgba(46,122,90,0.08);border-left:4px solid var(--c3);padding:14px 20px">
-          <div style="font-weight:700;color:var(--c3);margin-bottom:4px">▼ JS 動的ゾーン（URLパラメータから生成）</div>
+          <div style="font-weight:700;color:var(--c3);margin-bottom:4px">▼ FV（表示）— URLパラメータから注入</div>
           <div style="color:var(--muted)">AI戦闘力 <strong style="color:var(--text)">724,320</strong> トークン　　上位 <strong style="color:var(--text)">23.0%</strong></div>
         </div>
         <div style="background:rgba(46,122,90,0.04);border-left:4px solid var(--c3);padding:14px 20px;border-top:1px solid var(--border)">
-          <div style="font-weight:700;color:var(--c3);margin-bottom:8px">4軸スコアカード（2×2グリッド）</div>
+          <div style="font-weight:700;color:var(--c3);margin-bottom:8px">Section 1（表示）— 4軸スコアカード・トークン値で表示</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
               <div style="font-size:11px;color:var(--muted);margin-bottom:2px">知識力</div>
-              <div style="font-weight:700">90 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
-              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:72%;height:4px;background:var(--c1);border-radius:2px"></div></div>
+              <div style="font-weight:700">180,000 <span style="font-size:11px;color:var(--muted)">/ 249,999</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:72%;height:4px;background:var(--c-knowledge);border-radius:2px"></div></div>
             </div>
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
               <div style="font-size:11px;color:var(--muted);margin-bottom:2px">指示力</div>
-              <div style="font-weight:700">75 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
-              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:60%;height:4px;background:var(--c2);border-radius:2px"></div></div>
+              <div style="font-weight:700">135,000 <span style="font-size:11px;color:var(--muted)">/ 249,999</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:54%;height:4px;background:var(--c-instruction);border-radius:2px"></div></div>
             </div>
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
               <div style="font-size:11px;color:var(--muted);margin-bottom:2px">活用力</div>
-              <div style="font-weight:700">110 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
-              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:88%;height:4px;background:var(--c3);border-radius:2px"></div></div>
+              <div style="font-weight:700">236,500 <span style="font-size:11px;color:var(--muted)">/ 249,999</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:94%;height:4px;background:var(--c-application);border-radius:2px"></div></div>
             </div>
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px">
               <div style="font-size:11px;color:var(--muted);margin-bottom:2px">思考力</div>
-              <div style="font-weight:700">87 <span style="font-size:11px;color:var(--muted)">/ 125</span></div>
-              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:70%;height:4px;background:var(--c5);border-radius:2px"></div></div>
+              <div style="font-weight:700">166,000 <span style="font-size:11px;color:var(--muted)">/ 249,999</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:6px"><div style="width:66%;height:4px;background:var(--c-thinking);border-radius:2px"></div></div>
             </div>
           </div>
+          <div style="margin-top:10px;filter:blur(4px);font-size:12px;color:var(--muted);line-height:1.6">あなたのAI戦闘力は上位0.28%という極めて高い水準を記録しました…（.score-summary はブラー）</div>
         </div>
         <div style="background:rgba(96,96,122,0.06);border-left:4px solid var(--muted);padding:14px 20px;border-top:1px solid var(--border)">
-          <div style="font-weight:700;color:var(--muted);margin-bottom:6px">▼ ブラーゾーン（サンプルテキスト + filter:blur）</div>
-          <div style="filter:blur(4px);color:var(--text);line-height:1.8;font-size:13px">
-            あなたの診断結果を詳しく分析しました。知識力・指示力・活用力・思考力のバランスから、AIを活用する上での強みと改善ポイントが明らかになっています。特に活用力において突出した特徴が見られ、日常業務へのAI統合において高い実践力を持っています。一方で知識と指示のギャップが認知チェーンの詰まりを生んでいる可能性があり…
-          </div>
+          <div style="font-weight:700;color:var(--muted);margin-bottom:6px">▼ Section 2〜6（非表示 display:none）</div>
+          <div style="color:var(--muted);font-size:12px">unlock=preview のとき JS が display:none を付与</div>
         </div>
         <div style="background:rgba(160,72,112,0.06);border-left:4px solid var(--c2);padding:14px 20px;border-top:1px solid var(--border)">
-          <div style="font-weight:700;color:var(--c2);margin-bottom:4px">▼ CTA</div>
-          <div style="color:var(--muted);font-size:13px">「500円 or 引用RTで全部見る」ボタン</div>
+          <div style="font-weight:700;color:var(--c2);margin-bottom:4px">▼ CTA（表示）</div>
+          <div style="color:var(--muted);font-size:13px">「500円 or 引用RTでフルレポートを見る」ボタン</div>
         </div>
       </div>
 
       <div class="callout" style="border-left-color:var(--c4)">
-        <strong>ブラーゾーンの設計意図：</strong>「中身はあるが見えない」状態を作ることでレポートへの期待感を最大化する。API生成は不要で、それらしい文体のサンプルテキストを静的に埋めてCSSブラーをかけるだけ。実装コストがほぼゼロ。
+        <strong>設計意図：</strong>report.html の実装をそのまま流用できるため、サンクスページ専用の HTML/CSS 構築が不要。スコアの「数字と質感」をそのまま見せることで、フルレポートへの期待感を最大化する。<code>unlock=preview</code> の JS ロジックを report.html に追加するだけで完結する。
       </div>
     </section>
 
@@ -3985,74 +4006,92 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-js">
       <div class="section-header">
         <div class="section-eyebrow">JS Implementation</div>
-        <h2 class="section-title">JS実装仕様</h2>
-        <p class="section-desc">UTAGEカスタムJSに貼り付けるコードの仕様。Vue.jsのレンダリング完了を待ってから実行するため setTimeout(fn, 300) が必須。</p>
+        <h2 class="section-title">JS実装仕様（report.html への追加ロジック）</h2>
+        <p class="section-desc">report.html の既存 JS に <code>unlock</code> パラメータ処理を追加する。UTAGEのカスタムJSからは不要。report.html 自身が URL を読んでセクション制御・値注入を行う。</p>
+      </div>
+
+      <div class="callout" style="border-left-color:#ff6e9c;background:rgba(255,110,156,0.06);margin-bottom:24px">
+        <strong style="color:#ff6e9c">⚠️ 検証必要：</strong>UTAGEドメインから report.html（外部ドメイン）を直接参照・表示できるか確認が必要。iframe埋め込みの場合はX-Frame-Options制約、直接リダイレクトの場合は問題なし。
       </div>
 
       <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06);margin-bottom:24px">
-        <strong style="color:#a04870">注意（検証済み）：</strong>UTAGEはVue.jsでクライアントサイドレンダリングしている。スクリプトがページロード時に即実行するとDOMがまだ存在せず、<code>getElementById</code> が <code>null</code> を返す。<code>setTimeout(fn, 300)</code> で300ms待ってから実行すること。
+        <strong style="color:#a04870">注意（検証済み）：</strong>UTAGEはVue.jsでクライアントサイドレンダリングしている。カスタムJSがページロード時に即実行するとDOMがまだ存在せず <code>getElementById</code> が <code>null</code> を返す。<code>setTimeout(fn, 300)</code> が必須。ただし今回の設計では report.html 自身が値注入を担うため、UTAGEカスタムJSへの記述は最小限になる。
       </div>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">必要なID一覧</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">report.html に追加する DOM ID と注入内容</h3>
       <table class="score-table" style="margin-bottom:24px">
-        <thead><tr><th>要素ID</th><th>表示内容</th><th>パラメータ</th></tr></thead>
+        <thead><tr><th>report.html の既存ID</th><th>注入内容</th><th>URLパラメータ・変換</th></tr></thead>
         <tbody>
-          <tr><td><code>st-total-tokens</code></td><td>AI戦闘力トークン（カンマ区切り）</td><td><code>total</code></td></tr>
-          <tr><td><code>st-percentile</code></td><td>上位X%</td><td><code>pct</code></td></tr>
-          <tr><td><code>st-score-k</code></td><td>知識力スコア数値</td><td><code>k</code></td></tr>
-          <tr><td><code>st-gauge-k</code></td><td>知識力ゲージ幅（width: XX%）</td><td><code>k</code></td></tr>
-          <tr><td><code>st-score-i</code></td><td>指示力スコア数値</td><td><code>i</code></td></tr>
-          <tr><td><code>st-gauge-i</code></td><td>指示力ゲージ幅</td><td><code>i</code></td></tr>
-          <tr><td><code>st-score-a</code></td><td>活用力スコア数値</td><td><code>a</code></td></tr>
-          <tr><td><code>st-gauge-a</code></td><td>活用力ゲージ幅</td><td><code>a</code></td></tr>
-          <tr><td><code>st-score-t</code></td><td>思考力スコア数値</td><td><code>t</code></td></tr>
-          <tr><td><code>st-gauge-t</code></td><td>思考力ゲージ幅</td><td><code>t</code></td></tr>
+          <tr><td><code>fv-score-tokens</code></td><td>AI戦闘力合計トークン（カンマ区切り）</td><td><code>total</code> → そのまま</td></tr>
+          <tr><td><code>fv-rank-val</code></td><td>上位X%</td><td><code>pct</code> → 桁数フォーマット</td></tr>
+          <tr><td><code>score-knowledge</code></td><td>知識力トークン値（数値）</td><td><code>k</code> → トークン換算</td></tr>
+          <tr><td><code>pct-knowledge</code></td><td>知識力 達成率%</td><td><code>k</code> → token/249999×100</td></tr>
+          <tr><td><code>gauge-knowledge</code></td><td>知識力ゲージ幅（width %）</td><td><code>k</code> → token/249999×100</td></tr>
+          <tr><td colspan="3" style="background:rgba(0,0,0,0.02);font-size:11px;color:var(--muted)">指示力・活用力・思考力も同様（instruction / application / thinking）</td></tr>
+          <tr><td><code>#sec-radar, #sec-axes, #sec-feature, #sec-next</code></td><td>非表示制御</td><td><code>unlock=preview</code> のとき display:none</td></tr>
         </tbody>
       </table>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">UTAGEカスタムJS（貼り付け用）</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">report.html に追加する unlock ロジック（参考コード）</h3>
       <div style="background:var(--text);border-radius:8px;padding:20px;margin-bottom:24px;overflow-x:auto">
-        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">setTimeout(function () {
-  var p = new URLSearchParams(window.location.search);
+        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">// report.html の既存 JS に追記（render() 呼び出しの後に置く）
+(function applyUnlock() {
+  var p      = new URLSearchParams(window.location.search);
+  var unlock = p.get('unlock'); // 'preview' | 'full' | null
 
-  function set(id, val) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = val;
+  if (unlock !== 'preview') return; // フルレポートまたはパラメータなし → 何もしない
+
+  var MAX = 249999;
+
+  // 生スコア → トークン値に変換
+  function toToken(raw) {
+    return Math.round(Math.pow(parseInt(raw || 0) / 125, 3) * MAX);
   }
-  function setWidth(id, pct) {
-    var el = document.getElementById(id);
-    if (el) el.style.width = pct + '%';
+  function fmt(n) {
+    return n.toLocaleString('ja-JP').replace(/,/g, '&lt;span class="sc-comma"&gt;,&lt;/span&gt;');
   }
+  function setHTML(id, v) { var el=document.getElementById(id); if(el) el.innerHTML=v; }
+  function setText(id, v) { var el=document.getElementById(id); if(el) el.textContent=v; }
+  function setWidth(id, pct) { var el=document.getElementById(id); if(el) el.style.width=pct+'%'; }
 
   var total = parseInt(p.get('total') || 0);
-  var pct   = parseFloat(p.get('pct')   || 0);
-  var k = parseInt(p.get('k') || 0);
-  var i = parseInt(p.get('i') || 0);
-  var a = parseInt(p.get('a') || 0);
-  var t = parseInt(p.get('t') || 0);
+  var pct   = parseFloat(p.get('pct') || 0);
+  var kT = toToken(p.get('k'));
+  var iT = toToken(p.get('i'));
+  var aT = toToken(p.get('a'));
+  var tT = toToken(p.get('t'));
 
-  set('st-total-tokens', total.toLocaleString());
-  set('st-percentile',   pct >= 10 ? pct.toFixed(1) + '%' : pct.toFixed(2) + '%');
+  // FV 注入
+  setText('fv-rank-val',    pct >= 10 ? pct.toFixed(1) + '%' : pct.toFixed(2) + '%');
+  // ※ FV の canvas（ピラミッド・アークゲージ）は secFV() が REPORT_DATA から描画済み
+  //   → unlock=preview の場合も canvas はそのまま（REPORT_DATA のプレースホルダー表示）
+  //   → canvas を URL パラメータで再描画するには secFV() を URL 値で再呼び出しが必要（要検証）
 
-  set('st-score-k', k);  setWidth('st-gauge-k', Math.round(k / 125 * 100));
-  set('st-score-i', i);  setWidth('st-gauge-i', Math.round(i / 125 * 100));
-  set('st-score-a', a);  setWidth('st-gauge-a', Math.round(a / 125 * 100));
-  set('st-score-t', t);  setWidth('st-gauge-t', Math.round(t / 125 * 100));
+  // Section 1 注入（sec-score の既存 DOM ID に上書き）
+  setHTML('score-knowledge',   fmt(kT));
+  setHTML('score-instruction', fmt(iT));
+  setHTML('score-application', fmt(aT));
+  setHTML('score-thinking',    fmt(tT));
+  setText('pct-knowledge',   Math.round(kT/MAX*100) + '%');
+  setText('pct-instruction', Math.round(iT/MAX*100) + '%');
+  setText('pct-application', Math.round(aT/MAX*100) + '%');
+  setText('pct-thinking',    Math.round(tT/MAX*100) + '%');
+  setWidth('gauge-knowledge',   kT/MAX*100);
+  setWidth('gauge-instruction', iT/MAX*100);
+  setWidth('gauge-application', aT/MAX*100);
+  setWidth('gauge-thinking',    tT/MAX*100);
 
-}, 300);</pre>
+  // Section 2〜6 を非表示
+  ['sec-radar','sec-axes','sec-feature','sec-next'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+})();</pre>
       </div>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">ブラーゾーンのCSS</h3>
-      <div style="background:var(--text);border-radius:8px;padding:20px;margin-bottom:24px">
-        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">.st-blur-zone {
-  filter: blur(6px);
-  user-select: none;
-  pointer-events: none;
-}</pre>
-      </div>
-
-      <div class="callout">
-        <strong>実装上のポイント：</strong>ブラーゾーン全体を <code>.st-blur-zone</code> で囲むだけでよい。テキストの内容は「それらしい文体のダミー文」でよく、Claude API 生成は不要。ユーザーには「内容はあるが見えない」状態が伝わればよい。
+      <div class="callout" style="border-left-color:var(--c4)">
+        <strong>FV canvas の扱い（未解決）：</strong>FV のピラミッドとアークゲージは canvas で描画しており、<code>secFV()</code> が <code>REPORT_DATA.axes.*</code> を参照して描く。URL パラメータ値で正確に描き直すには <code>REPORT_DATA</code> を URL 値で上書きしてから <code>secFV()</code> を再実行する必要がある。サンクスページで FV canvas を正確に表示するか、それともプレースホルダーのまま許容するかは要決定。
       </div>
     </section>
 
@@ -4060,7 +4099,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-todo">
       <div class="section-header">
         <div class="section-eyebrow">TODO（UTAGEオプトイン固有）</div>
-        <h2 class="section-title">サンクスページ 未確定事項</h2>
+        <h2 class="section-title">サンクスページ 検証・実装事項</h2>
         <p class="section-desc">実装タスク・外部確認はプロジェクト全体TODOへ（診断設計タブ）。このリストはサンクスページ設計・実装上の固有事項のみ。</p>
       </div>
 
@@ -4069,27 +4108,33 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <tbody>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td><strong>UTAGEサンクスページ HTML/CSS構築</strong><br><span style="font-size:12px;color:var(--muted)">表示ゾーン（カードグリッド）＋ブラーゾーン＋CTAの縦構造を実装する</span></td>
-            <td>カードグリッドのスタイルは report.html を参考に</td>
+            <td><strong>UTAGEから report.html へのリダイレクト方式の確認</strong><br><span style="font-size:12px;color:var(--muted)">GASが「UTAGEサンクスページURL」ではなく「report.html URL + unlock=preview」に直接リダイレクトするか、UTAGE経由でさらにリダイレクトするか設計を確定する。クロスオリジン問題の回避に直接関わる。</span></td>
+            <td>最もシンプルな方法はGASが report.html?unlock=preview へ直リダイレクト</td>
+            <td><span class="badge badge-todo">要検証</span></td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td><strong>report.html への unlock パラメータ対応追加</strong><br><span style="font-size:12px;color:var(--muted)">JSセクションの参考コードを report.html に実装する。unlock=preview 時に URL パラメータから値を読んでsec-score に注入し、sec-radar 以降を非表示にする。</span></td>
+            <td>report.html 残セクション実装完了後に着手推奨</td>
             <td><span class="badge badge-todo">未着手</span></td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td><strong>カスタムJS貼り付けと動作確認</strong><br><span style="font-size:12px;color:var(--muted)">JSタブのコードをUTAGEのカスタムJSエリアに貼り付け、URLパラメータ付きでアクセスして全ID表示を確認する</span></td>
-            <td>setTimeout(fn, 300) が必須（Vue.jsレンダリング待ち）</td>
-            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>FV canvas の unlock=preview 対応方針決定</strong><br><span style="font-size:12px;color:var(--muted)">FV のピラミッド・アークゲージは canvas 描画。unlock=preview 時に URL パラメータ値で正確に再描画するか、REPORT_DATA プレースホルダーのまま許容するか。</span></td>
+            <td>再描画するなら REPORT_DATA を URL 値で上書きして secFV() を再実行</td>
+            <td><span class="badge badge-todo">要決定</span></td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td><strong>ブラーゾーン用サンプルテキスト作成</strong><br><span style="font-size:12px;color:var(--muted)">総評・軸別評価・GAP・一貫性・次のステップに相当する「それらしい文体」のダミー文を用意する</span></td>
-            <td>Claude APIは不要。静的テキスト+blur だけでよい</td>
-            <td><span class="badge badge-todo">未着手</span></td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td><strong>pct パラメータの小数フォーマット確認</strong><br><span style="font-size:12px;color:var(--muted)">GASが渡す pct 値の型（整数か小数か）と JS 側の表示ロジックの整合を取る。10以上→1桁小数 / 10未満→2桁小数</span></td>
+            <td><strong>pct パラメータの小数フォーマット確認</strong><br><span style="font-size:12px;color:var(--muted)">GASが渡す pct 値の型（整数か小数か）と JS 側の表示ロジックの整合を取る。10以上→toFixed(1) / 10未満→toFixed(2)</span></td>
             <td>GAS設計書確定時に同時に確認</td>
             <td><span class="badge badge-todo">未確認</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>.score-summary のブラー処理</strong><br><span style="font-size:12px;color:var(--muted)">unlock=preview 時、Section 1 の .score-summary（Claude API テキスト）はブラーをかけて「中身はあるが見えない」状態にする。CSS filter:blur + pointer-events:none で対応。</span></td>
+            <td>unlock ロジック実装と同時に対応</td>
+            <td><span class="badge badge-todo">未着手</span></td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
