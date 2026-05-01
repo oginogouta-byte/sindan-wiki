@@ -1135,82 +1135,103 @@
       </div>
     </section>
 
-    <!-- TODO -->
+    <!-- TODO MASTER -->
     <section class="section" id="todo">
       <div class="section-header">
-        <div class="section-eyebrow">TODO</div>
-        <h2 class="section-title">未確定事項 / TODO</h2>
+        <div class="section-eyebrow">Master TODO</div>
+        <h2 class="section-title">プロジェクト全体 TODO</h2>
+        <p class="section-desc">設計・実装・外部確認すべてを一本化した管理リスト。各タブには、そのタブ固有の設計未決定事項のみを置く。</p>
       </div>
 
-      <table class="status-table">
-        <thead>
-          <tr>
-            <th>優先度</th>
-            <th>項目</th>
-            <th>確認先</th>
-          </tr>
-        </thead>
+      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">🔴 実装タスク（着手・完了待ち）</h3>
+      <table class="status-table" style="margin-bottom:32px">
+        <thead><tr><th>優先度</th><th>タスク</th><th>担当</th><th>参照</th><th>状態</th></tr></thead>
         <tbody>
           <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>技術検証タスク5点（導線設計タブ参照）</td>
-            <td>X APIユーザー特定・引用RT照合・XStep連携、すべて突破確認済み</td>
+            <td class="priority-high">高</td>
+            <td><strong>Claude APIプロンプト本文</strong><br><span style="font-size:12px;color:var(--muted)">3層変数の差し込み方・ペルソナ・エッジケース指示</span></td>
+            <td>Claude＋ユーザー</td>
+            <td>評価軸設計 → API入力変数</td>
+            <td><span class="badge badge-todo">未着手</span></td>
           </tr>
           <tr>
-            <td class="priority-high">🔴 高</td>
+            <td class="priority-high">高</td>
+            <td><strong>GAS設計書Markdown</strong><br><span style="font-size:12px;color:var(--muted)">変数名・Sheets列構成・フェーズ1/2ロジック全体</span></td>
+            <td>Claude</td>
+            <td>評価軸設計 → API入力変数</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">中</td>
+            <td><strong>レポートHTML 残セクション実装</strong><br><span style="font-size:12px;color:var(--muted)">Section 1〜6 + CTA（FVは着手済み）</span></td>
+            <td>ユーザー</td>
+            <td>レポートタブ → セクション構成</td>
+            <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">中</td>
+            <td><strong>UTAGEサンクスページ HTML/CSS/JS</strong><br><span style="font-size:12px;color:var(--muted)">カードグリッド + ブラーゾーン + カスタムJS</span></td>
+            <td>ユーザー</td>
+            <td>UTAGEオプトイン用レポートタブ</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">中</td>
+            <td><strong>診断HTMLへのGAS送信処理追加</strong><br><span style="font-size:12px;color:var(--muted)">回答完了 → GAS POST + 連続回答検知ポップアップ</span></td>
+            <td>ユーザー</td>
+            <td>診断設計 → 技術スタック</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">中</td>
+            <td><strong>レポートホスティング確定</strong><br><span style="font-size:12px;color:var(--muted)">Vercel が有力候補。ドメイン・URL設計も含む</span></td>
+            <td>ユーザー</td>
+            <td>—</td>
+            <td><span class="badge badge-todo">未確定</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">🔵 外部確認待ち</h3>
+      <table class="status-table" style="margin-bottom:32px">
+        <thead><tr><th>確認先</th><th>確認内容</th><th>影響</th><th>状態</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>GWS管理者</td>
             <td>GASデプロイ権限・管理者アカウント</td>
-            <td>GWS管理者との確認が必要</td>
+            <td>GAS実装の着手条件</td>
+            <td><span class="badge badge-check">確認待ち</span></td>
           </tr>
           <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>回答の一貫性チェック グループ構成（3×3）設計</td>
-            <td>3軸×3グループ=9グループ構成に確定。観点またぎを思考-3に移管。活用力3グループはそのまま維持。バッジ3×3・軸ごと色分け・ニューモフィズム設計確定</td>
+            <td>UTAGE管理者</td>
+            <td>stateパラメータへの診断ID動的埋め込み可否</td>
+            <td>案Aの決済完了後 GAS 紐づけフロー</td>
+            <td><span class="badge badge-check">確認待ち</span></td>
           </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>指示-3グループの設計</td>
-            <td>Q35/Q42/Q47 に確定。テーマ「指示の質を意図的に高めている」。難易度：中〜上</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>回答の一貫性セクション UI設計</td>
-            <td>構成確定：固定文→バッジ3×3→Claude評価文（80〜120字）。固定文：「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>Claude API JSONスキーマ確定・更新</td>
-            <td>self_gaps[]（グループ別テキスト生成）を廃止。consistency_eval（80〜120字・単一評価文）に変更。バッジ表示状態はGAS計算。APIコール1回。→ レポートタブ参照</td>
-          </tr>
-          <tr>
-            <td class="priority-high">🔴 高</td>
-            <td>Claude APIプロンプト本文の記述</td>
-            <td>3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示。Claude＋ユーザー共同作業</td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>レポートページHTML実装（縦スクロール型）</td>
-            <td>フェーズ1のゴール</td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>診断HTMLへのGAS送信処理追加</td>
-            <td>現状はデータがどこにも飛ばない状態</td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>ホスティング先・ドメイン決定</td>
-            <td>Vercel（他サイトで実績あり）が有力候補</td>
-          </tr>
-          <tr>
-            <td class="priority-low">🟢 低</td>
-            <td>CVトリガー確定後の連携実装（フェーズ3）</td>
-            <td>UTAGEルート or Xルート。技術検証結果で決定</td>
-          </tr>
-          <tr>
-            <td class="priority-low">🟢 低</td>
-            <td>エンドツーエンドテスト（フェーズ3）</td>
-            <td>診断 → レポート受け取りまで全フロー通しの検証</td>
-          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">🟢 後工程（フェーズ3）</h3>
+      <table class="status-table" style="margin-bottom:32px">
+        <thead><tr><th>タスク</th><th>概要</th></tr></thead>
+        <tbody>
+          <tr><td>LINE Bot実装</td><td>follow イベント → 診断ID紐づけ → push送信</td></tr>
+          <tr><td>PDFダウンロード</td><td>ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</td></tr>
+          <tr><td>SNS共有テキスト</td><td>AI戦闘力・上位X%を含む共有文言テンプレート設計</td></tr>
+          <tr><td>エンドツーエンドテスト</td><td>診断 → サンクスページ → CV → レポート受け取りまで全フロー通し検証</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">✅ 完了済み（主要項目）</h3>
+      <table class="status-table">
+        <thead><tr><th>項目</th><th>確定内容</th></tr></thead>
+        <tbody>
+          <tr><td class="priority-done">技術検証5点（CVトリガー）</td><td>X APIユーザー特定・引用RT照合・XStep連携、すべて突破確認済み</td></tr>
+          <tr><td class="priority-done">整合性チェック グループ構成</td><td>3軸×3グループ=9グループ確定。指示-3はQ35/Q42/Q47</td></tr>
+          <tr><td class="priority-done">Claude API JSONスキーマ</td><td>self_gaps廃止 → consistency_eval（80〜120字）に変更。APIコール1回</td></tr>
+          <tr><td class="priority-done">サンクスページ設計</td><td>URLパラメータ6値 → カスタムJS → 数値表示。詳細部分はCSSブラー</td></tr>
+          <tr><td class="priority-done">ランク非表示・上位X%表示</td><td>ランクはレポートに出さない。上位X%のみで市場内位置を示す</td></tr>
+          <tr><td class="priority-done">GASフェーズ分割</td><td>フェーズ1（診断完了直後・スコア計算・リダイレクト）/ フェーズ2（CV後・Claude API・URL発行）</td></tr>
         </tbody>
       </table>
     </section>
@@ -2121,83 +2142,31 @@
     <!-- REPORT TODO -->
     <section class="section" id="r-todo">
       <div class="section-header">
-        <div class="section-eyebrow">TODO</div>
-        <h2 class="section-title">未確定事項</h2>
+        <div class="section-eyebrow">TODO（レポート固有）</div>
+        <h2 class="section-title">レポートページ 未確定事項</h2>
+        <p class="section-desc">実装タスク・外部確認はプロジェクト全体TODOへ（診断設計タブ）。このリストはレポートページ設計上の未確定事項のみ。</p>
       </div>
 
       <table class="status-table">
-        <thead>
-          <tr>
-            <th>優先度</th>
-            <th>項目</th>
-            <th>備考</th>
-          </tr>
-        </thead>
+        <thead><tr><th>優先度</th><th>項目</th><th>備考</th><th>状態</th></tr></thead>
         <tbody>
           <tr>
-            <td class="priority-high">🔴 高</td>
-            <td>UTAGEのstate パラメータ動的埋め込み可否</td>
-            <td>LINE紐付けフローの実現可否に直結。UTAGE管理者へ確認</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>ユーザー分類スキーマ（タイプ定義）</td>
-            <td>タイプ名なし・ランクなし確定。市場内の上位X%で位置づけを表現</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>回答の一貫性 セクションUI設計</td>
-            <td>構成確定：固定文→バッジ3×3→Claude評価文（80〜120字）。APIスキーマもself_gaps廃止→consistency_eval単一フィールドに更新済み → r-content参照</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>指示-3グループの設計</td>
-            <td>Q35/Q42/Q47 に確定。テーマ「指示の質を意図的に高めている」。難易度：中〜上</td>
-          </tr>
-          <tr>
-            <td class="priority-high">🔴 高</td>
-            <td>Claude APIプロンプト設計（マークダウン）</td>
-            <td>3層変数差し込み・ペルソナ・エッジケース指示。スキーマ確定済み（consistency_eval含む）→ r-api参照。Claude＋ユーザー共同</td>
-          </tr>
-          <tr>
-            <td class="priority-high">🔴 高</td>
-            <td>GASデプロイ権限・管理者アカウント</td>
-            <td>GWS管理者との確認が必要</td>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>REPORT_DATA axes の注入形式</strong><br><span style="font-size:12px;color:var(--muted)">GASがトークン値(0〜249,999)を注入する方針で現在のコードと整合している。SPEC.mdの「表示変換はフロント」という記述との齟齬を修正する</span></td>
+            <td>GAS設計書作成時に同時に確定</td>
+            <td><span class="badge badge-todo">記述修正待ち</span></td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td>レポートページHTML実装</td>
-            <td>縦スクロール型・8セクション＋CTA構成。フェーズ1のゴール</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>各セクションのテキスト文字数・フォーマット</td>
-            <td>全セクション字数確定済み → r-content参照（summary 100〜120字 / eval 80字 / consistency_eval 80〜120字 等）</td>
-          </tr>
-          <tr>
-            <td class="priority-done">✅ 完了</td>
-            <td>全体平均の初期値対応方針</td>
-            <td>N&lt;100：ランク帯ダミー値（S=3%/A=10%/B=30%/C=70%/D=90%）。N≥100でPERCENTRANK実値に切り替え</td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>ホスティング先・ドメイン</td>
-            <td>GitHub Pages / Netlify 候補</td>
-          </tr>
-          <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td>PDFダウンロードの実装方式</td>
-            <td>ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</td>
+            <td><strong>レーダーチャート（Section 2）の平均データ構造</strong><br><span style="font-size:12px;color:var(--muted)">ユーザースコアと全体平均を比較する多角形を描く。平均値をREPORT_DATAに含める形式を決める</span></td>
+            <td>Section 2 実装着手時に確定</td>
+            <td><span class="badge badge-todo">未確定</span></td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
-            <td>LINE Bot実装（フェーズ3）</td>
-            <td>follow イベント → 紐付け → push送信</td>
-          </tr>
-          <tr>
-            <td class="priority-low">🟢 低</td>
-            <td>SNS共有テキストのテンプレート設計</td>
-            <td>戦闘力・ランクを含む共有文言</td>
+            <td><strong>PDFダウンロード実装方式</strong><br><span style="font-size:12px;color:var(--muted)">ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</span></td>
+            <td>フェーズ3</td>
+            <td><span class="badge badge-todo">後工程</span></td>
           </tr>
         </tbody>
       </table>
@@ -2250,9 +2219,9 @@
     <!-- TO DO -->
     <section class="section" id="algo-todo">
       <div class="section-header">
-        <div class="section-eyebrow">To Do</div>
-        <h2 class="section-title">今やるべきこと</h2>
-        <p class="section-desc">評価アルゴリズムを完成させるためのステップ。上から順に潰していく。</p>
+        <div class="section-eyebrow">TODO（評価軸設計固有）</div>
+        <h2 class="section-title">評価アルゴリズム 設計ステップ</h2>
+        <p class="section-desc">実装タスク・外部確認はプロジェクト全体TODOへ（診断設計タブ）。このステップはアルゴリズム設計の完成フローのみを示す。</p>
       </div>
 
       <div class="step-tracker">
@@ -3675,6 +3644,10 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <span class="nav-dot" style="background:var(--c5)"></span>
         JS実装仕様
       </a>
+      <a href="#optin-todo" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        TODO（固有）
+      </a>
     </div>
   </nav>
 
@@ -3987,6 +3960,51 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <div class="callout">
         <strong>実装上のポイント：</strong>ブラーゾーン全体を <code>.st-blur-zone</code> で囲むだけでよい。テキストの内容は「それらしい文体のダミー文」でよく、Claude API 生成は不要。ユーザーには「内容はあるが見えない」状態が伝わればよい。
       </div>
+    </section>
+
+    <!-- OPTIN TODO -->
+    <section class="section" id="optin-todo">
+      <div class="section-header">
+        <div class="section-eyebrow">TODO（UTAGEオプトイン固有）</div>
+        <h2 class="section-title">サンクスページ 未確定事項</h2>
+        <p class="section-desc">実装タスク・外部確認はプロジェクト全体TODOへ（診断設計タブ）。このリストはサンクスページ設計・実装上の固有事項のみ。</p>
+      </div>
+
+      <table class="status-table">
+        <thead><tr><th>優先度</th><th>項目</th><th>備考</th><th>状態</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td><strong>UTAGEサンクスページ HTML/CSS構築</strong><br><span style="font-size:12px;color:var(--muted)">表示ゾーン（カードグリッド）＋ブラーゾーン＋CTAの縦構造を実装する</span></td>
+            <td>カードグリッドのスタイルは report.html を参考に</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-high">🔴 高</td>
+            <td><strong>カスタムJS貼り付けと動作確認</strong><br><span style="font-size:12px;color:var(--muted)">JSタブのコードをUTAGEのカスタムJSエリアに貼り付け、URLパラメータ付きでアクセスして全ID表示を確認する</span></td>
+            <td>setTimeout(fn, 300) が必須（Vue.jsレンダリング待ち）</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>ブラーゾーン用サンプルテキスト作成</strong><br><span style="font-size:12px;color:var(--muted)">総評・軸別評価・GAP・一貫性・次のステップに相当する「それらしい文体」のダミー文を用意する</span></td>
+            <td>Claude APIは不要。静的テキスト+blur だけでよい</td>
+            <td><span class="badge badge-todo">未着手</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>pct パラメータの小数フォーマット確認</strong><br><span style="font-size:12px;color:var(--muted)">GASが渡す pct 値の型（整数か小数か）と JS 側の表示ロジックの整合を取る。10以上→1桁小数 / 10未満→2桁小数</span></td>
+            <td>GAS設計書確定時に同時に確認</td>
+            <td><span class="badge badge-todo">未確認</span></td>
+          </tr>
+          <tr>
+            <td class="priority-low">🟢 低</td>
+            <td><strong>UTAGEのstateパラメータ 動的埋め込み可否</strong><br><span style="font-size:12px;color:var(--muted)">案Aの決済フォームに診断IDを引き継ぐためにstateパラメータが使えるか。使えない場合は代替手段を設計する</span></td>
+            <td>UTAGE管理者への確認待ち（全体TODOにも記載）</td>
+            <td><span class="badge badge-check">外部確認待ち</span></td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
   </main>
