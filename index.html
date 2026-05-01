@@ -1901,7 +1901,7 @@
       </div>
 
       <div class="callout">
-        <strong>入力データ（確定）：</strong>3層変数アーキテクチャをそのまま渡す。Layer1（軸スコア・ランク・GAP3本）+ Layer2（サブカテゴリ12本・分散4本）+ Layer3（不整合グループ名・件数）。<strong>100問の生回答データは渡さない</strong>（ノイズが多く生成品質が下がるため）。
+        <strong>入力データ（確定）：</strong>3層変数アーキテクチャをそのまま渡す。Layer1（軸スコア・5段階レベル・合計スコア・ランク・上位X%）+ Layer2（サブカテゴリ12本・分散4本）+ Layer3（不整合グループ名・件数・min/max）+ Cross-axis GAP（ki / at / kt の3本）。<strong>100問の生回答データは渡さない</strong>（ノイズが多く生成品質が下がるため）。
       </div>
 
       <table class="score-table" style="margin-top:20px">
@@ -1985,7 +1985,7 @@
   "structure": {
     "gaps": [
       {
-        "pair": "aj | kt | kj",          // GAS側が判定
+        "pair": "at | ki | kt",           // GAS側が判定（at=活用-思考 / ki=知識-指示 / kt=知識-思考）
         "direction": "positive | negative", // GAS側が判定（positive = 前者が高い）
         "value": 40,                      // 絶対値・GAS側が計算
         "description": "string ~80字"    // Claude生成のみ
