@@ -1320,7 +1320,7 @@
       <!-- 指示力 -->
       <div class="dim-block" id="q-shiko">
         <div class="dim-header">
-          <div class="dim-icon" style="background:#ff6e9c20; color:#ff6e9c">思</div>
+          <div class="dim-icon" style="background:#ff6e9c20; color:#ff6e9c">指</div>
           <div>
             <div class="dim-title">指示力</div>
             <div class="dim-range">Q26〜Q50 — AIへの指示を目的や文脈に応じてどれだけ深く考え、工夫して組み立てられているか</div>
@@ -1657,9 +1657,9 @@
             <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
               <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
-              <li><strong>自己認識のズレ：</strong>不整合グループを1枚カードで展開。カードタイトル（静的固定文言）＋ ①何が起きているか〜25字 ＋ ②状態の可能性〜35字。0件 → セクション非表示</li>
+              <li><strong>回答の一貫性（条件付き）：</strong>バッジグリッド（3×3）＋ Claude評価文（80〜120字・単一テキスト）。0件 → セクション非表示（表示方針はアルゴリズム整頓タブ参照）</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数）</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数・min/max）</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
@@ -1733,7 +1733,7 @@
           <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">条件付き表示</div>
-            <div class="flow-desc">GAPセクションは有意なGAPがある場合のみ表示。不整合0件の場合も1文で示す。コンテンツ量がユーザーによって変わる設計。</div>
+            <div class="flow-desc">GAPセクションは有意なGAPがある場合のみ表示。回答の一貫性セクションも0件→非表示（ただし0件時の表示方針は未決・アルゴリズム整頓タブTODO参照）。コンテンツ量がユーザーによって変わる設計。</div>
           </div>
         </div>
         <div class="flow-item">
