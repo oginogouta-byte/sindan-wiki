@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.8 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.9 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -4635,6 +4635,8 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             ※ 一貫性チェックはsummaryに出さない。Section 5 の「驚き・フック」として置く
           </td></tr>
           <tr><td>サブ傾向の渡し方（確定）</td><td>内部ラベル名ではなく定義文とスコアをセットで渡す。Claudeが平易な言葉に変換して繋げる</td></tr>
+          <tr><td>軸分布の渡し方（確定）</td><td>「接近型」「突出型」のラベルは渡さない。「○○力が最も高く、○○力との差が18%と大きい」等の事実として渡す。Claudeが自分の言葉で分布を描く</td></tr>
+          <tr><td>GAPの渡し方（確定）</td><td>「ki正」等の型名は渡さない。「知識力が指示力を28%上回っています → 情報収集の習慣はあるが言語化力が追いついていない」の形で行動描写を直接渡す</td></tr>
           <tr><td>人物像として読む（確定）</td><td>プロンプトで「各データを別々に処理せず、すべてを一人の人物像として捉えて一つの流れで書け」と明示する。データの羅列ではなく一人の傾向として統合することでAI感が消える</td></tr>
           <tr><td>平均比較の使い方（確定）</td><td>percentileを文脈として使い、ユーザーが立ち位置を実感できるように書く。上位30%→「平均を上回る水準」。平均以下でも「改善が必要」ではなく「まだ伸ばせる部分がある」方向で表現する</td></tr>
           <tr><td>プロンプト文</td><td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span> — <code>GAS_プロンプト.md</code> § 1 に収録</td></tr>
@@ -4706,17 +4708,25 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <p class="section-desc">GAPバーが数値・差分%を視覚化済み。テキストは行動描写だけ。|GAP|≥20%のペアのみ表示。</p>
       </div>
 
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent);margin-bottom:12px">
+        <strong>渡し方の設計原則（確定）</strong><br>
+        GAPパターン名（「ki正」等の型ラベル）はClaudeに渡さない。<br>
+        代わりに「軸名が軸名を○%上回っています → 行動描写テキスト」の形で渡す。<br>
+        Claudeは型分類を経由せず、行動描写を文脈として自然な文章を生成する。
+      </div>
+
       <table class="score-table" style="width:100%">
-        <thead><tr><th>GAPパターン</th><th>行動描写の方針（確定）</th><th>プロンプト文</th></tr></thead>
+        <thead><tr><th>GAPパターン（内部管理用）</th><th>Claudeに渡す行動描写テキスト（確定）</th></tr></thead>
         <tbody>
-          <tr><td>at正（過信実行型）</td><td>手を動かすスピードは速いが、AIの出力を検証する工程が薄い。方向の確認が後回しになりやすい</td><td><span style="color:#e53e3e">未作成</span></td></tr>
-          <tr><td>at逆（慎重未活用型）</td><td>AIのリスクを把握しているのに、実際の業務で使う頻度が低い。知識を行動に変換するステップが止まっている</td><td><span style="color:#e53e3e">未作成</span></td></tr>
-          <tr><td>ki正（知識詰め込み型）</td><td>情報収集の習慣はあるが、AIへの指示に変換する言語化力が追いついていない</td><td><span style="color:#e53e3e">未作成</span></td></tr>
-          <tr><td>ki逆（直感指示型）</td><td>経験則でAIを動かせるが、体系的な知識がないため応用が効かない場面がある</td><td><span style="color:#e53e3e">未作成</span></td></tr>
-          <tr><td>kt正（情報収集偏重型）</td><td>インプットは多いが、AIの出力を批判的に検証する習慣が弱い</td><td><span style="color:#e53e3e">未作成</span></td></tr>
-          <tr><td>kt逆（批判的思考者型）</td><td>懐疑的な見方はあるが、最新ツールの把握が不足し使える選択肢が限られている</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>at正（活用 &gt; 思考 ≥20%）</td><td>手を動かすスピードは速いが、AIの出力を検証する工程が薄い。方向の確認が後回しになりやすい</td></tr>
+          <tr><td>at逆（思考 &gt; 活用 ≥20%）</td><td>AIのリスクを把握しているのに、実際の業務で使う頻度が低い。知識を行動に変換するステップが止まっている</td></tr>
+          <tr><td>ki正（知識 &gt; 指示 ≥20%）</td><td>情報収集の習慣はあるが、AIへの指示に変換する言語化力が追いついていない</td></tr>
+          <tr><td>ki逆（指示 &gt; 知識 ≥20%）</td><td>経験則でAIを動かせるが、体系的な知識がないため応用が効かない場面がある</td></tr>
+          <tr><td>kt正（知識 &gt; 思考 ≥20%）</td><td>インプットは多いが、AIの出力を批判的に検証する習慣が弱い</td></tr>
+          <tr><td>kt逆（思考 &gt; 知識 ≥20%）</td><td>懐疑的な見方はあるが、最新ツールの把握が不足し使える選択肢が限られている</td></tr>
         </tbody>
       </table>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ GASの <code>GAP_BEHAVIOR</code> マップとして実装。<code>GAS_プロンプト.md</code> § Layer3 参照</p>
     </section>
 
     <!-- Section 5 一貫性 -->
