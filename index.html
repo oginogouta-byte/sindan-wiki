@@ -846,7 +846,7 @@
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
-  <span class="wiki-version">v2.9 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.0 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -879,14 +879,14 @@
       <table class="status-table">
         <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>詳細</th></tr></thead>
         <tbody>
-          <tr>
-            <td><span class="badge badge-todo">最優先</span></td>
-            <td><strong>GAS アルゴリズム設計書の作成</strong><br><span style="font-size:12px;color:var(--muted)">4軸スコア計算・サブカテゴリ集計・分散計算・GAP算出・整合性チェック判定・5段階レベル算出・REPORT_DATA変換ロジックまでの全工程をMarkdownで完全定義する。<br>⚠️ Claude APIプロンプトはこれが完成してから着手。アルゴリズムが正しくなければプロンプトを作っても意味がない。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>GAS アルゴリズム設計書の作成</strong><span class="done-note">GAS設計書.md 作成済み（2026-05-03）。doPost/calcScores/calcSubgroups/calcVarianceAndGAP/calcConsistency/calcPercentile/buildRedirectUrl の全関数設計・Sheets列マッピング・REPORT_DATA注入対応表・エラーハンドリング・テスト方法を完全定義。GAP方向性6パターン・整合性チェック9グループのREPORT_DATA配列マッピングも確定。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
           </tr>
           <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
+            <td><span class="badge badge-todo">最優先</span></td>
             <td><strong>Claude APIプロンプト本文設計</strong><br><span style="font-size:12px;color:var(--muted)">3層変数の差し込み方・ペルソナ・エッジケース指示。スキーマ確定済み。<br>⚠️ GASアルゴリズム設計書の完成が前提条件。</span></td>
             <td>Claude＋ユーザー</td>
             <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
@@ -1019,6 +1019,7 @@
         <tbody>
 
           <!-- ── 2026-05-03 ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書 作成完了（GAS設計書.md）</strong><span class="done-note">フェーズ1/2完全設計。doPost〜UTAGEリダイレクトまでの全関数定義・Sheets列A〜EK構成・サブカテゴリ設問番号・整合性9グループ→REPORT_DATA boolean[]変換ロジック・GAP抽出条件・PERCENTRANK計算・エラーハンドリング・定数一覧・テスト方法を網羅。Claude APIプロンプト設計が次タスク。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>ドキュメント同期漏れ修正（QUESTIONS.md・SPEC.md）</strong><span class="done-note">別Claude独立スクリーニングで発覚した更新漏れ3件を修正。①QUESTIONS.md整合性チェック表を9グループ確定版に書き換え（グループ名・軸カラム追加・設問番号修正: Q94→Q95, Q59→Q63, Q75→Q69, 指示-3追加）。②SPEC.md line 566「8グループ全確定」→「9グループ全確定」。③SPEC.md フェーズ1冒頭に「Claude API呼出は行わない」を明記。いずれも設計判断は済み・反映漏れのみ。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAP逆方向の意味づけ定義確定（6パターン）</strong><span class="done-note">at正=過信実行型 / at逆=慎重未活用型（CVフック大）/ ki正=知識詰め込み型 / ki逆=直感指示型 / kt正=情報収集偏重型 / kt逆=批判的思考者型。GAS設計書・Claude APIプロンプト両方に明記必須。audit-issues #3を🔴高に昇格・定義確定。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>分散・GAP単位を%（0〜100）に統一</strong><span class="done-note">旧：分散=比率差(0〜1) / GAP=生スコア差(0〜125)が混在。新：分散=(Sub最大率−Sub最小率)×100 / GAP=round((A−B)/125×100)でともに%に統一。Claude APIへのLayer2変数スケールが揃い、Section 4軸別評価のデグレードリスクを解消。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
