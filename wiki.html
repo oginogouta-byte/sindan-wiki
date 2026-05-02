@@ -824,7 +824,7 @@
   <nav class="sidebar">
     <div class="sidebar-logo">
       <div class="title">AI戦闘力診断</div>
-      <div class="sub">設計 Wiki v1.5 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
+      <div class="sub">設計 Wiki v1.6 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
     </div>
 
     <div class="nav-section">
@@ -3751,12 +3751,13 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-overview">
       <div class="section-header">
         <div class="section-eyebrow">Overview</div>
-        <h2 class="section-title">概要・設計方針</h2>
-        <p class="section-desc">診断完了後にリダイレクトされるUTAGEサンクスページ。<strong>専用HTMLは別途作成せず、実装中の report.html をそのまま使用する。</strong> UTAGEのカスタムJSがURLパラメータを読んでreport.htmlの既存DOMに値を注入し、Section 2以降を非表示にする。</p>
+        <h2 class="section-title">概要・設計方針（確定）</h2>
+        <p class="section-desc">GASフェーズ1がURLパラメータ付きで <strong>UTAGEサンクスページへリダイレクト</strong>。UTAGE上で report.html の FV〜AI戦闘力セクション相当のHTMLを表示し、カスタムJSがURLパラメータの値を注入する。ユーザーがCV行動（Xリポスト / 決済）を行っている「余白の時間」の間に GASフェーズ2 が Claude API でレポートを生成し、CV完了後にフル report.html の URL を届ける。</p>
       </div>
 
-      <div class="callout" style="border-left-color:#ff6e9c;background:rgba(255,110,156,0.06);margin-bottom:24px">
-        <strong style="color:#ff6e9c">⚠️ 検証必要：</strong>UTAGEのカスタムJSから report.html の DOM に値注入・セクション制御ができるかは技術検証が必要。report.html が UTAGE ドメイン外でホストされる場合はクロスオリジン制限が発生する可能性がある。
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:24px">
+        <strong style="color:var(--c3)">設計の核心：CV行動が「生成の余白」になる</strong><br>
+        ユーザーがサンクスページでXリポストや決済手続きをしている時間 = GASが Claude API を呼んでレポートを生成する時間。ユーザーが待たずに済み、CV完了時点でレポートが仕上がっている。この「余白の時間」を活かすために UTAGE を経由させる。
       </div>
 
       <h3 style="font-size:15px;font-weight:700;margin:0 0 16px;color:var(--text)">処理タイムライン</h3>
@@ -3774,31 +3775,31 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <div class="flow-dot" style="background:var(--c4)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">GAS フェーズ1 ← ここで GAS の関与は一旦終わる</div>
-            <div class="flow-desc">4軸スコア・ランク・サブカテゴリ・分散・GAP・整合性・PERCENTRANK を計算 → Sheets保存 → URLパラメータ付きで UTAGE サンクスページへリダイレクト</div>
+            <div class="flow-label">GAS フェーズ1</div>
+            <div class="flow-desc">4軸スコア・ランク・サブカテゴリ・分散・GAP・整合性・PERCENTRANK を計算 → Sheets保存 → URLパラメータ付きで <strong>UTAGE サンクスページへリダイレクト</strong></div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-dot" style="background:var(--accent)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">UTAGEサンクスページ ← GAS と無関係。JSのみで完結</div>
-            <div class="flow-desc">report.html を表示。カスタムJSがURLパラメータを読んでFV〜sec-score（AI戦闘力セクション）の各DOMに値を注入。sec-radar以降は非表示。</div>
+            <div class="flow-label">UTAGEサンクスページ ← カスタムJSのみで完結</div>
+            <div class="flow-desc">UTAGE のカスタムJSが URLパラメータを読み、report.html の HTML 構造を埋め込んだ UTAGE ページ内の DOM に値を注入（生スコア→トークン換算）。FV〜AI戦闘力セクションを表示。以降はブラー/非表示。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-dot" style="background:var(--c2)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">CV（500円決済 or 引用RT）</div>
-            <div class="flow-desc">ユーザーがCTAを踏む → GASフェーズ2が起動</div>
+            <div class="flow-label">ユーザーがCV行動（Xリポスト or 決済） ← <strong style="color:var(--c3)">ここが「余白の時間」</strong></div>
+            <div class="flow-desc">ユーザーがCV手続きをしている間、GASフェーズ2が非同期でClaudeレポートを生成する。ユーザーは待たずに済む。</div>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-dot" style="background:var(--c4)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">GAS フェーズ2</div>
+            <div class="flow-label">GAS フェーズ2（余白中に並行実行）</div>
             <div class="flow-desc">診断ID × ユーザーID 紐づけ → Claude API 呼び出し → レポートURL 発行 → Mailchimp / X DM で送付</div>
           </div>
         </div>
@@ -3806,27 +3807,23 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <div class="flow-dot" style="background:var(--c3)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">レポートページ（フル）</div>
-            <div class="flow-desc">同じ report.html を全セクション表示。Claude API 生成テキスト・全トークン表示。</div>
+            <div class="flow-label">ユーザーが report.html（フル）を受け取る</div>
+            <div class="flow-desc">CV完了後にメール / X DM で届く URL を開く。全セクション・Claude API 生成テキスト表示。生成は既に完了している。</div>
           </div>
         </div>
       </div>
 
-      <div class="callout" style="margin-top:8px">
-        <strong>重要：</strong>サンクスページとフルレポートは同じ report.html を使用。<code>unlock</code> URLパラメータの有無でセクション表示範囲を切り替える設計。サンクスページ = <code>unlock=preview</code>（FV〜sec-score のみ）、フルレポート = <code>unlock=full</code> またはパラメータなし（全セクション）。
-      </div>
-
       <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">サンクスページとレポートページの違い</h3>
       <table class="score-table">
-        <thead><tr><th>項目</th><th>サンクスページ（UTAGE・unlock=preview）</th><th>レポートページ（Vercel・フル）</th></tr></thead>
+        <thead><tr><th>項目</th><th>サンクスページ（UTAGE）</th><th>レポートページ（Vercel・フル）</th></tr></thead>
         <tbody>
-          <tr><td>使用ファイル</td><td colspan="2" style="text-align:center"><strong>同じ report.html</strong></td></tr>
-          <tr><td>データ取得元</td><td>URLパラメータ（<code>total / pct / k / i / a / t / unlock</code>）→ JS注入</td><td>REPORT_DATA（GAS注入・全フィールド）</td></tr>
-          <tr><td>軸スコア表示</td><td colspan="2" style="text-align:center">トークン値（0〜249,999）・分母 /249,999（report.html実装に統一）</td></tr>
-          <tr><td>⚠️ URL param の <code>k/i/a/t</code></td><td>生スコア（0〜125）をJSでトークンに変換して注入</td><td>GASが直接REPORT_DATAに注入（変換済みトークン値）</td></tr>
-          <tr><td>表示セクション</td><td>FV + sec-score のみ。sec-radar以降は非表示</td><td>全セクション（7つ）</td></tr>
-          <tr><td>テキスト内容</td><td>summary等はブラー（サンプル文静的）</td><td>Claude API 生成テキスト</td></tr>
-          <tr><td>GAS通信</td><td>なし</td><td>あり（生成時1回のみ）</td></tr>
+          <tr><td>ホスト</td><td>UTAGEドメイン（HTML埋め込み + カスタムJS）</td><td>Vercel（report.html 単体）</td></tr>
+          <tr><td>HTML構造</td><td>report.html の FV〜sec-score 相当を UTAGE HTML エディタで埋め込み</td><td>report.html そのまま・全セクション</td></tr>
+          <tr><td>データ取得元</td><td>URLパラメータ（<code>total / pct / k / i / a / t</code>）→ カスタムJS注入</td><td>REPORT_DATA（GASがサーバーサイドで注入）</td></tr>
+          <tr><td>軸スコア表示</td><td>生スコア(0〜125)→トークン換算してから表示。分母は /249,999</td><td>GAS注入済みのトークン値（0〜249,999）を直接表示</td></tr>
+          <tr><td>表示範囲</td><td>FV + AI戦闘力セクション（sec-score）のみ</td><td>全7セクション（FV〜CTA）</td></tr>
+          <tr><td>テキスト内容</td><td>.score-summary 等はブラー（サンプル文静的）</td><td>Claude API 生成テキスト（全文）</td></tr>
+          <tr><td>GAS通信</td><td>なし（フェーズ1完了済み）</td><td>なし（フェーズ2で生成・保存済み）</td></tr>
         </tbody>
       </table>
     </section>
@@ -4006,19 +4003,15 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="optin-js">
       <div class="section-header">
         <div class="section-eyebrow">JS Implementation</div>
-        <h2 class="section-title">JS実装仕様（report.html への追加ロジック）</h2>
-        <p class="section-desc">report.html の既存 JS に <code>unlock</code> パラメータ処理を追加する。UTAGEのカスタムJSからは不要。report.html 自身が URL を読んでセクション制御・値注入を行う。</p>
-      </div>
-
-      <div class="callout" style="border-left-color:#ff6e9c;background:rgba(255,110,156,0.06);margin-bottom:24px">
-        <strong style="color:#ff6e9c">⚠️ 検証必要：</strong>UTAGEドメインから report.html（外部ドメイン）を直接参照・表示できるか確認が必要。iframe埋め込みの場合はX-Frame-Options制約、直接リダイレクトの場合は問題なし。
+        <h2 class="section-title">JS実装仕様（UTAGEカスタムJS）</h2>
+        <p class="section-desc">UTAGEのカスタムJSエリアに貼り付けるコード。report.html の FV〜sec-score 相当の HTML を UTAGE ページに埋め込んだ上で、URLパラメータから値を読んで各DOM IDに注入する。</p>
       </div>
 
       <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06);margin-bottom:24px">
-        <strong style="color:#a04870">注意（検証済み）：</strong>UTAGEはVue.jsでクライアントサイドレンダリングしている。カスタムJSがページロード時に即実行するとDOMがまだ存在せず <code>getElementById</code> が <code>null</code> を返す。<code>setTimeout(fn, 300)</code> が必須。ただし今回の設計では report.html 自身が値注入を担うため、UTAGEカスタムJSへの記述は最小限になる。
+        <strong style="color:#a04870">注意（検証済み）：</strong>UTAGEはVue.jsでクライアントサイドレンダリングしている。カスタムJSがページロード時に即実行するとDOMがまだ存在せず <code>getElementById</code> が <code>null</code> を返す。<code>setTimeout(fn, 300)</code> が必須。
       </div>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">report.html に追加する DOM ID と注入内容</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">注入対象の DOM ID と内容</h3>
       <table class="score-table" style="margin-bottom:24px">
         <thead><tr><th>report.html の既存ID</th><th>注入内容</th><th>URLパラメータ・変換</th></tr></thead>
         <tbody>
@@ -4032,27 +4025,23 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         </tbody>
       </table>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">report.html に追加する unlock ロジック（参考コード）</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">UTAGEカスタムJS（貼り付け用）</h3>
       <div style="background:var(--text);border-radius:8px;padding:20px;margin-bottom:24px;overflow-x:auto">
-        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">// report.html の既存 JS に追記（render() 呼び出しの後に置く）
-(function applyUnlock() {
-  var p      = new URLSearchParams(window.location.search);
-  var unlock = p.get('unlock'); // 'preview' | 'full' | null
-
-  if (unlock !== 'preview') return; // フルレポートまたはパラメータなし → 何もしない
-
+        <pre style="color:#e8e6e1;font-size:13px;line-height:1.7;margin:0;white-space:pre-wrap">setTimeout(function () {
+  var p   = new URLSearchParams(window.location.search);
   var MAX = 249999;
 
-  // 生スコア → トークン値に変換
+  // 生スコア(0〜125) → トークン値(0〜249,999) に変換
   function toToken(raw) {
     return Math.round(Math.pow(parseInt(raw || 0) / 125, 3) * MAX);
   }
   function fmt(n) {
-    return n.toLocaleString('ja-JP').replace(/,/g, '&lt;span class="sc-comma"&gt;,&lt;/span&gt;');
+    // sc-comma スパンを挟んだカンマ区切り（report.html の表示ルールに合わせる）
+    return n.toLocaleString('ja-JP').replace(/,/g, '<span class="sc-comma">,</span>');
   }
-  function setHTML(id, v) { var el=document.getElementById(id); if(el) el.innerHTML=v; }
-  function setText(id, v) { var el=document.getElementById(id); if(el) el.textContent=v; }
-  function setWidth(id, pct) { var el=document.getElementById(id); if(el) el.style.width=pct+'%'; }
+  function setHTML(id, v) { var el = document.getElementById(id); if (el) el.innerHTML = v; }
+  function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+  function setWidth(id, w) { var el = document.getElementById(id); if (el) el.style.width = w + '%'; }
 
   var total = parseInt(p.get('total') || 0);
   var pct   = parseFloat(p.get('pct') || 0);
@@ -4061,37 +4050,33 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
   var aT = toToken(p.get('a'));
   var tT = toToken(p.get('t'));
 
-  // FV 注入
-  setText('fv-rank-val',    pct >= 10 ? pct.toFixed(1) + '%' : pct.toFixed(2) + '%');
-  // ※ FV の canvas（ピラミッド・アークゲージ）は secFV() が REPORT_DATA から描画済み
-  //   → unlock=preview の場合も canvas はそのまま（REPORT_DATA のプレースホルダー表示）
-  //   → canvas を URL パラメータで再描画するには secFV() を URL 値で再呼び出しが必要（要検証）
+  // --- FV 注入 ---
+  // ※ FV の canvas（ピラミッド・アークゲージ）は要別途対応（下記 callout 参照）
+  setText('fv-rank-val', pct >= 10 ? pct.toFixed(1) + '%' : pct.toFixed(2) + '%');
 
-  // Section 1 注入（sec-score の既存 DOM ID に上書き）
+  // --- Section 1（AI戦闘力）注入 ---
   setHTML('score-knowledge',   fmt(kT));
   setHTML('score-instruction', fmt(iT));
   setHTML('score-application', fmt(aT));
   setHTML('score-thinking',    fmt(tT));
-  setText('pct-knowledge',   Math.round(kT/MAX*100) + '%');
-  setText('pct-instruction', Math.round(iT/MAX*100) + '%');
-  setText('pct-application', Math.round(aT/MAX*100) + '%');
-  setText('pct-thinking',    Math.round(tT/MAX*100) + '%');
-  setWidth('gauge-knowledge',   kT/MAX*100);
-  setWidth('gauge-instruction', iT/MAX*100);
-  setWidth('gauge-application', aT/MAX*100);
-  setWidth('gauge-thinking',    tT/MAX*100);
+  setText('pct-knowledge',   Math.round(kT / MAX * 100) + '%');
+  setText('pct-instruction', Math.round(iT / MAX * 100) + '%');
+  setText('pct-application', Math.round(aT / MAX * 100) + '%');
+  setText('pct-thinking',    Math.round(tT / MAX * 100) + '%');
+  setWidth('gauge-knowledge',   kT / MAX * 100);
+  setWidth('gauge-instruction', iT / MAX * 100);
+  setWidth('gauge-application', aT / MAX * 100);
+  setWidth('gauge-thinking',    tT / MAX * 100);
 
-  // Section 2〜6 を非表示
-  ['sec-radar','sec-axes','sec-feature','sec-next'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
+  // --- .score-summary をブラー ---
+  var summary = document.querySelector('.score-summary');
+  if (summary) { summary.style.filter = 'blur(6px)'; summary.style.pointerEvents = 'none'; }
 
-})();</pre>
+}, 300);</pre>
       </div>
 
       <div class="callout" style="border-left-color:var(--c4)">
-        <strong>FV canvas の扱い（未解決）：</strong>FV のピラミッドとアークゲージは canvas で描画しており、<code>secFV()</code> が <code>REPORT_DATA.axes.*</code> を参照して描く。URL パラメータ値で正確に描き直すには <code>REPORT_DATA</code> を URL 値で上書きしてから <code>secFV()</code> を再実行する必要がある。サンクスページで FV canvas を正確に表示するか、それともプレースホルダーのまま許容するかは要決定。
+        <strong>FV canvas の扱い（要決定）：</strong>FV のピラミッドとアークゲージは canvas で描画しており、report.html の <code>secFV()</code> が <code>REPORT_DATA</code> のプレースホルダー値で描いている。UTAGE 上でこの canvas を URL パラメータ値で正確に更新するには、UTAGEカスタムJSから <code>REPORT_DATA.axes.*</code> を上書きして <code>secFV()</code> を再実行する必要がある。FVを正確に描き直すか、プレースホルダーのまま許容するかは別途決定。
       </div>
     </section>
 
@@ -4108,14 +4093,14 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <tbody>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td><strong>UTAGEから report.html へのリダイレクト方式の確認</strong><br><span style="font-size:12px;color:var(--muted)">GASが「UTAGEサンクスページURL」ではなく「report.html URL + unlock=preview」に直接リダイレクトするか、UTAGE経由でさらにリダイレクトするか設計を確定する。クロスオリジン問題の回避に直接関わる。</span></td>
-            <td>最もシンプルな方法はGASが report.html?unlock=preview へ直リダイレクト</td>
-            <td><span class="badge badge-todo">要検証</span></td>
+            <td><strong>リダイレクト方式：UTAGE経由（確定）</strong><br><span style="font-size:12px;color:var(--muted)">GASフェーズ1 → UTAGEサンクスページへリダイレクト（URLパラメータ付き）。ユーザーがCV行動している余白でGASフェーズ2がClaudeレポートを生成。CV完了後にreport.htmlのURLをメール/DMで送付。</span></td>
+            <td>CV行動の余白が生成バッファになる設計が確定</td>
+            <td><span class="badge badge-done">確定</span></td>
           </tr>
           <tr>
             <td class="priority-high">🔴 高</td>
-            <td><strong>report.html への unlock パラメータ対応追加</strong><br><span style="font-size:12px;color:var(--muted)">JSセクションの参考コードを report.html に実装する。unlock=preview 時に URL パラメータから値を読んでsec-score に注入し、sec-radar 以降を非表示にする。</span></td>
-            <td>report.html 残セクション実装完了後に着手推奨</td>
+            <td><strong>UTAGEページへの report.html HTML構造の埋め込み</strong><br><span style="font-size:12px;color:var(--muted)">UTAGEのHTMLエディタに report.html の FV〜sec-score 相当の HTML/CSS を貼り付け、report.html と同じDOM IDを使って構築する。カスタムJSが既存 ID に値を注入できる状態にする。</span></td>
+            <td>report.html の FV + sec-score セクションのHTMLをベースに</td>
             <td><span class="badge badge-todo">未着手</span></td>
           </tr>
           <tr>
