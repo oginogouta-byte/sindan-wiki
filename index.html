@@ -1019,6 +1019,7 @@
         <tbody>
 
           <!-- ── 2026-05-03 ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAP逆方向の意味づけ定義確定（6パターン）</strong><span class="done-note">at正=過信実行型 / at逆=慎重未活用型（CVフック大）/ ki正=知識詰め込み型 / ki逆=直感指示型 / kt正=情報収集偏重型 / kt逆=批判的思考者型。GAS設計書・Claude APIプロンプト両方に明記必須。audit-issues #3を🔴高に昇格・定義確定。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>分散・GAP単位を%（0〜100）に統一</strong><span class="done-note">旧：分散=比率差(0〜1) / GAP=生スコア差(0〜125)が混在。新：分散=(Sub最大率−Sub最小率)×100 / GAP=round((A−B)/125×100)でともに%に統一。Claude APIへのLayer2変数スケールが揃い、Section 4軸別評価のデグレードリスクを解消。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAP閾値を20%に統一・diff単位%に確定</strong><span class="done-note">旧：絶対値≥25点（生スコア差）。新：絶対値≥20%（=25点/125点）。diffはGASが round((軸A−軸B)/125×100) で%変換して注入。しきい値・diff・GAPバー表示がすべて%で一致。report.html / SPEC.md / wiki.html 全箇所を更新。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>index.html L0実装：軸別スコア変数追加（k/i/a/t）</strong><span class="done-note">calcResult()にk=Q1-25/i=Q26-50/a=Q51-75/t=Q76-100の軸別スライスを追加。raw=k+i+a+tに変更。window._axesに生スコアのみ保持（トークン値は除外）。L1〜L4すべての前提となるL0が確立。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td></tr>
@@ -3752,23 +3753,23 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <tr>
             <td><strong>K-I GAP</strong></td>
             <td>知識力 − 指示力</td>
-            <td>知識はあるのに指示で活かせない（知識の空転）</td>
-            <td>指示力が突出・知識の裏付けが薄い</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#8a5820">知識詰め込み型</strong><br>知識はあるが指示の組み立てが弱い。頭でわかっても手が動かない</td>
+            <td><strong style="color:#2e7098">直感指示型</strong><br>なぜ動くかわからないが使える。エラー時の対処・応用が難しい</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
           <tr>
             <td><strong>A-T GAP</strong></td>
             <td>活用力 − 思考力</td>
-            <td>使いまくっているが思考・検証が追いついていない（過信実行型）</td>
-            <td>思考・検証過剰・実行が伴わない（評論型）</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#a04870">過信実行型</strong>（⚠️最重要）<br>使う量が批評力を上回る。誤情報をそのまま採用するリスクが高い</td>
+            <td><strong style="color:#5858a8">慎重未活用型</strong>（CVフック大）<br>評価力はあるのに使っていない。LINE登録への動機づけとして強力</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
           <tr>
             <td><strong>K-T GAP</strong></td>
             <td>知識力 − 思考力</td>
-            <td>知識があるのに出力検証・判断が弱い（思考処理不全）</td>
-            <td>思考力は高いが知識基盤が薄い</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#2e7a5a">情報収集偏重型</strong><br>新ツールへの関心は高いが出力を鵜呑みにしやすい</td>
+            <td><strong style="color:#60607a">批判的思考者型</strong><br>評価は慎重だがツール知識が浅く活用の幅が限られる</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
         </tbody>
       </table>
@@ -3979,10 +3980,30 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           </tr>
           <tr>
             <td>3</td>
-            <td><strong>GAP逆方向の意味づけ定義</strong><br><span style="font-size:12px;color:var(--muted)">−25以下のときの解釈をプロンプトに明記する必要あり</span></td>
-            <td>Claude APIプロンプト</td>
-            <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">未定義</span></td>
+            <td>
+              <strong>GAP逆方向の意味づけ定義</strong><br>
+              <span style="font-size:12px;color:var(--muted)">GAS設計書・Claude APIプロンプトに明記する。direction=positive（前者高）と direction=negative（後者高）の両方向について、パターン名と文脈を定義済み。</span>
+              <table style="margin-top:10px;font-size:12px;border-collapse:collapse;width:100%">
+                <thead><tr style="background:rgba(0,0,0,0.04)">
+                  <th style="padding:5px 8px;text-align:left">pair</th>
+                  <th style="padding:5px 8px;text-align:left">direction</th>
+                  <th style="padding:5px 8px;text-align:left">パターン名</th>
+                  <th style="padding:5px 8px;text-align:left">Claude生成の文脈</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">at</td><td style="padding:5px 8px">活用 &gt; 思考（正）</td><td style="padding:5px 8px;color:#a04870;font-weight:700">過信実行型</td><td style="padding:5px 8px">使う量が批評力を上回る。誤情報をそのまま採用するリスクが高い</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">at</td><td style="padding:5px 8px">思考 &gt; 活用（逆）</td><td style="padding:5px 8px;color:#5858a8;font-weight:700">慎重未活用型</td><td style="padding:5px 8px">評価力はあるのに使っていない。「わかっているが動いていない」状態。LINE登録CVへの訴求力が高い</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">ki</td><td style="padding:5px 8px">知識 &gt; 指示（正）</td><td style="padding:5px 8px;color:#8a5820;font-weight:700">知識詰め込み型</td><td style="padding:5px 8px">理解はあるが指示の組み立てが弱い。頭でわかっても手が動かない</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">ki</td><td style="padding:5px 8px">指示 &gt; 知識（逆）</td><td style="padding:5px 8px;color:#2e7098;font-weight:700">直感指示型</td><td style="padding:5px 8px">なぜ動くかわからないが使える。エラー時の対処・応用が難しい</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">kt</td><td style="padding:5px 8px">知識 &gt; 思考（正）</td><td style="padding:5px 8px;color:#2e7a5a;font-weight:700">情報収集偏重型</td><td style="padding:5px 8px">新ツールへの関心は高いが出力を鵜呑みにしやすい</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">kt</td><td style="padding:5px 8px">思考 &gt; 知識（逆）</td><td style="padding:5px 8px;color:#60607a;font-weight:700">批判的思考者型</td><td style="padding:5px 8px">評価は慎重だがツール知識が浅く活用の幅が限られる</td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:8px;font-size:11px;color:var(--muted)">⚠️ at_gap逆方向（慎重未活用型）はCVフックとして特に重要。「使えるのに使っていない」という文脈はLINE登録への動機と直結する。GAS設計書・プロンプト両方に明記必須。</div>
+            </td>
+            <td>GAS設計書 + Claude APIプロンプト</td>
+            <td><span class="priority-high">🔴 高</span></td>
+            <td><span class="badge badge-done">定義確定（2026-05-03）</span></td>
           </tr>
           <tr>
             <td>4</td>
