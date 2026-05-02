@@ -824,7 +824,7 @@
   <nav class="sidebar">
     <div class="sidebar-logo">
       <div class="title">AI戦闘力診断</div>
-      <div class="sub">設計 Wiki v1.6 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
+      <div class="sub">設計 Wiki v1.7 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
     </div>
 
     <div class="nav-section">
@@ -3775,8 +3775,8 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <div class="flow-dot" style="background:var(--c4)"></div>
           <div class="flow-line"></div>
           <div class="flow-content">
-            <div class="flow-label">GAS フェーズ1</div>
-            <div class="flow-desc">4軸スコア・ランク・サブカテゴリ・分散・GAP・整合性・PERCENTRANK を計算 → Sheets保存 → URLパラメータ付きで <strong>UTAGE サンクスページへリダイレクト</strong></div>
+            <div class="flow-label">GAS フェーズ1 ― <span style="color:var(--c3)">Claude API 呼出なし・UTAGE最優先</span></div>
+            <div class="flow-desc">4軸スコア・ランク・サブカテゴリ・分散・GAP・整合性・PERCENTRANK を計算 → Sheets保存 → URLパラメータ付きで <strong>UTAGE サンクスページへリダイレクト</strong>。<br><strong style="color:var(--c3)">⚠ このフェーズに Claude API 呼び出しを含めない。</strong>API 呼出はユーザーの待ち時間に直結しUTAGEへの到達が遅れる。GASエラー・タイムアウトリスクも増大する。Claude API は必ずフェーズ2で実行する。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -4116,10 +4116,10 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td><span class="badge badge-todo">未確認</span></td>
           </tr>
           <tr>
-            <td class="priority-mid">🟡 中</td>
-            <td><strong>.score-summary のブラー処理</strong><br><span style="font-size:12px;color:var(--muted)">unlock=preview 時、Section 1 の .score-summary（Claude API テキスト）はブラーをかけて「中身はあるが見えない」状態にする。CSS filter:blur + pointer-events:none で対応。</span></td>
-            <td>unlock ロジック実装と同時に対応</td>
-            <td><span class="badge badge-todo">未着手</span></td>
+            <td class="priority-low">🟢 低（保留）</td>
+            <td><strong>ブラー範囲とCTAの設計</strong><br><span style="font-size:12px;color:var(--muted)">どこまで見せてどこで途切れさせてCTAを発生させるかはコンバージョン設計の問題。ページを作りきった後に実際の見た目を見て判断する。現時点で決定しない。</span></td>
+            <td>実装完了後に確認・決定</td>
+            <td><span class="badge badge-check">保留</span></td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
