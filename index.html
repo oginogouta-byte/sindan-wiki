@@ -846,7 +846,7 @@
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
-  <span class="wiki-version">v2.6 <span class="v-date">2026-05-02</span></span>
+  <span class="wiki-version">v2.8 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -906,12 +906,6 @@
         <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>詳細</th></tr></thead>
         <tbody>
           <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>GAS設計書Markdown作成</strong><br><span style="font-size:12px;color:var(--muted)">変数名・Sheets列構成・フェーズ1/2ロジック全体</span></td>
-            <td>Claude</td>
-            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
-          </tr>
-          <tr>
             <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
             <td><strong>レポートHTML Section 6・CTA 実装</strong><br><span style="font-size:12px;color:var(--muted)">「これからのあなたへ」+ LINE登録CTA。全体仕様確定後に着手。</span></td>
             <td>ユーザー</td>
@@ -949,9 +943,9 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>診断HTMLへのGAS送信処理追加</strong><br><span style="font-size:12px;color:var(--muted)">回答完了 → GAS POST（診断ID + 100問回答データ）。連続回答検知ポップアップ（10連続で警告・非ブロッキング）も含む。</span></td>
-            <td>ユーザー</td>
-            <td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td>
+            <td><strong>診断HTML L4実装：GAS POST + UTAGEリダイレクト</strong><br><span style="font-size:12px;color:var(--muted)">回答完了 → GAS POST（{id, answers[], timestamp}）→ GASレスポンスURLでUTAGEへリダイレクト。連続回答検知ポップアップ（10連続で非ブロッキングアラート）は別タスク。GAS設計書完成が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
@@ -2229,7 +2223,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ1 ― コアを完成させる</div>
-            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）<br><strong style="color:var(--c3)">【進捗 2026-05-02】</strong> report.html: FV・Sec1・Sec2(レーダー)・Sec4(軸別評価 + axes_eval注入)・Sec5(GAP静的ダミー + 回答の一貫性)実装済み。DOM構造・CSS変数・JS注入構造の整備完了。全体仕様確定後にSec6・CTA・secFeature動的化・バリデーション機能を整備。</div>
+            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）<br><strong style="color:var(--c3)">【進捗 2026-05-03】</strong> index.html: L0（軸別スコア変数）・L1（軸別立方トークン変換）・L2（ランクUI削除・内部変数保持）・L3（送信中待機UI）完了。L4（GAS POST + UTAGEリダイレクト）はGAS設計書完成後。<br>report.html: FV・Sec1・Sec2(レーダー)・Sec4(軸別評価 + axes_eval注入)・Sec5(GAP静的ダミー + 回答の一貫性)実装済み。Sec6・CTA・secFeature動的化は次フェーズ。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -2555,7 +2549,8 @@
               </table>
             </div>
             <div class="step-meta">
-              <span class="badge" style="background:#ff6e9c20;color:#ff6e9c;font-weight:700">🔴 今すぐ着手</span>
+              <span class="badge badge-done">L0〜L3完了</span>
+              <span class="badge badge-todo" style="margin-left:8px">L4 未実装</span>
               <span style="font-size:12px;color:var(--muted);margin-left:10px">→「アルゴリズム精度」セクション参照</span>
             </div>
           </div>
@@ -3360,81 +3355,73 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <p class="section-desc">2026-05-02 実施。FV → Sec1 → Sec2 → Sec4 → Sec5 の表示要素を上から順にトレースし、各レイヤーの「正しい設計 / 現状 / ギャップ」を突き合わせた記録。index.htmlとGASそれぞれの修正TODOに直結する。</p>
       </div>
 
-      <div class="callout" style="border-left-color:#ff6e9c;background:rgba(255,110,156,0.06);margin-bottom:28px">
-        <strong style="color:#ff6e9c">監査の結論：</strong>index.html の calcResult() は「合計単一立方変換」を使っており、軸別スコア変数（k/i/a/t）が存在しない。これにより軸特化型ユーザー（例：知識力=100/指示力=活用力=思考力=25）で正規設計との差が<strong>3倍以上</strong>になる。GAS側のサブスコア・分散・GAP・整合性チェックはすべて index.html が送る生回答に依存するため、まずここを修正しなければ後続の全計算が成立しない。
+      <div class="callout" style="border-left-color:#2e7a5a;background:rgba(46,122,90,0.06);margin-bottom:28px">
+        <strong style="color:#2e7a5a">✅ L0〜L3 修正完了（2026-05-03）：</strong>index.html の calcResult() に軸別スコア変数（k/i/a/t）を追加し、軸別立方トークン変換（Σ(axis/125)³×249,999）に刷新。ランクUI・RANK_INFOポップアップを削除してランクを内部変数に移行。結果画面を「送信中」待機UIに差し替え完了。<strong>残タスク：L4（GAS POST + UTAGEリダイレクト）は GAS設計書完成後に着手。</strong>
       </div>
 
       <!-- Layer 0 -->
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 0 — 前提：軸別スコア変数</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 0 — 前提：軸別スコア変数 <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
       <table class="score-table" style="margin-bottom:28px">
-        <thead><tr><th>項目</th><th>正しい設計</th><th>現状（index.html）</th></tr></thead>
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>変数</strong></td>
             <td>k = Q1〜25合計 / i = Q26〜50合計 / a = Q51〜75合計 / t = Q76〜100合計（各 max 125）</td>
-            <td><code>raw</code>（100問合計）のみ。軸別変数なし。</td>
+            <td><code>k/i/a/t</code> 実装済み。<code>raw = k+i+a+t</code>。<code>window._axes = {k, i, a, t}</code>（生スコア・トークン変換はGAS側）</td>
           </tr>
           <tr>
             <td><strong>影響</strong></td>
-            <td colspan="2" style="color:#a04870;font-weight:700">L1〜L4すべての前提。この変数がないと以降の全ロジックが成立しない。</td>
+            <td colspan="2" style="color:#2e7a5a;font-weight:700">✅ L1〜L4の前提が確立。</td>
           </tr>
         </tbody>
       </table>
 
       <!-- Layer 1 -->
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 1 — 戦闘力トークン変換</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 1 — 戦闘力トークン変換 <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
       <table class="score-table" style="margin-bottom:16px">
-        <thead><tr><th>項目</th><th>正しい設計</th><th>現状（index.html）</th></tr></thead>
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>変換式</strong></td>
             <td><code>Σ round((軸スコア/125)³ × 249,999)</code>（軸別立方・4軸合算）</td>
-            <td><code>round((scaled/500)³ × 999,999)</code>（合計単一立方）</td>
+            <td>kTok/iTok/aTok/tTok → tokens = kTok+iTok+aTok+tTok で実装済み</td>
           </tr>
           <tr>
-            <td><strong>ズレの例</strong></td>
-            <td colspan="2">K=100, I=A=T=25（total=175）の場合：新式≈134,000 / 旧式≈42,874 → <strong>3倍以上の差</strong></td>
-          </tr>
-          <tr>
-            <td><strong>設計意図</strong></td>
-            <td colspan="2">新式は軸の特化（高スコア軸が指数的に大きい貢献）を正当に評価する。旧式では合計が同じなら軸の偏りが反映されない。</td>
+            <td><strong>旧式との差</strong></td>
+            <td colspan="2">K=100, I=A=T=25（total=175）：新式≈134,000 / 旧式≈42,874。軸特化型ユーザーで3倍以上の補正完了。</td>
           </tr>
         </tbody>
       </table>
-      <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06);margin-bottom:28px">
-        <strong style="color:#a04870">Critical：</strong><code>scaled = raw × (500/500) = raw</code> のため、旧式の scaled はスケーリングなし。変換式の問題だけでなく軸別分割も同時に修正する必要がある。
+      <div class="callout" style="border-left-color:#2e7a5a;background:rgba(46,122,90,0.06);margin-bottom:28px">
+        <strong style="color:#2e7a5a">✅ 修正完了：</strong>軸別立方変換に刷新。GASはREPORT_DATA注入時にトークン変換を担当（index.htmlは生スコアを送るのみ）。
       </div>
 
       <!-- Layer 2 -->
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 2 — ランク</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 2 — ランク <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
       <table class="score-table" style="margin-bottom:28px">
-        <thead><tr><th>項目</th><th>正しい設計</th><th>現状（index.html）</th></tr></thead>
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>ランクの用途</strong></td>
             <td>内部計算・GAS保存のみ。ユーザーUIに出さない。</td>
-            <td><code>r-rank</code> バッジ（S〜D）とRANK_INFOポップアップでユーザーに表示している。</td>
+            <td><code>window._rank</code> として内部保持。r-rankバッジ・RANK_INFO・ポップアップ5枚・openPopup/closePopup/handleOverlayClick をすべて削除済み。</td>
           </tr>
           <tr>
-            <td><strong>修正内容</strong></td>
-            <td colspan="2">バッジとポップアップのDOM・JS両方を削除。ランク変数は GAS POST のペイロードに含めてよいが画面上には出さない。</td>
+            <td><strong>保持理由</strong></td>
+            <td colspan="2">N&lt;100フォールバック（ダミーパーセンタイル）/ Claude API Layer1入力 / DRMセグメント分類のため内部変数として必要。</td>
           </tr>
         </tbody>
       </table>
 
       <!-- Layer 3 -->
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 3 — 結果画面（screen-result）</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 3 — 結果画面（screen-result） <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
       <table class="score-table" style="margin-bottom:28px">
-        <thead><tr><th>項目</th><th>正しい設計</th><th>現状（index.html）</th></tr></thead>
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>画面の役割</strong></td>
             <td>「送信中…」待機UIのみ。スコアを見せずにGAS完了後UTAGEへリダイレクト。</td>
-            <td>スコア・ランク・称号・説明文を表示して診断完結としている。</td>
-          </tr>
-          <tr>
-            <td><strong>修正内容</strong></td>
-            <td colspan="2">screen-result の中身を送信中UIに差し替え、結果表示コンテンツを全削除。CVフック（UTAGEサンクスページ）に遷移させる。</td>
+            <td>.sending-icon（スピナー）＋「診断を集計しています」＋「このままお待ちください」の3要素のみ。スコア・ランク・テキスト評価は一切非表示。</td>
           </tr>
         </tbody>
       </table>
