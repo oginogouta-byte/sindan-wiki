@@ -846,7 +846,7 @@
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
-  <span class="wiki-version">v2.8 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v2.9 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -929,9 +929,9 @@
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>QUESTIONS.md 整合性チェック表更新</strong><br><span style="font-size:12px;color:var(--muted)">旧グループ名・旧設問番号が残存。ユーザー確認後に実施。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>QUESTIONS.md 整合性チェック表更新</strong><span class="done-note">9グループ確定版に書き換え済み（2026-05-03）。グループ名・設問番号・軸カラムをSPEC.md lines 86-94の正本定義と同期。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td>
           </tr>
@@ -1019,6 +1019,7 @@
         <tbody>
 
           <!-- ── 2026-05-03 ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>ドキュメント同期漏れ修正（QUESTIONS.md・SPEC.md）</strong><span class="done-note">別Claude独立スクリーニングで発覚した更新漏れ3件を修正。①QUESTIONS.md整合性チェック表を9グループ確定版に書き換え（グループ名・軸カラム追加・設問番号修正: Q94→Q95, Q59→Q63, Q75→Q69, 指示-3追加）。②SPEC.md line 566「8グループ全確定」→「9グループ全確定」。③SPEC.md フェーズ1冒頭に「Claude API呼出は行わない」を明記。いずれも設計判断は済み・反映漏れのみ。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAP逆方向の意味づけ定義確定（6パターン）</strong><span class="done-note">at正=過信実行型 / at逆=慎重未活用型（CVフック大）/ ki正=知識詰め込み型 / ki逆=直感指示型 / kt正=情報収集偏重型 / kt逆=批判的思考者型。GAS設計書・Claude APIプロンプト両方に明記必須。audit-issues #3を🔴高に昇格・定義確定。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>分散・GAP単位を%（0〜100）に統一</strong><span class="done-note">旧：分散=比率差(0〜1) / GAP=生スコア差(0〜125)が混在。新：分散=(Sub最大率−Sub最小率)×100 / GAP=round((A−B)/125×100)でともに%に統一。Claude APIへのLayer2変数スケールが揃い、Section 4軸別評価のデグレードリスクを解消。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAP閾値を20%に統一・diff単位%に確定</strong><span class="done-note">旧：絶対値≥25点（生スコア差）。新：絶対値≥20%（=25点/125点）。diffはGASが round((軸A−軸B)/125×100) で%変換して注入。しきい値・diff・GAPバー表示がすべて%で一致。report.html / SPEC.md / wiki.html 全箇所を更新。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
