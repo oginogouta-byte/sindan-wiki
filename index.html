@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.10 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.11 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -4639,6 +4639,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <tr><td>GAPの渡し方（確定）</td><td>「ki正」等の型名は渡さない。「知識力が指示力を28%上回っています → 情報収集の習慣はあるが言語化力が追いついていない」の形で行動描写を直接渡す</td></tr>
           <tr><td>人物像として読む（確定）</td><td>プロンプトで「各データを別々に処理せず、すべてを一人の人物像として捉えて一つの流れで書け」と明示する。データの羅列ではなく一人の傾向として統合することでAI感が消える</td></tr>
           <tr><td>平均比較の使い方（確定）</td><td>percentileを文脈として使い、ユーザーが立ち位置を実感できるように書く。上位30%→「平均を上回る水準」。平均以下でも「改善が必要」ではなく「まだ伸ばせる部分がある」方向で表現する</td></tr>
+          <tr><td>percentileの渡し方（確定）</td><td>「上位85%」をそのままClaudeに渡さない。「上位85%」は誤解を招く（平均以上に聞こえる）。GAS側で5段階の位置説明に変換してから渡す：≤15%=トップ層 / ≤35%=平均を上回る / ≤50%=やや上回る / ≤65%=やや下回る / 66%〜=これから積み上げる段階</td></tr>
           <tr><td>プロンプト文</td><td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span> — <code>GAS_プロンプト.md</code> § 1 に収録</td></tr>
           <tr><td>実装状態</td><td>HTMLあり（現在ダミーテキスト）。GASのbuildClaudePrompt()に組み込み待ち</td></tr>
         </tbody>
