@@ -4582,31 +4582,33 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <div class="section-header">
         <div class="section-eyebrow">Policy — 確定</div>
         <h2 class="section-title">設計方針</h2>
-        <p class="section-desc">プロンプト全体を通して守る原則。フィールドごとの指示はこの方針を前提に書く。</p>
+        <p class="section-desc">プロンプトは「禁止リスト」ではなく「前提と目的の正確な伝達」で制御する。Claudeの自然な能力を活かす設計。</p>
       </div>
 
       <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
-        <strong>① ビジュアルと役割を分担する</strong><br>
-        FV・スコアカード・ゲージ・GAPバー・一貫性バッジが「スコアの数値と相対位置」を担う。
-        Claude テキストは「その数値が意味する行動パターン」と「次の一手」だけを書く。数値の再記述禁止。
+        <strong>① 計算された診断結果であることを前提として渡す</strong><br>
+        この診断は100問の回答データから3層変数を算出した個別最適化の結果。
+        あいまいな推測ではなく、数値が証明している事実を提示する場である。
+        この文脈をClaudeに正確に渡せば、断言的な文章は自然に出てくる。
       </div>
 
       <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
-        <strong>② 優れている点・劣っている点を両方断言する</strong><br>
-        ユーザーは市場のAI診断に懐疑的。フラットで当たり障りのない文は「誰でも同じ」と読まれる。
-        強みは断言し、弱みも明確に言い切る。その精度こそが市場との差別化になる。
+        <strong>② 数値を根拠に、そこから読める情報を提示する</strong><br>
+        ビジュアルが数値を見せる。テキストはその数値が何を意味するかを提示する。
+        「あなたはこうです。この数値がそれを証明しています。」という構造。
+        推測・共感・励ましではなく、客観的な事実の提示が読者に刺さる。
       </div>
 
-      <div class="callout" style="background:rgba(220,53,69,0.06);border-left-color:#e53e3e;margin-bottom:14px">
-        <strong style="color:#e53e3e">禁止：スコア数値の直接引用</strong><br>
-        「k軸が90ptです」「上位28%です」はビジュアルが出している。
-        共通認識のないスケールは意味が伝わらない。「4軸の中で最も高い」等の相対表現を使う。
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>③ 優れている点・劣っている点を両方言い切る</strong><br>
+        ユーザーは市場のAI診断に懐疑的。フラットな文は「誰でも同じ」と読まれる。
+        強みは言い切り、弱みも言い切る。その精度がこの診断の価値になる。
       </div>
 
-      <div class="callout" style="background:rgba(220,53,69,0.08);border-left-color:#e53e3e">
-        <strong style="color:#e53e3e">非代替性テスト（プロンプト末尾に必ず組み込む）</strong><br>
-        「別の人のデータに差し替えたとき、この文章は全部書き直しになるか？」<br>
-        ならない文章は削除して書き直す。全文が入れ替わって初めて合格。
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent)">
+        <strong>プロンプト設計の原則：禁止リストではなく前提と目的で制御</strong><br>
+        「〜と書くな」という制約を並べるより、Claudeが正しい文脈を理解していれば自然に正しい文章になる。
+        データ・目的・出力スキーマを正確に渡すことが最も重要。
       </div>
     </section>
 
@@ -4623,10 +4625,10 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <tbody>
           <tr><td>注入先DOM</td><td><code>.score-summary</code></td></tr>
           <tr><td>文字数</td><td>216〜240字（半角=0.5字・全角=1字）</td></tr>
-          <tr><td>参照データ</td><td>GAP方向パターン / failedGroups / 4軸の相対順位</td></tr>
-          <tr><td>禁止</td><td>軸スコアの羅列 / 数値引用 / どの軸パターンにも当てはまる一般論 / Section 4 の内容を先取りする</td></tr>
-          <tr><td>必須</td><td>GAPパターンを行動として言語化 / 一貫性不整合があればグループのテーマを名指し / その組み合わせが生む具体的リスクを断言</td></tr>
-          <tr><td>構造</td><td>① 全体の行動パターンを断言 → ② GAPまたは一貫性が示すリスク/強みを一文 → ③ 展望一文</td></tr>
+          <tr><td>参照データ</td><td>4軸スコア（相対順位）/ GAP方向パターン / failedGroups</td></tr>
+          <tr><td>役割</td><td>数値を根拠に「あなたはこうです」と言い切る。推測・共感・励ましではなく客観的な事実の提示</td></tr>
+          <tr><td>構造</td><td>① 4軸データから読める状態を断言 → ② GAPがあれば行動パターンを加える → ③ 一貫性不整合があれば加える（③は条件付き）</td></tr>
+          <tr><td>補足</td><td>GAP・一貫性がない場合でも①だけで216字は成立する。各軸の強弱の意味を言い切ることで個別性が担保される</td></tr>
           <tr><td>プロンプト文</td><td><span style="color:#e53e3e;font-weight:700">未作成</span></td></tr>
           <tr><td>実装状態</td><td>HTMLあり（現在ダミーテキスト）。プロンプト完成後に差し替え</td></tr>
         </tbody>
