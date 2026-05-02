@@ -846,7 +846,8 @@
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
-  <span class="wiki-version">v3.1 <span class="v-date">2026-05-03</span></span>
+  <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
+  <span class="wiki-version">v3.2 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -4531,6 +4532,240 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 </script>
 
 
+
+<!-- ============================================================
+     Claude APIプロンプト設計 タブ
+     ============================================================ -->
+<div id="pane-api-prompt" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">Claude API</div>
+      <div class="sub">プロンプト設計</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">全体方針</div>
+      <a href="#ap-policy" class="nav-item active">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        設計方針（確定）
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">レポートセクション順</div>
+      <a href="#ap-sec1" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        Section 1 — summary
+      </a>
+      <a href="#ap-sec4" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        Section 4 — axes_eval
+      </a>
+      <a href="#ap-sec5-gap" class="nav-item">
+        <span class="nav-dot" style="background:var(--c5)"></span>
+        Section 5 — GAP
+      </a>
+      <a href="#ap-sec5-consistency" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        Section 5 — 一貫性
+      </a>
+      <a href="#ap-sec6" class="nav-item">
+        <span class="nav-dot" style="background:#e53e3e"></span>
+        Section 6 — next_step
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- 全体方針 -->
+    <section class="section" id="ap-policy">
+      <div class="section-header">
+        <div class="section-eyebrow">Policy — 確定</div>
+        <h2 class="section-title">設計方針</h2>
+        <p class="section-desc">プロンプト全体を通して守る原則。フィールドごとの指示はこの方針を前提に書く。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>① ビジュアルと役割を分担する</strong><br>
+        FV・スコアカード・ゲージ・GAPバー・一貫性バッジが「スコアの数値と相対位置」を担う。
+        Claude テキストは「その数値が意味する行動パターン」と「次の一手」だけを書く。数値の再記述禁止。
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>② 優れている点・劣っている点を両方断言する</strong><br>
+        ユーザーは市場のAI診断に懐疑的。フラットで当たり障りのない文は「誰でも同じ」と読まれる。
+        強みは断言し、弱みも明確に言い切る。その精度こそが市場との差別化になる。
+      </div>
+
+      <div class="callout" style="background:rgba(220,53,69,0.06);border-left-color:#e53e3e;margin-bottom:14px">
+        <strong style="color:#e53e3e">禁止：スコア数値の直接引用</strong><br>
+        「k軸が90ptです」「上位28%です」はビジュアルが出している。
+        共通認識のないスケールは意味が伝わらない。「4軸の中で最も高い」等の相対表現を使う。
+      </div>
+
+      <div class="callout" style="background:rgba(220,53,69,0.08);border-left-color:#e53e3e">
+        <strong style="color:#e53e3e">非代替性テスト（プロンプト末尾に必ず組み込む）</strong><br>
+        「別の人のデータに差し替えたとき、この文章は全部書き直しになるか？」<br>
+        ならない文章は削除して書き直す。全文が入れ替わって初めて合格。
+      </div>
+    </section>
+
+    <!-- Section 1 -->
+    <section class="section" id="ap-sec1">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 1 — 点数と戦闘力</div>
+        <h2 class="section-title"><code>summary</code>（216〜240字）</h2>
+        <p class="section-desc">スコアカード直下。ユーザーが最初に読むテキスト。全軸をまたいだパターンレベルの言語化。</p>
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>注入先DOM</td><td><code>.score-summary</code></td></tr>
+          <tr><td>文字数</td><td>216〜240字（半角=0.5字・全角=1字）</td></tr>
+          <tr><td>参照データ</td><td>GAP方向パターン / failedGroups / 4軸の相対順位</td></tr>
+          <tr><td>禁止</td><td>軸スコアの羅列 / 数値引用 / どの軸パターンにも当てはまる一般論 / Section 4 の内容を先取りする</td></tr>
+          <tr><td>必須</td><td>GAPパターンを行動として言語化 / 一貫性不整合があればグループのテーマを名指し / その組み合わせが生む具体的リスクを断言</td></tr>
+          <tr><td>構造</td><td>① 全体の行動パターンを断言 → ② GAPまたは一貫性が示すリスク/強みを一文 → ③ 展望一文</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#e53e3e;font-weight:700">未作成</span></td></tr>
+          <tr><td>実装状態</td><td>HTMLあり（現在ダミーテキスト）。プロンプト完成後に差し替え</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="section" id="ap-sec4">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 4 — 軸別評価 × 4軸</div>
+        <h2 class="section-title"><code>axes_eval</code>（knowledge / instruction / application / thinking）</h2>
+        <p class="section-desc">各軸のサブグループ得点率の分布から書く。軸スコア合計値から書かない。</p>
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>参照データ</th><th>禁止</th><th>プロンプト文</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>eval</code></td>
+            <td>軸評価文</td>
+            <td>~80字</td>
+            <td>3サブの得点率分布（どのサブが高くてどのサブが低いか）</td>
+            <td>「〇〇力は高いです」（合計値の言い換え）</td>
+            <td><span style="color:#e53e3e">未作成</span></td>
+          </tr>
+          <tr>
+            <td><code>strengths[]</code></td>
+            <td>強みリスト</td>
+            <td>~20字 × 2</td>
+            <td>最高サブグループの得点率</td>
+            <td>「〇〇の知識がある」（軸名の言い換え）</td>
+            <td><span style="color:#e53e3e">未作成</span></td>
+          </tr>
+          <tr>
+            <td><code>weaknesses[]</code></td>
+            <td>弱みリスト</td>
+            <td>~20字 × 2</td>
+            <td>最低サブグループの得点率</td>
+            <td>「まだ伸びしろがあります」（曖昧化）</td>
+            <td><span style="color:#e53e3e">未作成</span></td>
+          </tr>
+          <tr>
+            <td><code>growth</code></td>
+            <td>伸びしろ文</td>
+            <td>~80字</td>
+            <td>weaknesses + 軸の方向</td>
+            <td>「継続的な学習が大切です」（generic）</td>
+            <td><span style="color:#e53e3e">未作成</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent)">
+        <strong>具体例（知識力 k1高・k3低のケース）</strong><br>
+        eval：「実務ツールの選定・操作は固まっているが、先端技術の把握が遅れているパターン」<br>
+        strengths：["実務AIツールを選定できる", "基本操作の引き出しが多い"]<br>
+        weaknesses：["最新モデルの動向を追えていない", "研究・実験領域に手が届いていない"]<br>
+        growth：「週1回の最新AI動向チェックを習慣化することで先端感度が上がる」
+      </div>
+    </section>
+
+    <!-- Section 5 GAP -->
+    <section class="section" id="ap-sec5-gap">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 5 — あなたの特徴 / 能力の偏り</div>
+        <h2 class="section-title"><code>gaps[].body</code>（70〜80字 × 最大3本）</h2>
+        <p class="section-desc">GAPバーが数値・差分%を視覚化済み。テキストは行動描写だけ。|GAP|≥20%のペアのみ表示。</p>
+      </div>
+
+      <table class="score-table" style="width:100%">
+        <thead><tr><th>GAPパターン</th><th>行動描写の方針（確定）</th><th>プロンプト文</th></tr></thead>
+        <tbody>
+          <tr><td>at正（過信実行型）</td><td>手を動かすスピードは速いが、AIの出力を検証する工程が薄い。方向の確認が後回しになりやすい</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>at逆（慎重未活用型）</td><td>AIのリスクを把握しているのに、実際の業務で使う頻度が低い。知識を行動に変換するステップが止まっている</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>ki正（知識詰め込み型）</td><td>情報収集の習慣はあるが、AIへの指示に変換する言語化力が追いついていない</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>ki逆（直感指示型）</td><td>経験則でAIを動かせるが、体系的な知識がないため応用が効かない場面がある</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>kt正（情報収集偏重型）</td><td>インプットは多いが、AIの出力を批判的に検証する習慣が弱い</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+          <tr><td>kt逆（批判的思考者型）</td><td>懐疑的な見方はあるが、最新ツールの把握が不足し使える選択肢が限られている</td><td><span style="color:#e53e3e">未作成</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 5 一貫性 -->
+    <section class="section" id="ap-sec5-consistency">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 5 — あなたの特徴 / 回答の一貫性</div>
+        <h2 class="section-title"><code>consistency_eval</code>（108〜120字）</h2>
+        <p class="section-desc">3×3バッジが pass/fail を視覚化済み。テキストは不整合グループのテーマ名指し＋行動仮説だけ。</p>
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>参照データ</td><td>failedGroups（グループ名・テーマ） / details（min/max）</td></tr>
+          <tr><td>禁止</td><td>「一部に一貫性のムラがあります」（バッジで見える） / 不整合グループ数の列挙</td></tr>
+          <tr><td>必須（不整合あり）</td><td>不整合グループのテーマを名指し ＋ 行動仮説1つ（意識はあるが習慣化されていない / 場面によって解釈が揺れている）</td></tr>
+          <tr><td>必須（全パス）</td><td>称賛トーン（「9グループすべてで一貫した回答」等）</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#e53e3e;font-weight:700">未作成</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="section" id="ap-sec6">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 6 — あなたの次のステップ</div>
+        <h2 class="section-title"><code>next_step</code>（HTML実装待ち）</h2>
+        <p class="section-desc">CTA（LINE登録）への橋渡し。弱みとfailedGroupsの交点から「最初にやるべき一手」を断言する。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(214,158,46,0.06);border-left-color:var(--c2);margin-bottom:16px">
+        <strong style="color:var(--c2)">⚠️ 保留：Section 6 の HTML 実装完了後に作成</strong>
+      </div>
+
+      <table class="score-table" style="width:100%">
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>禁止</th><th>必須</th><th>プロンプト文</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>priority_action</code></td>
+            <td>Section 6 大見出し</td>
+            <td>~30字</td>
+            <td>「継続的に学習する」（generic）</td>
+            <td>動詞＋具体的な行動。weaknesses＋failedGroupsの組み合わせから導く</td>
+            <td><span style="color:var(--c2)">保留</span></td>
+          </tr>
+          <tr>
+            <td><code>explanation</code></td>
+            <td>Section 6 本文</td>
+            <td>150〜180字</td>
+            <td>「頑張りましょう」（励まし）</td>
+            <td>「なぜこれが最初か」を強み・弱みの交点から説明。LINE登録で解決することを示唆</td>
+            <td><span style="color:var(--c2)">保留</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
 
 </body>
 </html>
