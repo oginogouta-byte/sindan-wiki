@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.11 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.12 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -886,11 +886,29 @@
             <td>Claude</td>
             <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">最優先</span></td>
-            <td><strong>Claude APIプロンプト本文設計</strong><br><span style="font-size:12px;color:var(--muted)">3層変数の差し込み方・ペルソナ・エッジケース指示。スキーマ確定済み。<br>⚠️ GASアルゴリズム設計書の完成が前提条件。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>Claude APIプロンプト本文設計（GAS_プロンプト.md）</strong><span class="done-note">2026-05-03 完了。システムプロンプト・buildClaudePrompt()テンプレート・GAP_BEHAVIORマップ・positionDesc5段階変換・出力スキーマを収録。型ラベルなし設計（GAP/spread/percentile全て行動描写・事実データで渡す）確定。summaryフィールドは出力検証済み。</span></td>
             <td>Claude＋ユーザー</td>
-            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">🔴 次</span></td>
+            <td><strong>axes_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><br><span style="font-size:12px;color:var(--muted)">eval/strengths/weaknesses/growth × 4軸。サブグループ分布から書く原則・軸合計スコアの言い換え禁止を反映。wiki Section 4設計が正本。</span></td>
+            <td>Claude＋ユーザー</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec4">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">🔴 次</span></td>
+            <td><strong>gaps[].body プロンプト文を作成（GAS_プロンプト.md追記）</strong><br><span style="font-size:12px;color:var(--muted)">GAP_BEHAVIORマップの行動描写6パターンは確定済み。Claudeへの指示文として70〜80字制約・数字繰り返し禁止を整形して追記。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">🔴 次</span></td>
+            <td><strong>consistency_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><br><span style="font-size:12px;color:var(--muted)">108〜120字。全パス=称賛トーン・失敗あり=グループ名指し+行動仮説。Section 5のフック機能を活かす設計。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td>
           </tr>
         </tbody>
       </table>
@@ -941,6 +959,18 @@
             <td><strong>診断ページ（index.html）UI改善：回答ボタンの親指操作ゾーン移動</strong><br><span style="font-size:12px;color:var(--muted)">現状：回答ボタン（.circle）が画面上部に配置されており、モバイルの親指操作ゾーン（画面下部）から外れている。モバイルファーストの設計なのに操作性を落としているリスク。<br>方針：回答ボタンを画面下部に固定配置し、片手親指で自然に届く位置に移動する。質問テキストは上部に、操作UIは下部にという縦分割レイアウトへ変更。</span></td>
             <td>ユーザー＋Claude</td>
             <td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>GAS本体コードを実装（doPost〜Claude API呼び出しまで）</strong><br><span style="font-size:12px;color:var(--muted)">GAS設計書.mdの全関数定義をそのままコード化。doPost → calcScores → calcSubgroups → calcVarianceAndGAP → calcConsistency → calcPercentile → writeCalculatedData → callClaudeAPI → issueReportUrl の順。⚠️ GASデプロイ権限確保が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA.summary / axes_eval / gaps[].body / consistency_eval を .score-summary等の対応DOMに注入するJSを実装。現在はダミーテキストがハードコード。⚠️ GAS実装完了が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
@@ -1019,7 +1049,14 @@
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
 
-          <!-- ── 2026-05-03 ── -->
+          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>Claude APIプロンプト設計完了（GAS_プロンプト.md 新規作成）</strong><span class="done-note">システムプロンプト・buildClaudePrompt()テンプレート・出力スキーマを1ファイルに収録。全フィールド（summary/axes_eval/gaps/consistency_eval）を1回のAPIコールでJSON一括生成する設計確定。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>summaryフィールド設計確定・出力検証済み</strong><span class="done-note">①型ラベルなし設計：GAP「ki正」等をClaudeに渡さず行動描写テキストを直接渡すGAP_BEHAVIORマップ確立。②spreadDesc：「突出型」等のラベルを渡さず「知識力が最も高く指示力との差が18%と大きい」等の事実データとして渡す。③positionDesc 5段階変換：「上位85%」の誤解を防ぐためGAS側でトップ層〜積み上げ段階の5段階テキストに変換してから渡す。出力検証：接近型/突出型/GAP有無/High〜Low 計14パターン確認済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAP行動描写6パターン確定・kt逆の表現修正</strong><span class="done-note">6パターンの行動描写テキストをGAP_BEHAVIORマップとして確定。kt逆（批判的思考者型）の旧表現「懐疑的な見方はあるが」→「AIの出力を丁寧に確認する力はあるが」に修正。「懐疑的」はユーザー拒否感を招くリスクがあるため。GAS_プロンプト.md・wiki両方に反映済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>Wiki Claude APIプロンプト設計タブ新設（v3.1〜v3.11）</strong><span class="done-note">全体方針（禁止リストではなく前提と目的で制御）・Section 1〜6の設計を一元管理するタブを追加。summaryの構造・サブ傾向の渡し方・平均比較の使い方・percentile変換ルール・GAP渡し方をすべて確定状態で収録。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-policy">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>「受験者」表記統一・「受信者/受診者/実務者」を廃止</strong><span class="done-note">診断レポート内の比較母集団の呼び方を「受験者」に統一。GAS_プロンプト.md全文・wiki全文で置換済み。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-03（以前） ── -->
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書・SPEC.md 反映漏れ修正（スクリーニング[L1〜L4]対応）</strong><span class="done-note">①buildRedirectUrlにavg（全体平均トークン）とunlock=previewを追加。②calcAvgTokens()関数をSection 3-7として追加。③分散計算コメントを「Sub最大率は0〜1の小数→×100でpct化」と明示。④calcPercentileのDB列番号をプレースホルダーから106（確定値）に修正。⑤SPEC.md URLパラメータ例をpct=0.28形式に修正（2箇所）。⑥SPEC.md全体フロー「技術検証中」→「確定」表記修正。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書 作成完了（GAS設計書.md）</strong><span class="done-note">フェーズ1/2完全設計。doPost〜UTAGEリダイレクトまでの全関数定義・Sheets列A〜EK構成・サブカテゴリ設問番号・整合性9グループ→REPORT_DATA boolean[]変換ロジック・GAP抽出条件・PERCENTRANK計算・エラーハンドリング・定数一覧・テスト方法を網羅。Claude APIプロンプト設計が次タスク。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>ドキュメント同期漏れ修正（QUESTIONS.md・SPEC.md）</strong><span class="done-note">別Claude独立スクリーニングで発覚した更新漏れ3件を修正。①QUESTIONS.md整合性チェック表を9グループ確定版に書き換え（グループ名・軸カラム追加・設問番号修正: Q94→Q95, Q59→Q63, Q75→Q69, 指示-3追加）。②SPEC.md line 566「8グループ全確定」→「9グループ全確定」。③SPEC.md フェーズ1冒頭に「Claude API呼出は行わない」を明記。いずれも設計判断は済み・反映漏れのみ。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
