@@ -846,7 +846,7 @@
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
-  <span class="wiki-version">v3.0 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.1 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -1019,6 +1019,7 @@
         <tbody>
 
           <!-- ── 2026-05-03 ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書・SPEC.md 反映漏れ修正（スクリーニング[L1〜L4]対応）</strong><span class="done-note">①buildRedirectUrlにavg（全体平均トークン）とunlock=previewを追加。②calcAvgTokens()関数をSection 3-7として追加。③分散計算コメントを「Sub最大率は0〜1の小数→×100でpct化」と明示。④calcPercentileのDB列番号をプレースホルダーから106（確定値）に修正。⑤SPEC.md URLパラメータ例をpct=0.28形式に修正（2箇所）。⑥SPEC.md全体フロー「技術検証中」→「確定」表記修正。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書 作成完了（GAS設計書.md）</strong><span class="done-note">フェーズ1/2完全設計。doPost〜UTAGEリダイレクトまでの全関数定義・Sheets列A〜EK構成・サブカテゴリ設問番号・整合性9グループ→REPORT_DATA boolean[]変換ロジック・GAP抽出条件・PERCENTRANK計算・エラーハンドリング・定数一覧・テスト方法を網羅。Claude APIプロンプト設計が次タスク。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>ドキュメント同期漏れ修正（QUESTIONS.md・SPEC.md）</strong><span class="done-note">別Claude独立スクリーニングで発覚した更新漏れ3件を修正。①QUESTIONS.md整合性チェック表を9グループ確定版に書き換え（グループ名・軸カラム追加・設問番号修正: Q94→Q95, Q59→Q63, Q75→Q69, 指示-3追加）。②SPEC.md line 566「8グループ全確定」→「9グループ全確定」。③SPEC.md フェーズ1冒頭に「Claude API呼出は行わない」を明記。いずれも設計判断は済み・反映漏れのみ。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>GAP逆方向の意味づけ定義確定（6パターン）</strong><span class="done-note">at正=過信実行型 / at逆=慎重未活用型（CVフック大）/ ki正=知識詰め込み型 / ki逆=直感指示型 / kt正=情報収集偏重型 / kt逆=批判的思考者型。GAS設計書・Claude APIプロンプト両方に明記必須。audit-issues #3を🔴高に昇格・定義確定。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
