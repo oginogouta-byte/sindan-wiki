@@ -1053,7 +1053,7 @@
           <!-- ── 2026-04-27 ── -->
           <tr class="done-row"><td>2026-04-27</td><td><strong>技術検証5点（CVトリガー）突破</strong><span class="done-note">X APIユーザー特定・引用RT照合・XStep連携すべて確認済み。Xルートの成立を確認。</span></td><td><button class="go-btn" data-tab="dousen" data-section="d-verify">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-27</td><td><strong>アルゴリズム審査（GAP・整合性チェック）完了</strong><span class="done-note">単位不一致・感度・逆方向未定義・0件処理の4点を洗い出し。以降の設計方針を確定するための起点となった審査。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
-          <tr class="done-row"><td>2026-04-27</td><td><strong>GAP選択基準・しきい値確定</strong><span class="done-note">検知対象：ki_gap / at_gap（最重要・過信実行型検知）/ kt_gap の3ペアのみ。しきい値：絶対値≥25点。最大3本表示。0本時はセクション非表示。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>GAP選択基準・しきい値確定</strong><span class="done-note">検知対象：ki_gap / at_gap（最重要・過信実行型検知）/ kt_gap の3ペアのみ。しきい値：絶対値≥20%（=25点/125点）。diff はGASが%変換して注入。最大3本表示。0本時はセクション非表示。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-27</td><td><strong>上位X%フォールバック確定（N&lt;100対応）</strong><span class="done-note">N&lt;100時はランク帯に対応するダミー値（S=3%/A=10%/B=30%/C=70%/D=90%）を使用。N≥100に達した時点でPERCENTRANK実値に自動切り替え。ローンチ直後のデータ不足を設計上吸収。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-27</td><td><strong>サブカテゴリ設計確定（11/8/6統一・4軸×3サブ）</strong><span class="done-note">知識/指示/活用/思考 各3サブカテゴリ（初級11問/中級8問/上級6問）。難易度加重なし（全問×1.0）。スコア差は問題難易度差で自然発生させる設計。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-subcats">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-27</td><td><strong>難易度加重なし・全問×1.0均等スコアリングに確定</strong><span class="done-note">旧：難易度別に重み付けする案を検討。新：全問均等（×1.0）。加重係数の恣意性を排除し、問題設計でスコア分布を自然にコントロールする方針に転換。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
@@ -1766,7 +1766,7 @@
             <div class="page-role">Claude API · 条件付き表示あり</div>
             <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
-              <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
+              <li><strong>GAPセクション（条件付き）：</strong>差が20%以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
               <li><strong>回答の一貫性（常時表示）：</strong>バッジグリッド（3×3）＋ Claude評価文（108〜120字・単一テキスト）。0件（全パス）→ 称賛トーン、不整合あり → 称賛＋改善提案トーン</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数・min/max）</div>
@@ -1938,9 +1938,9 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差25点以上のペアのみ表示）</td></tr>
+              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差20%以上のペアのみ表示）</td></tr>
               <tr><td>H1：能力の偏り</td><td>セクションタイトル</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>概念説明（セクション冒頭1回・確定）</td><td>「4つの能力のうち、25%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>概念説明（セクション冒頭1回・確定）</td><td>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
               <tr><td>スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %バー。2軸並列＋差分%を数値で明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
               <tr><td>本文</td><td>あなたが今どういう状態かの観察（70〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
@@ -2087,7 +2087,7 @@
         "description": "string 70〜80字"  // Claude生成のみ
       }
     ],
-    // gaps は絶対値25点以上のペアのみ（正負両方）。0件の場合は空配列
+    // gaps は絶対値20%以上のペアのみ（正負両方）。0件の場合は空配列
     // 見出し文言はHTML側が pair + direction から静的生成
     // 例：pair=ki, positive → 「知識力 > 指示力」
     // 例：pair=at, negative → 「思考力 > 活用力」
@@ -2108,8 +2108,8 @@
       <div class="callout" style="margin-top:20px">
         <strong>GAPセクション・カード構造（確定）：</strong>
         <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
-          <li><strong>表示条件：</strong>絶対値 ≥ 25点（正負両方）のペアのみ。最大3本（ki / at / kt）。0本 → セクションごと非表示</li>
-          <li><strong>概念説明（セクション冒頭1回のみ・確定テキスト）：</strong>「4つの能力のうち、25%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</li>
+          <li><strong>表示条件：</strong>絶対値 ≥ 20%（正負両方）のペアのみ。最大3本（ki / at / kt）。0本 → セクションごと非表示</li>
+          <li><strong>概念説明（セクション冒頭1回のみ・確定テキスト）：</strong>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</li>
           <li><strong>大なり小なり見出し：</strong>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」</li>
           <li><strong>スコアビジュアル：</strong>軸スコア ÷ 125 × 100 = %バー。2軸並列 ＋ 差分%を数値で明示</li>
           <li><strong>Claude出力：</strong>あなたが今どういう状態か（70〜80字）。Claudeは状態の観察に集中</li>
@@ -3474,7 +3474,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <tbody>
           <tr><td>サブスコア12本 → 0〜100%変換</td><td>GAS</td><td>DR〜EC</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
           <tr><td>各軸分散4本（Sub最大率−Sub最小率）</td><td>GAS</td><td>ED〜EG</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>GAP3本（ki/at/kt）生スコア差・≥25点のみ抽出</td><td>GAS</td><td>EH〜EJ</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>GAP3本（ki/at/kt）diff%・≥20%のみ抽出</td><td>GAS</td><td>EH〜EJ</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
           <tr><td>整合性チェック：カンマ区切り文字列 → boolean[]</td><td>GAS</td><td>DE→REPORT_DATA</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
           <tr><td>percentile（PERCENTRANK / N&lt;100はダミー値）</td><td>GAS/Sheets</td><td>DF</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
           <tr><td>avgAxes（DC列AVERAGE）</td><td>GAS</td><td>—</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
@@ -3751,7 +3751,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPペアと設計意図</h3>
       <table class="score-table" style="margin-bottom:32px">
         <thead>
-          <tr><th>ペア</th><th>計算式</th><th>正方向（+25以上）の意味</th><th>逆方向（−25以下）の意味</th><th>状態</th></tr>
+          <tr><th>ペア</th><th>計算式</th><th>正方向（+20%以上）の意味</th><th>逆方向（−20%以下）の意味</th><th>状態</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -3832,14 +3832,14 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         </tbody>
       </table>
 
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPしきい値：≥25点の根拠</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPしきい値：≥20%（確定）</h3>
       <table class="score-table" style="margin-bottom:16px">
         <thead><tr><th>項目</th><th>値</th></tr></thead>
         <tbody>
-          <tr><td>現在のしきい値</td><td>絶対値 ≥ 25点（生スコア差）</td></tr>
-          <tr><td>全体スケール</td><td>各軸 0〜125点（最大差 125点）</td></tr>
-          <tr><td>しきい値の比率</td><td>25 ÷ 125 = <strong>20%</strong></td></tr>
-          <tr><td>現時点の根拠</td><td>データなし（設計上の仮設定）</td></tr>
+          <tr><td>しきい値（確定）</td><td>絶対値 ≥ 20%（= 25点/125点）</td></tr>
+          <tr><td>diff単位（確定）</td><td>%（GASが <code>round((軸A−軸B)/125×100)</code> で変換して注入）</td></tr>
+          <tr><td>全体スケール</td><td>各軸 0〜100%（diff最大100%）</td></tr>
+          <tr><td>根拠</td><td>生スコア25点/125点 = 20%。単位を%に統一することで定義と表示の齟齬を解消（2026-05-03確定）</td></tr>
         </tbody>
       </table>
       <div class="callout" style="border-left-color:var(--c4)">
