@@ -1035,13 +1035,13 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>UTAGEサンクスページHTML/CSS/JS（媒体別・複数ページ）</strong><br><span style="font-size:12px;color:var(--muted)">【設計確定 2026-05-04】媒体ごとに別UTAGEページを用意し、各ページに計測タグを設置する案A採用。<br>対象媒体：X / TikTok / Meta（追加も可能）<br>仕組み：診断HTML の URL に <code>?src=x</code> / <code>?src=tiktok</code> / <code>?src=meta</code> を付与 → doPost に src を含める → GAS が src に応じて対応する UTAGE_THANKS_URL_X / _TIKTOK / _META へ振り分けリダイレクト。<br>各ページの構造：カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済み）は共通。計測タグのみ異なる。<br>⚠️ GAS側に UTAGE_THANKS_URL_* を媒体数分追加・buildRedirectUrl() に src 分岐ロジックを追加する実装が必要。</span></td>
+            <td><strong>UTAGEサンクスページHTML/CSS/JS（媒体別・複数ページ）</strong><br><span style="font-size:12px;color:var(--muted)">【設計確定 2026-05-04】媒体ごとに別UTAGEページを用意し、各ページに計測タグを設置する案A採用。<br>対象媒体（未確定）：X / TikTok / Meta / オーガニック — ⚠️ どの媒体まで計測するかをユーザーが意思決定する必要がある。オーガニック（自然流入・URLシェア・口コミ等）は <code>?src=organic</code> で分類予定。<br>仕組み：診断HTML の URL に <code>?src=x</code> / <code>?src=tiktok</code> / <code>?src=meta</code> / <code>?src=organic</code> を付与 → doPost に src を含める → GAS が src に応じて対応する UTAGE_THANKS_URL_* へ振り分けリダイレクト。<br>各ページの構造：カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済み）は共通。計測タグのみ異なる。<br>⚠️ GAS実装（URL定数追加・buildRedirectUrl() src分岐）は計測媒体の意思決定後に着手。</span></td>
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>GAS buildRedirectUrl() に src 媒体振り分けロジック追加</strong><br><span style="font-size:12px;color:var(--muted)">診断HTMLから <code>src</code> パラメータを受け取り（POST payload に含める）、<code>UTAGE_THANKS_URL_X</code> / <code>_TIKTOK</code> / <code>_META</code> / デフォルトの4択で振り分けるロジックを <code>buildRedirectUrl()</code> に追加する。定数は Code.gs 先頭の設定ブロックに追記。src が未指定またはマッチしない場合はデフォルト URL へ。</span></td>
+            <td><strong>GAS buildRedirectUrl() に src 媒体振り分けロジック追加</strong><br><span style="font-size:12px;color:var(--muted)">⚠️ 計測媒体の意思決定（どの媒体まで分類するか）が前提。確定後に着手。<br>実装内容：診断HTMLから <code>src</code> パラメータを受け取り（POST payload に含める）、<code>UTAGE_THANKS_URL_X / _TIKTOK / _META / _ORGANIC</code> / デフォルトの5択で振り分けるロジックを <code>buildRedirectUrl()</code> に追加。定数は Code.gs 先頭の設定ブロックに追記。src が未指定またはマッチしない場合はデフォルト URL へ。</span></td>
             <td>Claude</td>
             <td>—</td>
           </tr>
