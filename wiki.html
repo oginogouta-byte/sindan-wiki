@@ -847,7 +847,8 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.20 <span class="v-date">2026-05-03</span></span>
+  <button class="tab-btn" data-pane="gas-impl">GAS実装</button>
+  <span class="wiki-version">v3.26 <span class="v-date">2026-05-04</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -885,6 +886,18 @@
             <td><strong>GAS アルゴリズム設計書の作成</strong><span class="done-note">GAS設計書.md 作成済み（2026-05-03）。doPost/calcScores/calcSubgroups/calcVarianceAndGAP/calcConsistency/calcPercentile/buildRedirectUrl の全関数設計・Sheets列マッピング・REPORT_DATA注入対応表・エラーハンドリング・テスト方法を完全定義。GAP方向性6パターン・整合性チェック9グループのREPORT_DATA配列マッピングも確定。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>GASブリッジ関数 buildPromptData(row) の設計・実装</strong><span class="done-note">2026-05-03 完了・修正済み。GAS_プロンプト.mdに実装済み。① row.k/i/a/t（0〜125）→ axesPct（%）正規化 ② row.kiGap/atGap/ktGap（signed %）→ [{axisA,axisB,pattern,diff}]配列（|gap|≥20%フィルタ済み）③ row.failedNames（カンマ区切り文字列）→ string[]配列。④ varSubs：row.subgroupsPct依存を廃止し、Sheets個別列（DR〜EC）から直接パーセント計算（SUB_KEYS・SUB_MAX定数追加）。callClaudeApi()内のbuildPrompt(variables)をbuildClaudePrompt(buildPromptData(row))に一本化。</span></td>
+            <td>ユーザー＋Claude</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>next_step.body の未分類グループ（指示-1 / 活用-1 / 思考-3）の分類確定</strong><span class="done-note">2026-05-03 完了。土台系（OS安定先決）：思考-1/2・指示-1/2・活用-1。指示-1=AIに何ができるかの理解が起点 / 活用-1=日常ルーティンへの組み込みが起点。応用系（並走フレーム）：活用-2/3・指示-3・思考-3。思考-3=「AIを疑え」ではなく「AIとの分業判断を磨く」フレームで書く（レポート否定禁止）。同時失敗時は土台系優先（並走フレームは使わない）。GAS_プロンプト.md next_step節に反映済み。</span></td>
+            <td>ユーザー＋Claude</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec6">詳細 →</button></td>
           </tr>
           <tr class="done-row">
             <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
@@ -930,15 +943,21 @@
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">保留中</span></td>
-            <td><strong>[TODO:secFeature] GAP動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">GASがD.gaps[]の注入仕様確定後に静的ダミーを動的生成に切り替え。最大3件（kt/at/ki）。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>secFeature() GAP動的DOM生成実装</strong><span class="done-note">2026-05-04 完了。report.html の secFeature() 関数を全面実装。静的ダミー gap-item を実行時に全削除 → D.gaps[] から gap-pair-title / gap-visual（SVGコネクタ・2本ゲージ・diff表示）/ gap-pair-body を動的生成。gaps[]が空の場合はセクション見出しを非表示。consistency-block 直前に fragment挿入。ダミーデータ（knowledge＞instruction 30%差）で動作確認可能。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
           </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>summary DOM注入実装</strong><span class="done-note">2026-05-04 完了。① window.REPORT_DATA に summary フィールドをダミーテキスト付きで追加。② `.score-summary` の静的テキストを空に変更。③ secScore() 末尾に `summaryEl.textContent = D.summary` 注入コードを追加。renderAll() 実行時にリアルデータで上書きされる。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
+          </tr>
           <tr>
-            <td><span class="badge badge-todo">HTML実装時</span></td>
-            <td><strong>summary / next_step フィールド追加 + JS注入実装</strong><br><span style="font-size:12px;color:var(--muted)">Section 1（summary 216〜240字）・Section 6（priority_action / explanation）のHTML実装時にREPORT_DATAにキー追加 + 注入コード実装。HTMLが未実装のため現時点で未定義は正常。</span></td>
+            <td><span class="badge badge-todo">デザイン確認待ち</span></td>
+            <td><strong>next_step Section 6 HTML + DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA の next_step.headline / next_step.body は buildReportDataObject() 実装済み。`#sec-next` は空タグのまま。デザイン方針（A: シンプル構造 / B: 専用デザイン）をユーザーが確定後に実装する。HTML構造・render(secNextStep) の追加が必要。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
@@ -947,6 +966,18 @@
             <td><strong>GASデータ受け渡しバリデーション機能整備</strong><br><span style="font-size:12px;color:var(--muted)">型強制・必須フィールドチェック。全体仕様確定後に一括整備。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>doPost() answers バリデーション追加</strong><br><span style="font-size:12px;color:var(--muted)">現状 doPost() は answers 配列の length=100 チェック・各値1〜5の範囲チェックを行っていない。不正ペイロードが Sheets に混入するリスクあり。<br>追加内容：① <code>answers.length !== 100</code> → 400エラー返却 ② <code>answers.some(v =&gt; v &lt; 1 || v &gt; 5)</code> → 400エラー返却</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="gas-impl" data-section="gas-s1">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>Sheets DP列の競合解消 → 案A確定（DK列1本格納）</strong><span class="done-note">2026-05-03 完了。案A採用：Claude API全出力JSONをJSON.stringifyしてDK列1本に格納。DL〜DQ列の個別格納は廃止。report.html生成時はJSON.parse(row[DK_COL])で全フィールドを一括取得。gaps[]が可変長配列のため固定列分割は不適。GAS設計書.md Section 5 REPORT_DATA mappingを更新済み。</span></td>
+            <td>ユーザー</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
           </tr>
           <tr class="done-row">
             <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
@@ -960,17 +991,41 @@
             <td>ユーザー＋Claude</td>
             <td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>GAS本体コードを実装（doPost〜Claude API呼び出しまで）</strong><br><span style="font-size:12px;color:var(--muted)">GAS設計書.mdの全関数定義をそのままコード化。doPost → calcScores → calcSubgroups → calcVarianceAndGAP → calcConsistency → calcPercentile → writeCalculatedData → callClaudeAPI → issueReportUrl の順。⚠️ GASデプロイ権限確保が前提。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>GAS本体コードを実装・テスト環境デプロイ完了</strong><span class="done-note">2026-05-04 完了。shindan/gas_project/Code.gs として実装。clasp push でテスト用 Spreadsheet（個人 Google アカウント）にバインド。Webアプリとしてデプロイ（アクセス:全員匿名 / 実行者:自分）。doPost に正しいペイロード {id, token, answers[100]} を送ると回答データシートに142列フル書き込み成功を確認。getSheet_()/`_setupSheetHeader_()` でシート自動作成・ヘッダーフリーズ実装済み。フェーズ1動作確認済み。⚠️ 本番はGWS管理者アカウントへの移行が必要。</span></td>
             <td>Claude</td>
-            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+            <td><button class="go-btn" data-tab="gas-impl" data-section="gas-s3">詳細 →</button></td>
           </tr>
           <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA.summary / axes_eval / gaps[].body / consistency_eval を .score-summary等の対応DOMに注入するJSを実装。現在はダミーテキストがハードコード。⚠️ GAS実装完了が前提。</span></td>
+            <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
+            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">✅ fetch基盤完了（2026-05-04）・✅ summary注入完了（2026-05-04）・✅ secFeature動的生成完了（2026-05-04）<br>⬜ 残タスク：next_step Section 6 HTML＋注入コード（デザイン確定待ち）</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>callClaudeApi() — Claude APIレスポンスのmarkdown除去を実装</strong><span class="done-note">2026-05-04 完了。Code.gs callClaudeApi() 内に `.replace(/^```json\s*/i, '').replace(/\s*```$/, '')` を追加。JSON.parse前にmarkdownブロックを除去。Claudeがmarkdownなしで返した場合も副作用なし。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="gas-impl" data-section="gas-s7">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未定義（ブロッカー）</span></td>
+            <td><strong>フェーズ2トリガー経路の設計</strong><br><span style="font-size:12px;color:var(--muted)">runPhase2(diagId) 本体は実装済み。未定義なのは「UTAGE CVイベント → GAS doPost → runPhase2 呼び出し」の経路設計のみ。diagIdをどう渡すか（URLパラメータ？隠しフィールド？）・どのエンドポイントで受けるかを決める必要がある。現状はテスト関数 testPhase2_() からしか実行できない。</span></td>
+            <td>ユーザー＋Claude</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">本番前必須</span></td>
+            <td><strong>URL確定・設定（媒体別サンクスURL含む）</strong><br><span style="font-size:12px;color:var(--muted)">以下URLが全て空文字のまま。本番デプロイ前に全て埋める必要がある。<br>① <code>UTAGE_THANKS_URL_X</code>（Code.gs）— X流入用サンクスページURL<br>② <code>UTAGE_THANKS_URL_TIKTOK</code>（Code.gs）— TikTok流入用サンクスページURL<br>③ <code>UTAGE_THANKS_URL_META</code>（Code.gs）— Meta流入用サンクスページURL<br>④ <code>UTAGE_THANKS_URL</code>（Code.gs）— src未指定時のデフォルトサンクスページURL<br>⑤ <code>UTAGE_FALLBACK_URL</code>（Code.gs）— エラー時フォールバックURL<br>⑥ <code>REPORT_BASE_URL</code>（Code.gs）— レポートホスティングURL（Vercel等）<br>⑦ <code>GAS_URL</code>（report.html）— GASウェブアプリURL（doGet を叩くためのエンドポイント）</span></td>
+            <td>ユーザー</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">本番前必須</span></td>
+            <td><strong>Code.gs ハードコード認証情報の削除</strong><br><span style="font-size:12px;color:var(--muted)">テスト用にAPIキー・トークンが3箇所にfallback値としてハードコードされている（_initProps()・callClaudeApi() L487・doPost() L88）。本番デプロイ前に全て削除し、スクリプトプロパティのみで動作する状態にする。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="gas-impl" data-section="gas-s6">詳細 →</button></td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
@@ -980,9 +1035,15 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>UTAGEサンクスページHTML/CSS/JS</strong><br><span style="font-size:12px;color:var(--muted)">カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済みのサンクスページ）</span></td>
+            <td><strong>UTAGEサンクスページHTML/CSS/JS（媒体別・複数ページ）</strong><br><span style="font-size:12px;color:var(--muted)">【設計確定 2026-05-04】媒体ごとに別UTAGEページを用意し、各ページに計測タグを設置する案A採用。<br>対象媒体（未確定）：X / TikTok / Meta / オーガニック — ⚠️ どの媒体まで計測するかをユーザーが意思決定する必要がある。オーガニック（自然流入・URLシェア・口コミ等）は <code>?src=organic</code> で分類予定。<br>仕組み：診断HTML の URL に <code>?src=x</code> / <code>?src=tiktok</code> / <code>?src=meta</code> / <code>?src=organic</code> を付与 → doPost に src を含める → GAS が src に応じて対応する UTAGE_THANKS_URL_* へ振り分けリダイレクト。<br>各ページの構造：カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済み）は共通。計測タグのみ異なる。<br>⚠️ GAS実装（URL定数追加・buildRedirectUrl() src分岐）は計測媒体の意思決定後に着手。</span></td>
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>GAS buildRedirectUrl() に src 媒体振り分けロジック追加</strong><br><span style="font-size:12px;color:var(--muted)">⚠️ 計測媒体の意思決定（どの媒体まで分類するか）が前提。確定後に着手。<br>実装内容：診断HTMLから <code>src</code> パラメータを受け取り（POST payload に含める）、<code>UTAGE_THANKS_URL_X / _TIKTOK / _META / _ORGANIC</code> / デフォルトの5択で振り分けるロジックを <code>buildRedirectUrl()</code> に追加。定数は Code.gs 先頭の設定ブロックに追記。src が未指定またはマッチしない場合はデフォルト URL へ。</span></td>
+            <td>Claude</td>
+            <td>—</td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未確定</span></td>
@@ -1005,10 +1066,10 @@
         <thead><tr><th>状態</th><th>確認先</th><th>確認内容</th><th>影響範囲</th></tr></thead>
         <tbody>
           <tr>
-            <td><span class="badge badge-check">確認待ち</span></td>
+            <td><span class="badge badge-check">確認待ち（本番用）</span></td>
             <td>GWS管理者</td>
-            <td><strong>GASデプロイ権限・管理者アカウント</strong><br><span style="font-size:12px;color:var(--muted)">GAS実装の着手条件</span></td>
-            <td>GAS実装全体</td>
+            <td><strong>GASデプロイ権限・管理者アカウント（本番用）</strong><br><span style="font-size:12px;color:var(--muted)">テスト環境は個人アカウント（g.ogino1006@gmail.com）でデプロイ済み・動作確認済み。本番環境への移行時にGWS管理者アカウントが必要。</span></td>
+            <td>GAS本番デプロイ</td>
           </tr>
           <tr>
             <td><span class="badge badge-check">確認待ち</span></td>
@@ -1049,6 +1110,32 @@
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
 
+          <!-- ── 2026-05-04（媒体別サンクスページ設計確定 v3.26） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>媒体別UTAGEサンクスページ設計確定 — 案A採用・オーガニック追加（v3.26）</strong><span class="done-note">X / TikTok / Meta / オーガニック の4媒体それぞれに専用UTAGEサンクスページを用意し、各ページに計測タグを設置する案Aを採用。案Bの「1ページ+条件分岐タグ」は UTAGE のシナリオ設定上で流入元の特定が困難なため不採用。オーガニック（SNS自然流入・直接流入）は別の訴求ニーズがあるため4媒体目として追加決定。実装方針：① 診断HTMLのURLに ?src=x / tiktok / meta / organic 等を付与 ② doPost に src を含める ③ GAS buildRedirectUrl() が src に応じて UTAGE_THANKS_URL_X / _TIKTOK / _META / _ORGANIC へ振り分けリダイレクト。GASの実装変更（URL定数追加 + 振り分けロジック）が必要。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>PDFダウンロード機能 — 不採用決定（v3.26）</strong><span class="done-note">レポートのPDFダウンロードボタンはフェーズ1〜2では実装しないと決定。ブラウザ印刷→PDF保存は技術的には可能だが、現フェーズの優先度・工数対効果から見送り。wiki ToDoからPDFタスクを削除済み。将来の要件として必要になった場合は後工程で再検討する。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>Section 6（next_step）デザイン方針の整理・保留決定（v3.26）</strong><span class="done-note">Section 6「これからのあなた」の表示デザインについてA案（カード型）・B案（タイムライン型）等の選択肢を整理。デザイン確定は別途ユーザー判断とし、HTML実装は保留。wiki ToDoに「デザイン確定待ち」タスクとして単独分離済み。headline（35〜45字）＋body（180〜220字）のフィールド定義・GASプロンプト設計は完了しており、デザイン確定後にDOM注入実装を行う。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-04（report.html 表示実装完成・スクリーニング対応 v3.25） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>secFeature() GAP動的DOM生成・summary注入・fetchフォールバック実装（v3.25）</strong><span class="done-note">① secFeature()：静的ダミーgap-item を実行時全削除 → D.gaps[] から gap-pair-title / SVGコネクタ / 2本ゲージ / diff表示 / gap-pair-bodyを動的生成。空時はセクション見出し非表示。② summary注入：REPORT_DATA.summary フィールド追加・secScore() 末尾に `.score-summary` への textContent 注入コード追加。静的ダミーテキストを空に変更。③ fetchフォールバック：fetch失敗時に赤帯エラーメッセージを body 先頭に固定表示（開発中はコンソールに加えてDOMでもエラー検知可能）。report.htmlの表示パイプライン（GAS→fetch→renderAll→各セクション）がほぼ完成。残はSection 6（next_step）のデザイン確定後実装のみ。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>SPEC.md 記述修正 — 「100問の生回答データは渡さない」を実装の実態に修正（v3.25）</strong><span class="done-note">SPEC.md L403 の「※ 100問の生回答データは渡さない（ノイズが多く生成品質が下がるため）」を削除し「問別スコア（q1〜q100 の 1〜5 値）を buildAxesDetail() 経由でプロンプトに渡す方式を採用。全問スコア×設問ラベルを渡すことで個別最適化の精度が大幅に向上することを実装・検証済み。」に修正。第2回スクリーニング D-2 で検出された仕様書と実装の逆転記述を解消。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>wiki v3.25 ToDo整理 — 今回実装完了タスクをDone移動・next_step単独タスクに分離</strong><span class="done-note">secFeature（GAP動的生成）・summary注入を中優先度ToDoからDoneへ移動。report.htmlのJS注入タスクの残タスク記述を「next_step Section 6のみ」に更新。summary/next_stepが1タスクに混在していた行をsummary完了（Done移動）＋next_step単独行（デザイン確定待ち）に分離。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-04（第2回スクリーニング対応・データ配信基盤完成 v3.24） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>doGet(e) 新規実装 — レポートデータ配信エンドポイント（v3.24）</strong><span class="done-note">Code.gs に SECTION 2.5 として doGet(e) を追加。?id=reportId でSheets行を特定 → claudeJson（DL列）を復元 → buildReportDataObject(row, claudeJson) → JSON返却。エラー時も JSON レスポンスを返す設計。findRowByDiagId() と同一の row オブジェクト構造で実装。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>calcAvgAxes() 新規実装・buildReportDataObject() に avgAxes 追加（v3.24）</strong><span class="done-note">Code.gs に calcAvgAxes() を追加。COL_K〜COL_T の4列を全行取得し軸別平均をトークン変換して返す（toToken 式は buildReportDataObject 内の toToken と同一）。buildReportDataObject() の return に avgAxes: calcAvgAxes() を追加。report.html が D.avgAxes.knowledge 等で参照するレーダーチャート全体平均ラインが機能するようになった。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>callClaudeApi() markdown stripping 実装・report.html fetch 基盤実装（v3.24）</strong><span class="done-note">① Code.gs callClaudeApi()：JSON.parse前に `.replace(/^```json\s*/i,'').replace(/\s*```$/,'')` を追加。ClaudeのJSONがmarkdownブロックに包まれていてもクラッシュしない。② report.html：_renders 配列・renderAll()・GAS_URL定数・async fetch IIFE を追加。GAS_URL設定後は?id=reportId から doGet を呼び REPORT_DATA を差し替えて全セクション再描画する仕組みが完成。GAS_URL空のまま（ローカル確認時）はダミーデータで動作継続。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>第2回クロスファイルスクリーニング実施・設計書整合性確認（v3.24）</strong><span class="done-note">QUESTIONS.md / GAS_プロンプト.md / Code.gs / report.html / GAS設計書.md / SPEC.md の6ファイルをクロス分析。界面①（buildPromptData→プロンプト）/ 界面②（Claude出力スキーマ→buildReportDataObject）/ 界面③（buildReportDataObject→report.html）全て正常一致を確認。設計書列名の+1シフトは既知・軽微扱い。avgAxes 未実装が唯一のブロッカーとして検出 → 同日修正完了。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-04（GASデプロイ・テスト完了） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>GASテスト環境デプロイ・フェーズ1動作確認完了（v3.23）</strong><span class="done-note">clasp CLI でテスト用 Spreadsheet にコンテナバインド型 GAS プロジェクトを作成・push・デプロイ（個人 Google アカウント g.ogino1006@gmail.com）。Webアプリ設定：全員匿名アクセス / USER_DEPLOYING 実行。curl でdoPost エンドポイントを検証し、回答データシートへの142列フル書き込み確認済み。getSheet_()・_setupSheetHeader_() で「回答データ」シートの自動作成・ヘッダー行フリーズを実装。デプロイ URL: AKfycbzj...（gas_project/.clasp.json 参照）。⚠️ 本番は GWS 管理者アカウントが必要。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>Claude API テスト確認完了・prompt-caching 導入（v3.23）</strong><span class="done-note">Python で GAS フェーズ2 の Claude API 呼び出しを再現（test_claude_api.py）。anthropic-beta: prompt-caching-2024-07-31 を使用し、静的部分（axes_eval/next_step/schema 指示文）を ephemeral キャッシュ対象に設定。テストデータ K=83%/I=72%/A=31%/T=88% で summary・axes_eval×4・gaps×1（思考力>活用力 57%）・consistency_eval・next_step の全フィールドを正常生成確認。output_tokens≈2802、cache_write≈4759。✅ markdown除去処理は 2026-05-04 に実装済み（callClaudeApi() に strip 処理追加）。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>findRowByDiagId() 実装完了（フェーズ2 Sheets読み取り）</strong><span class="done-note">Sheets 全データを取得し diagId で行を特定。返却オブジェクトに k/i/a/t/raw/tokens/rank/failedNames/percentile/kSub1〜tSub3/kVariance〜tVariance/kiGap/atGap/ktGap/failedCount/q1〜q100 を含む。buildPromptData() は row.subgroupsPct ではなく row.kSub1〜tSub3 の個別キーを使う設計に確定（前回スクリーニングのブロッカーを実装で解消）。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>Sheets列構成 +1シフト確定・COL_定数で一元管理（v3.23）</strong><span class="done-note">GAS設計書の「C〜CW: Q1〜Q100」は99列の誤記。正しくは C〜CX（100列）。そのため CX以降の全列が +1 シフト。実装では COL_K=103(CY)・COL_CLAUDE_JSON=116(DL)・COL_K_SUB1=123(DS)等のCOL_定数で管理。設計書記述（CX=知識力・DK=Claude JSON・DR=Sub1）は全て1列ずれている。⚠️ GAS設計書.md・SPEC.mdの列定義は未更新（設計書との整合は別タスク）。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-03（最終スクリーニング対応 v3.21.1） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>最終スクリーニング対応・全指摘解消（v3.21.1）</strong><span class="done-note">第三者Claudeによる最終スクリーニング（観点A〜G）実施。新規ブロッカー1件・軽微3件を検出・即修正。① buildPromptData() の varSubs 計算：row.subgroupsPct（calcSubgroups出力に依存・名前付きキー構造で数値インデックス不整合）→ Sheets個別列（DR〜EC）から直接Math.round(raw/max×100)計算に変更（SUB_KEYS・SUB_MAX追加）。② GAS_プロンプト.md Layer1変数表の ap → a 誤記修正。③ report.html コメント字数を現行仕様に統一（eval ~80字→~120字・gaps.body 70〜80字→90〜100字 計5箇所）。④ report.html データフローコメントにsummary・next_stepを追記。前回スクリーニング11件含む全指摘が解消済みであることを確認。</span></td><td>—</td></tr>
+          <!-- ── 2026-05-03（全ブロッカー解消セッション v3.21） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>全ブロッカー解消・設計確定（v3.21）</strong><span class="done-note">① buildPromptData(row) 実装（GAS_プロンプト.md）：row.k/i/a/t正規化・gap配列変換・failedNames配列変換の3変換をブリッジ関数として実装完了。② next_step 全パターン確定：土台系（思考-1/2・指示-1/2・活用-1）/ 応用系（活用-2/3・指示-3・思考-3）/ 同時失敗=土台系優先。思考-3は「分業判断を磨く」フレーム（レポート自己否定禁止）。③ DP列競合解消：案A採用、Claude API全JSON→DK列1本（JSON.stringify）、DL〜DQ廃止。GAS設計書・SPEC・wiki全更新済み。</span></td><td>—</td></tr>
           <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.20） ── -->
           <tr class="done-row"><td>2026-05-03</td><td><strong>next_step フィールド新設（headline 35〜45字 + body 180〜220字）（v3.20）</strong><span class="done-note">Section 6「これからのあなた」用に2フィールド設計。headline：「AIへの指示を書く前に〜」「AIのアウトプットを使う前に〜」等、AI-side/人間-side の具体動詞で一手を言い切る（「設計する」「確認する」等の包括動詞・比喩表現禁止）。body：GAP→consistency_eval(OS安定性)→topAxis の順で統合。一貫性チェック全通過=前進を背中押し / 土台系失敗=OS安定先決 / 応用系失敗=並走フレームの3構造確定。3ケースサンプル確定（186〜200字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
           <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.19） ── -->
@@ -1099,7 +1186,7 @@
           <tr class="done-row"><td>2026-04-30</td><td><strong>ランク表示を廃止・上位X%に一本化</strong><span class="done-note">旧：S〜Dランクをレポートに表示する設計。新：ランクは内部計算のみ。レポートには「上位X%」のみ表示（市場内の相対位置として明示）。ランクラベルは感情的な上下比較を生むため廃止。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-30</td><td><strong>軸名・識別子 K/I/A/T に統一</strong><span class="done-note">旧：思考力(T)→指示力(I)に改名、判断力(J)→思考力(T)に改名。GAS変数 k_score/i_score/a_score/t_score に統一。混在による実装バグ防止。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-30</td><td><strong>スコアリング設計確定（トークン換算・ランク・上位X%）</strong><span class="done-note">各軸トークン = (軸スコア/125)³ × 249,999 / ランクS〜D / N&lt;100はダミー値 / N≥100でPERCENTRANK</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
-          <tr class="done-row"><td>2026-04-30</td><td><strong>Sheets列構成確定（A〜EK全列）</strong><span class="done-note">Q1〜Q100(C〜CW) / 4軸スコア(CX〜DA) / トークン(DC) / 整合性(DE) / 上位X%(DF) / 生成テキスト7本(DK〜DQ) / サブスコア12本(DR〜EC) / 分散・GAP(ED〜EK)</span></td><td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>Sheets列構成確定（A〜EK全列）</strong><span class="done-note">Q1〜Q100(C〜CX・100列) / 4軸スコア(CY〜DB) / トークン(DD) / 整合性(DF) / 上位X%(DG) / Claude JSON 1本(DL・列116) / 空き列(DM〜DR) / サブスコア12本(DS〜ED) / 分散・GAP(EE〜EK) / 不整合件数(EL)　※C〜CW=99列のため+1シフト・Code.gsのCOL_*定数が正本</span></td><td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-30</td><td><strong>GASフェーズ分割設計確定</strong><span class="done-note">フェーズ1（診断完了直後・スコア計算・Sheets保存）/ フェーズ2（CV完了後・Claude API呼び出し・レポートURL発行）の2段構成に確定。</span></td><td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-04-30</td><td><strong>サンクスページ設計確定</strong><span class="done-note">URLパラメータ6値（total/pct/k/i/a/t）→ カスタムJS → 数値表示。Vue.js setTimeout(300)対応済み。モザイクゾーンでCVを喚起する設計。</span></td><td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td></tr>
 
@@ -1120,7 +1207,7 @@
 </div><!-- /pane-todo -->
 
 <!-- ==================== PANE: 診断設計 ==================== -->
-<div id="pane-shindan" class="pane">
+<div id="pane-shindan" class="pane pane-hidden">
 
   <nav class="sidebar">
     <div class="sidebar-logo">
@@ -1411,12 +1498,12 @@
         <div class="tech-card">
           <div class="tech-role">データ保存・API</div>
           <div class="tech-name">Google Sheets + GAS</div>
-          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+          <div class="tech-status"><span class="badge" style="background:var(--c3);color:#fff">テスト環境済</span></div>
         </div>
         <div class="tech-card">
           <div class="tech-role">AI コンテンツ生成</div>
           <div class="tech-name">Claude API</div>
-          <div class="tech-status"><span class="badge badge-todo">未実装</span></div>
+          <div class="tech-status"><span class="badge" style="background:#7c6eff20;color:#7c6eff">テスト確認済</span></div>
         </div>
         <div class="tech-card">
           <div class="tech-role">レポートページ Hosting</div>
@@ -1807,7 +1894,7 @@
               <li><strong>④ 弱み：</strong>この軸の中で足を引っ張っている要因。実務への影響まで踏み込む（箇条書き・2〜3点）</li>
               <li><strong>⑤ 伸びしろ：</strong>この弱みを解消すると何が変わるか・具体的なアクション（文章）</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ eval ~80字・strengths/weaknesses ~20字×2・growth ~80字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（軸スコア・Level）+ Layer2（3サブスコア・分散）／ eval ~120字・strengths/weaknesses ~20字×2・growth ~80字</div>
             <span class="page-gen">Claude API × 4</span>
           </div>
         </div>
@@ -1838,7 +1925,7 @@
               <li>その課題を解消したら何が変わるかを具体的に記述</li>
               <li>「一人でやるのが難しい部分がある」という文脈を自然に作り、LINE登録への動機を醸成する</li>
             </ul>
-            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸・GAP）+ Layer2（最低サブ）／ priority_action ~30字 ＋ explanation 150〜180字</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（最低軸・GAP）+ Layer2（最低サブ）／ headline 35〜45字 ＋ body 180〜220字</div>
             <span class="page-gen">Claude API</span>
           </div>
         </div>
@@ -1974,7 +2061,7 @@
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
               <tr><td>サブスコア表示</td><td>サブカテゴリ名 + XX点 + 平均XX点 + アニメーションバー（×3サブ）</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>H3：評価</td><td>このスコアパターンが実務でどういう状態かを言語化（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>H3：評価</td><td>このスコアパターンが実務でどういう状態かを言語化（〜120字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr><td>H3：強み</td><td>この軸内で機能している要因（箇条書き・各〜20字 × 2点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr><td>H3：弱み</td><td>この軸内で足を引っ張っている要因（箇条書き・各〜20字 × 2点）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr><td>H3：伸びしろ</td><td>この弱みを解消すると何が変わるか（文章・〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
@@ -1996,7 +2083,7 @@
               <tr><td>概念説明（セクション冒頭1回・確定）</td><td>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
               <tr><td>スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %バー。2軸並列＋差分%を数値で明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>本文</td><td>あなたが今どういう状態かの観察（70〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>本文</td><td>あなたが今どういう状態かの観察（90〜100字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
               <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 回答の一貫性（常時表示）</td></tr>
               <tr><td>H2：回答の一貫性</td><td>―</td><td>―</td></tr>
               <tr><td>固定文</td><td>「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
@@ -2016,8 +2103,8 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr><td>priority_action</td><td>最優先の1課題（〜30字・デザイン上強調表示）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>explanation</td><td>その課題を解消すると何が変わるか・CTAブリッジ（150〜180字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>next_step.headline</td><td>最優先の1課題への具体的な一手（35〜45字・AI-side or 人間-side の具体動詞・比喩禁止）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>next_step.body</td><td>GAP→consistency→topAxis順で解説。3構造パターン（180〜220字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -2067,13 +2154,12 @@
             <td>診断サマリー</td>
             <td><code>summary</code></td>
             <td>文章 216〜240字</td>
-            <td>DK列</td>
+            <td rowspan="8">DL列<br><small style="color:var(--muted)">JSON全体を<br>1本格納<br>（案A確定・<br>実装=列116）</small></td>
           </tr>
           <tr>
             <td rowspan="4">軸別評価 × 4</td>
             <td><code>eval</code></td>
-            <td>文章 〜80字</td>
-            <td rowspan="4">DL〜DO列</td>
+            <td>文章 〜120字</td>
           </tr>
           <tr>
             <td><code>strengths</code></td>
@@ -2090,8 +2176,7 @@
           <tr>
             <td rowspan="2">あなたの特徴</td>
             <td><code>gaps[]</code></td>
-            <td>配列（条件付き）description 70〜80字</td>
-            <td rowspan="2">DP列</td>
+            <td>配列（条件付き）body 90〜100字</td>
           </tr>
           <tr>
             <td><code>consistency_eval</code></td>
@@ -2099,13 +2184,13 @@
           </tr>
           <tr>
             <td rowspan="2">これからのあなたへ</td>
-            <td><code>priority_action</code></td>
-            <td>短文 〜30字</td>
-            <td rowspan="2">DQ列</td>
+            <td><code>next_step.headline</code></td>
+            <td>短文 35〜45字</td>
           </tr>
           <tr>
-            <td><code>explanation</code></td>
-            <td>文章 150〜180字</td>
+            <td><code>next_step.body</code></td>
+            <td>文章 180〜220字</td>
+            <td>〃</td>
           </tr>
         </tbody>
       </table>
@@ -2113,9 +2198,9 @@
       <div class="callout" style="margin-top:24px">
         <strong>形式選択の根拠：</strong><br>
         <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
-          <li><strong>文章</strong>：意味・論理・感情の流れが必要な要素（eval / growth / gaps / explanation）</li>
+          <li><strong>文章</strong>：意味・論理・感情の流れが必要な要素（eval / growth / gaps.body / next_step.body）</li>
           <li><strong>配列（各〜20字）</strong>：strengths / weaknesses はスキャン・タグ的消化が目的。4軸繰り返しなので短く統一して認知負荷を抑える</li>
-          <li><strong>短文（〜30字）</strong>：priority_action は「1点に絞った行動指針」としてデザイン上強調できる長さに固定</li>
+          <li><strong>短文（35〜45字）</strong>：next_step.headline は「1点に絞った具体的な一手」としてデザイン上強調できる長さに固定</li>
         </ul>
       </div>
 
@@ -2124,36 +2209,31 @@
         <pre style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px;line-height:1.7;overflow-x:auto;color:var(--text)"><code>{
   "summary": "string  // 216〜240字・総合評価テキスト（Section 1 表示）",
 
-  "axes": {
-    "knowledge":    { "eval": "string ~80字", "strengths": ["~20字", "~20字"], "weaknesses": ["~20字", "~20字"], "growth": "string ~80字" },
-    "instruction":     { /* 同構造 */ },
-    "application":  { /* 同構造 */ },
-    "thinking":     { /* 同構造 */ }
+  "axes_eval": {
+    "knowledge":   { "eval": "string ~120字", "strengths": ["~20字", "~20字"], "weaknesses": ["~20字", "~20字"], "growth": "string ~80字" },
+    "instruction": { /* 同構造 */ },
+    "application": { /* 同構造 */ },
+    "thinking":    { /* 同構造 */ }
   },
 
-  "structure": {
-    "gaps": [
-      {
-        "pair": "at | ki | kt",           // GAS側が判定（at=活用-思考 / ki=知識-指示 / kt=知識-思考）
-        "direction": "positive | negative", // GAS側が判定（positive = 前者が高い）
-        "value": 40,                      // 絶対値・GAS側が計算
-        "description": "string 70〜80字"  // Claude生成のみ
-      }
-    ],
-    // gaps は絶対値20%以上のペアのみ（正負両方）。0件の場合は空配列
-    // 見出し文言はHTML側が pair + direction から静的生成
-    // 例：pair=ki, positive → 「知識力 > 指示力」
-    // 例：pair=at, negative → 「思考力 > 活用力」
-    "consistency_eval": "string"  // Claude生成：108〜120字・回答の一貫性セクション用・単一評価文
-    // バッジ表示状態（凸/凹）はGASが9グループ×一貫判定で計算・Sheets保存。Claude出力には含めない
-    // ClaudeへはLayer3（不整合グループ名・件数・min/max）を渡し評価文1本を生成させる
-    // 0件（全パス）でも必ず生成する（称賛トーン）。空文字は返さない。
-    // ⚠️ プロンプト制約：断定・糾弾調にしない。原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現
-  },
+  "gaps": [
+    {
+      "axisA": "knowledge | instruction | application | thinking",  // 高い軸
+      "axisB": "knowledge | instruction | application | thinking",  // 低い軸
+      "diff": 30,                        // %差・正値・GAS側が計算
+      "body": "string 90〜100字"         // Claude生成のみ
+    }
+  ],
+  // gaps は絶対値≥20%のペアのみ（axisA > axisB）。0件の場合は空配列 []
+  // 見出し文言はHTML側が axisA / axisB から静的生成（例：「知識力 &gt; 指示力」）
+
+  "consistency_eval": "string",  // Claude生成：108〜120字・回答の一貫性セクション用・単一評価文
+  // 0件（全パス）でも必ず生成する（称賛トーン）。空文字は返さない
+  // ⚠️ バッジ表示（凸/凹）はGASが計算・Sheets保存。Claude出力には含めない
 
   "next_step": {
-    "priority_action": "string ~30字  // GAP・ズレを踏まえた最優先1点",
-    "explanation":     "string 150~180字  // CTAブリッジ"
+    "headline": "string 35〜45字  // AI-side or 人間-side の具体動詞・比喩禁止",
+    "body":     "string 180〜220字  // GAP→consistency→topAxis順・3構造パターン"
   }
 }</code></pre>
       </div>
@@ -2165,7 +2245,7 @@
           <li><strong>概念説明（セクション冒頭1回のみ・確定テキスト）：</strong>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</li>
           <li><strong>大なり小なり見出し：</strong>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」</li>
           <li><strong>スコアビジュアル：</strong>軸スコア ÷ 125 × 100 = %バー。2軸並列 ＋ 差分%を数値で明示</li>
-          <li><strong>Claude出力：</strong>あなたが今どういう状態か（70〜80字）。Claudeは状態の観察に集中</li>
+          <li><strong>Claude出力：</strong>あなたが今どういう状態か（90〜100字）。高い軸の強みが低い軸で止められている構図を体験として言語化＋GAP解消の解放ポイントを提示</li>
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
@@ -2200,8 +2280,8 @@
 
           <!-- 0件 -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN A ― 不整合 0件</div>
-            <div style="font-size:12px;color:var(--muted)">consistency_eval: ""（空文字）→ セクション自体を非表示（GAPと同様）</div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">PATTERN A ― 不整合 0件（全グループ通過）</div>
+            <div style="font-size:12px;color:var(--muted)">consistency_eval: 称賛トーンの評価文を生成（108〜120字）。空文字禁止・セクション常時表示。「自分でも言語化できていないまま習慣として定着している証拠」として断言称賛する</div>
           </div>
 
           <!-- 1件 -->
@@ -2314,7 +2394,7 @@
           <tr><td>ランク分布（S/A/B/C/D）</td><td>COUNTIF関数</td></tr>
           <tr><td>ユーザー分類タイプ分布</td><td>COUNTIF関数</td></tr>
           <tr><td>観点別平均スコア</td><td>AVERAGE関数</td></tr>
-          <tr><td>API生成成功数 / 失敗数</td><td>生成テキスト列（DK〜DO）の有無で判定</td></tr>
+          <tr><td>API生成成功数 / 失敗数</td><td>DL列（Claude API全JSON・列116）の有無で判定</td></tr>
         </tbody>
       </table>
 
@@ -2348,21 +2428,15 @@
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td><strong>[TODO:secFeature] GAP 動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">現状は静的ダミー gap-item×2 をビジュアル確認用に保留中。GAS が <code>D.gaps[]</code> の注入仕様を確定後に動的DOM生成に切り替える。検知: <code>grep TODO:secFeature report.html</code></span></td>
-            <td>GAS仕様確定後に着手</td>
-            <td><span class="badge badge-todo">設計未確定・保留</span></td>
+            <td><strong>secFeature() GAP 動的DOM生成</strong><span class="done-note">2026-05-04 完了。静的ダミー gap-item を実行時削除 → D.gaps[] から動的生成に切り替え済み。</span></td>
+            <td>—</td>
+            <td><span class="badge badge-done">実装済み（2026-05-04）</span></td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
             <td><strong>GASデータ受け渡しバリデーション機能整備</strong><br><span style="font-size:12px;color:var(--muted)">全体仕様確定後に一括整備。型強制（<code>Number()</code>）・必須フィールドチェック・エラーログ出力。現状は空文字スキップのみ実装済み。</span></td>
             <td>全体仕様確定後（最終仕上げ）</td>
             <td><span class="badge badge-todo">仕様確定後</span></td>
-          </tr>
-          <tr>
-            <td class="priority-low">🟢 低</td>
-            <td><strong>PDFダウンロード実装方式</strong><br><span style="font-size:12px;color:var(--muted)">ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</span></td>
-            <td>フェーズ3</td>
-            <td><span class="badge badge-todo">後工程</span></td>
           </tr>
         </tbody>
       </table>
@@ -2396,15 +2470,15 @@
           <tr>
             <td>2</td>
             <td>
-              <strong>summary / next_step フィールド未定義（HTML未実装フェーズ）</strong><br>
+              <strong>summary / next_step フィールド未注入（HTML実装時に対応）</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                <code>REPORT_DATA</code> に <code>summary</code>（Section 1 評価文 216〜240字）・<code>next_step.priority_action / explanation</code>（Section 6）が未定義。<br>
-                <strong>これはHTMLの該当セクションが未実装のため。</strong> Criticalな齟齬ではなく実装待ち。HTML側でセクション実装と同時に REPORT_DATA にキーを追加し JS注入を実装する。
+                <code>REPORT_DATA</code> に <code>summary</code>（216〜240字）・<code>next_step.headline</code>（35〜45字）・<code>next_step.body</code>（180〜220字）が未定義。<br>
+                プロンプト設計は <strong>v3.20 で全フィールド確定済み</strong>（<code>GAS_プロンプト.md</code>）。HTML Section 1・6 実装と同時に REPORT_DATA にキーを追加し JS注入を実装する。
               </span>
             </td>
             <td><code>REPORT_DATA.summary / next_step</code></td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">HTML Section 1・6 実装時に追加</span></td>
+            <td><span class="badge badge-done">summary 実装済み（2026-05-04）/ next_step はデザイン確定待ち</span></td>
           </tr>
           <tr>
             <td>3</td>
@@ -2412,14 +2486,14 @@
               <strong>GASの型変換責務（REPORT_DATA準拠）</strong><br>
               <span style="font-size:12px;color:var(--muted)">
                 GASはREPORT_DATA の型・スケールに合わせた変換を担当する（設計原則）:<br>
-                ① <code>consistency_check</code>：DE列のカンマ区切りグループ名 → 各軸 <code>boolean[]</code> に変換<br>
-                ② <code>subgroups</code>：DR〜EC列の生スコア → <code>Math.round(サブスコア / 最大点 × 100)</code> で 0〜100% に変換<br>
+                ① <code>consistency_check</code>：DF列のカンマ区切りグループ名 → 各軸 <code>boolean[]</code> に変換<br>
+                ② <code>subgroups</code>：DS〜ED列の生スコア → <code>Math.round(サブスコア / 最大点 × 100)</code> で 0〜100% に変換<br>
                 ③ <code>gaps[].diff</code>：GAPカード%表示は <code>軸スコア ÷ 125 × 100</code>（生スコア換算）。GASがdiff%を計算して注入するか、生スコアを別フィールドで渡すかは secFeature 実装時に確定する。
               </span>
             </td>
             <td>GAS → REPORT_DATA 変換ロジック</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">GAS設計書作成時に明記</span></td>
+            <td><span class="badge badge-done">GAS設計書に明記済み</span></td>
           </tr>
           <tr>
             <td>4</td>
@@ -2455,7 +2529,7 @@
             </td>
             <td><code>report.html</code> CSSコメント</td>
             <td><span class="priority-low">🟢 低</span></td>
-            <td><span class="badge badge-todo">実装完了後に修正</span></td>
+            <td><span class="badge badge-done">修正済み（2026-05-04）</span></td>
           </tr>
         </tbody>
       </table>
@@ -2657,7 +2731,7 @@
           </div>
           <div class="step-body">
             <div class="step-title">レポートHTML残り（Section 6・CTA）</div>
-            <div class="step-desc">FV〜Section 5は実装済み。残りは「あなたの次のステップ」（next_step.priority_action + explanation）とLINE登録CTA。summary・next_step の REPORT_DATA キー追加と注入処理も同時対応。</div>
+            <div class="step-desc">FV〜Section 5は実装済み。残りは「あなたの次のステップ」（next_step.headline 35〜45字 + next_step.body 180〜220字）とLINE登録CTA。プロンプト設計はv3.20確定済み。summary・next_step の REPORT_DATA キー追加と注入処理も同時対応。</div>
             <div class="step-meta">
               <span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中（FV〜Sec5完了）</span>
             </div>
@@ -3227,10 +3301,10 @@
       <table class="score-table">
         <thead><tr><th>変数名</th><th>内容</th><th>算出元</th></tr></thead>
         <tbody>
-          <tr><td><code>{{rank}}</code></td><td>ランク（S / A / B / C / D）</td><td>Sheets DD列</td></tr>
-          <tr><td><code>{{total_score}}</code></td><td>合計スコア（/500）</td><td>Sheets DB列</td></tr>
-          <tr><td><code>{{percentile}}</code></td><td>全体の上位X%（例：12.4）</td><td>Sheets DF列（PERCENTRANK）</td></tr>
-          <tr><td><code>{{k_score}} / {{i_score}} / {{a_score}} / {{t_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CX〜DA列</td></tr>
+          <tr><td><code>{{rank}}</code></td><td>ランク（S / A / B / C / D）</td><td>Sheets DE列</td></tr>
+          <tr><td><code>{{total_score}}</code></td><td>合計スコア（/500）</td><td>Sheets DC列</td></tr>
+          <tr><td><code>{{percentile}}</code></td><td>全体の上位X%（例：12.4）</td><td>Sheets DG列（PERCENTRANK）</td></tr>
+          <tr><td><code>{{k_score}} / {{i_score}} / {{a_score}} / {{t_score}}</code></td><td>各軸スコア（/125）</td><td>Sheets CY〜DB列</td></tr>
           <tr><td><code>{{k_level}} / {{i_level}} / {{a_level}} / {{t_level}}</code></td><td>各軸の5段階レベル（1〜5）</td><td>GAS計算（スコアをレンジで変換）</td></tr>
         </tbody>
       </table>
@@ -3283,12 +3357,12 @@
           <tr>
             <td><code>{{inconsistency}}</code></td>
             <td>不整合グループ名（カンマ区切り、なければ「なし」）</td>
-            <td>Sheets DE列</td>
+            <td>Sheets DF列</td>
           </tr>
           <tr>
             <td><code>{{inconsistency_count}}</code></td>
             <td>不整合グループ数（0〜9）</td>
-            <td>Sheets EK列</td>
+            <td>Sheets EL列</td>
           </tr>
           <tr>
             <td><code>{{inconsistency_details}}</code></td>
@@ -3508,7 +3582,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <tr><td>FV Total/Avg%</td><td>totalTokens / avgTokens</td><td><code>round(v / 999,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
           <tr><td>上位X%（ピラミッド）</td><td>percentile（GAS計算値）</td><td>直値・>=10→小1位 / &lt;10→小2位</td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
           <tr><td>軸スコア%（カード・レーダー）</td><td>axes.k/i/a/t（トークン値）</td><td><code>round(v / 249,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
-          <tr><td>GAP%（バー表示）</td><td>生スコア k/i/a/t（/125）</td><td><code>rawScore / 125 × 100</code></td><td><span class="badge badge-todo">secFeature未実装</span></td></tr>
+          <tr><td>GAP%（バー表示）</td><td>gaps[].diff（GAS計算済み・正値）</td><td><code>(axisA − axisB) / 125 × 100</code>（GAS側）直値使用</td><td><span class="badge badge-done">report.html実装済み（2026-05-04）</span></td></tr>
           <tr><td>サブグループ%（ゲージ）</td><td>サブスコア / max点</td><td><code>round(sub / maxPoints × 100)</code></td><td><span class="badge badge-done">report.html実装済み（GAS注入待ち）</span></td></tr>
         </tbody>
       </table>
@@ -3518,12 +3592,12 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <table class="score-table" style="margin-bottom:16px">
         <thead><tr><th>計算</th><th>担当</th><th>Sheets列</th><th>状態</th></tr></thead>
         <tbody>
-          <tr><td>サブスコア12本 → 0〜100%変換</td><td>GAS</td><td>DR〜EC</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>各軸分散4本（(Sub最大率−Sub最小率)×100・単位%）</td><td>GAS</td><td>ED〜EG</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>GAP3本（ki/at/kt）diff%・≥20%のみ抽出</td><td>GAS</td><td>EH〜EJ</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>整合性チェック：カンマ区切り文字列 → boolean[]</td><td>GAS</td><td>DE→REPORT_DATA</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>percentile（PERCENTRANK / N&lt;100はダミー値）</td><td>GAS/Sheets</td><td>DF</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
-          <tr><td>avgAxes（DC列AVERAGE）</td><td>GAS</td><td>—</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>サブスコア12本 raw保存（%変換 → REPORT_DATA.subgroups）</td><td>GAS</td><td>DS〜ED</td><td><span class="badge badge-done">設計書完成（2026-05-03）</span></td></tr>
+          <tr><td>各軸分散4本（(Sub最大率−Sub最小率)×100・単位%）</td><td>GAS</td><td>EE〜EH</td><td><span class="badge badge-done">設計書完成（2026-05-03）</span></td></tr>
+          <tr><td>GAP3本（ki/at/kt）diff%・≥20%のみ抽出</td><td>GAS</td><td>EI〜EK</td><td><span class="badge badge-done">設計書完成（2026-05-03）</span></td></tr>
+          <tr><td>整合性チェック：カンマ区切り文字列 → boolean[]</td><td>GAS</td><td>DE→REPORT_DATA</td><td><span class="badge badge-done">設計書完成（2026-05-03）</span></td></tr>
+          <tr><td>percentile（PERCENTRANK / N&lt;100はダミー値）</td><td>GAS/Sheets</td><td>DF</td><td><span class="badge badge-done">設計書完成（2026-05-03）</span></td></tr>
+          <tr><td>avgAxes（全回答者の軸別トークン平均・実行時集計）</td><td>GAS</td><td>—</td><td><span class="badge badge-done">実装完了（2026-05-04）</span></td></tr>
         </tbody>
       </table>
       <div class="callout">
@@ -3841,13 +3915,13 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td><strong>各軸の分散</strong></td>
             <td>(Sub最大率 − Sub最小率) × 100<br><span style="font-size:12px;color:var(--muted)">各Subスコア÷最大点で比率化→差×100で%変換</span></td>
             <td><strong>0〜100（%）</strong></td>
-            <td>ED〜EG</td>
+            <td>EE〜EH</td>
           </tr>
           <tr>
             <td><strong>GAP（3ペア）</strong></td>
             <td>round((軸A − 軸B) / 125 × 100)<br><span style="font-size:12px;color:var(--muted)">生スコア差を%に変換・しきい値≥20%</span></td>
             <td><strong>0〜100（%）</strong></td>
-            <td>EH〜EJ</td>
+            <td>EI〜EK</td>
           </tr>
         </tbody>
       </table>
@@ -4005,8 +4079,8 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="audit-issues">
       <div class="section-header">
         <div class="section-eyebrow">Open Issues</div>
-        <h2 class="section-title">未解決課題一覧</h2>
-        <p class="section-desc">GAS設計書・Claude API プロンプト作成前に方針を決める必要がある項目。</p>
+        <h2 class="section-title">アルゴリズム設計 意思決定記録</h2>
+        <p class="section-desc">設計上の意思決定をすべて記録。#1〜#4 は確定済み。#5・#6 は意図的後工程（v1スコープ外）。GAS設計書・GAS_プロンプト.md への反映も完了。</p>
       </div>
 
       <table class="score-table">
@@ -4071,10 +4145,10 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           </tr>
           <tr>
             <td>6</td>
-            <td><strong>検知しないGAPペア（I-A / I-T / A-K）の扱い</strong><br><span style="font-size:12px;color:var(--muted)">意図的除外か将来追加候補かを設計書に明記する</span></td>
+            <td><strong>検知しないGAPペア（I-A / I-T / A-K）の扱い</strong><br><span style="font-size:12px;color:var(--muted)">v1スコープ外として意図的除外。理由：① 初期は「GAP分析が普通の診断と差別化できるか」自体が未確定だったため3ペアに絞った。② Claudeのプロンプト設計でパターン名・文脈による個別描写が実証されたため疑問は解消済み。③ 残り3ペアは定義コスト（パターン設計・プロンプト追記）に対してv1では優先度が低い。v2以降の拡張候補として保留。</span></td>
             <td>設計ドキュメント</td>
             <td><span class="priority-low">🟢 低</span></td>
-            <td><span class="badge badge-todo">未明記</span></td>
+            <td><span class="badge badge-todo">v2候補（意図的保留）</span></td>
           </tr>
         </tbody>
       </table>
@@ -4508,45 +4582,35 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 
 
 <script>
-  // タブ切り替え — URLハッシュ `#tab-{paneId}` で状態を管理
-  // リロード・戻る・進む・URL直接指定でも同じタブが開く
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const panes   = document.querySelectorAll('.pane');
+  // タブ切り替え — URLハッシュ #tab-{paneId} で状態を管理
+  // ※ pane-api-prompt は script タグより後に定義されているため、
+  //   querySelectorAll の結果を使い回さず毎回 DOM から再取得する。
+  //   初期化も DOMContentLoaded まで遅延して全ペインが揃った後に実行する。
 
   function activateTab(paneId) {
     var btn  = document.querySelector('.tab-btn[data-pane="' + paneId + '"]');
     var pane = document.getElementById('pane-' + paneId);
     if (!btn || !pane) return;
-    tabBtns.forEach(b => b.classList.remove('active'));
-    panes.forEach(p => p.classList.add('pane-hidden'));
+    // 毎回 DOM から再取得 → スクリプト位置に関係なく全ペインを確実に処理
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.pane').forEach(function(p) { p.classList.add('pane-hidden'); });
     btn.classList.add('active');
     pane.classList.remove('pane-hidden');
+    window.scrollTo(0, 0);
   }
 
-  // クリック → ハッシュを更新（hashchange が activateTab を呼ぶ）
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      location.hash = 'tab-' + btn.dataset.pane;
-    });
-  });
-
-  // 戻る・進む・URL直接アクセス対応
-  window.addEventListener('hashchange', () => {
-    var h = location.hash;
-    if (h.startsWith('#tab-')) activateTab(h.slice(5));
-  });
-
-  // ページロード時にハッシュからタブを復元（なければ todo がデフォルト）
-  (function() {
-    var h = location.hash;
-    activateTab(h.startsWith('#tab-') ? h.slice(5) : 'todo');
-  })();
-
-  // ToDoタブ: 「詳細 →」ボタン — タブ切り替え + セクションスクロール
-  document.querySelectorAll('.go-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var tab     = btn.dataset.tab;
-      var section = btn.dataset.section;
+  // イベント委譲: タブボタン・go-btn を一括処理
+  // （委譲方式なので script 後に挿入される要素にも自動対応）
+  document.addEventListener('click', function(e) {
+    var tabBtn = e.target.closest('.tab-btn');
+    if (tabBtn && tabBtn.dataset.pane) {
+      location.hash = 'tab-' + tabBtn.dataset.pane;
+      return;
+    }
+    var goBtn = e.target.closest('.go-btn');
+    if (goBtn && goBtn.dataset.tab) {
+      var tab     = goBtn.dataset.tab;
+      var section = goBtn.dataset.section;
       activateTab(tab);
       location.hash = 'tab-' + tab;
       if (section) {
@@ -4555,25 +4619,35 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
-    });
+    }
   });
 
-  // アクティブナビ（各ペイン独立）
-  document.querySelectorAll('.pane').forEach(pane => {
-    const sections = pane.querySelectorAll('[id]');
-    const navItems = pane.querySelectorAll('.nav-item');
+  // 戻る・進む・URL直接アクセス対応
+  window.addEventListener('hashchange', function() {
+    var h = location.hash;
+    if (h.startsWith('#tab-')) activateTab(h.slice(5));
+  });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          navItems.forEach(n => n.classList.remove('active'));
-          const active = pane.querySelector(`.nav-item[href="#${e.target.id}"]`);
-          if (active) active.classList.add('active');
-        }
-      });
-    }, { threshold: 0.2 });
+  // 初期タブ復元・IntersectionObserver — 全DOM構築後に実行
+  document.addEventListener('DOMContentLoaded', function() {
+    var h = location.hash;
+    activateTab(h.startsWith('#tab-') ? h.slice(5) : 'todo');
 
-    sections.forEach(s => observer.observe(s));
+    // アクティブナビ（各ペイン独立・api-prompt ペインも含む）
+    document.querySelectorAll('.pane').forEach(function(pane) {
+      var sections = pane.querySelectorAll('[id]');
+      var navItems = pane.querySelectorAll('.nav-item');
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            navItems.forEach(function(n) { n.classList.remove('active'); });
+            var active = pane.querySelector('.nav-item[href="#' + e.target.id + '"]');
+            if (active) active.classList.add('active');
+          }
+        });
+      }, { threshold: 0.2 });
+      sections.forEach(function(s) { observer.observe(s); });
+    });
   });
 </script>
 
@@ -4777,7 +4851,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="ap-sec5-gap">
       <div class="section-header">
         <div class="section-eyebrow">Section 5 — あなたの特徴 / 能力の偏り</div>
-        <h2 class="section-title"><code>gaps[].body</code>（70〜80字 × 最大3本）</h2>
+        <h2 class="section-title"><code>gaps[].body</code>（90〜100字 × 最大3本）</h2>
         <p class="section-desc">GAPバーが数値・差分%を視覚化済み。テキストは行動描写だけ。|GAP|≥20%のペアのみ表示。</p>
       </div>
 
@@ -4813,11 +4887,11 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <table class="score-table" style="width:100%;margin-bottom:16px">
         <thead><tr><th>項目</th><th>内容</th></tr></thead>
         <tbody>
-          <tr><td>参照データ</td><td>failedGroups（グループ名・テーマ） / details（min/max）</td></tr>
+          <tr><td>参照データ</td><td>failedGroups（グループ名・GROUP_THEMES行動描写） / details（maxQ/maxScore/minQ/minScore）</td></tr>
           <tr><td>禁止</td><td>「一部に一貫性のムラがあります」（バッジで見える） / 不整合グループ数の列挙</td></tr>
-          <tr><td>必須（不整合あり）</td><td>不整合グループのテーマを名指し ＋ 行動仮説1つ（意識はあるが習慣化されていない / 場面によって解釈が揺れている）</td></tr>
-          <tr><td>必須（全パス）</td><td>称賛トーン（「9グループすべてで一貫した回答」等）</td></tr>
-          <tr><td>プロンプト文</td><td><span style="color:#e53e3e;font-weight:700">未作成</span></td></tr>
+          <tr><td>必須（不整合あり）</td><td>「できている側」最高点設問と「ズレている側」最低点設問を対比して具体的な認識ズレを言語化。複数グループ失敗時は横断的な共通パターンを1本で言い当てる</td></tr>
+          <tr><td>必須（全パス）</td><td>「自分でも言語化できていないまま習慣として定着している証拠」として希少性を込めて断言称賛</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span> — <code>GAS_プロンプト.md</code> § 5 一貫性（v3.18〜3.19）</td></tr>
         </tbody>
       </table>
     </section>
@@ -4826,39 +4900,727 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     <section class="section" id="ap-sec6">
       <div class="section-header">
         <div class="section-eyebrow">Section 6 — あなたの次のステップ</div>
-        <h2 class="section-title"><code>next_step</code>（HTML実装待ち）</h2>
-        <p class="section-desc">CTA（LINE登録）への橋渡し。弱みとfailedGroupsの交点から「最初にやるべき一手」を断言する。</p>
+        <h2 class="section-title"><code>next_step</code>（headline 35〜45字 + body 180〜220字）</h2>
+        <p class="section-desc">CTA（LINE登録）への橋渡し。GAP・一貫性・topAxisを統合した「最初にやるべき一手」を断言する。</p>
       </div>
 
-      <div class="callout" style="background:rgba(214,158,46,0.06);border-left-color:var(--c2);margin-bottom:16px">
-        <strong style="color:var(--c2)">⚠️ 保留：Section 6 の HTML 実装完了後に作成</strong>
-      </div>
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>参照データ（読む順）</td><td>① GAP方向 → ② consistency_eval（OS安定性） → ③ topAxis（起点）</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span> — <code>GAS_プロンプト.md</code> § 6 next_step（v3.20）</td></tr>
+        </tbody>
+      </table>
 
-      <table class="score-table" style="width:100%">
-        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>禁止</th><th>必須</th><th>プロンプト文</th></tr></thead>
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>禁止</th><th>必須</th></tr></thead>
         <tbody>
           <tr>
-            <td><code>priority_action</code></td>
+            <td><code>headline</code></td>
             <td>Section 6 大見出し</td>
-            <td>~30字</td>
-            <td>「継続的に学習する」（generic）</td>
-            <td>動詞＋具体的な行動。weaknesses＋failedGroupsの組み合わせから導く</td>
-            <td><span style="color:var(--c2)">保留</span></td>
+            <td>35〜45字</td>
+            <td>「設計する」「確認する」等の包括動詞 / 「回路」「OS」「土台」等の比喩表現</td>
+            <td>「AIへの指示を書く前に〜」「AIのアウトプットを使う前に〜」等、AI-side / 人間-side の具体動詞で一手を言い切る</td>
           </tr>
           <tr>
-            <td><code>explanation</code></td>
+            <td><code>body</code></td>
             <td>Section 6 本文</td>
-            <td>150〜180字</td>
-            <td>「頑張りましょう」（励まし）</td>
-            <td>「なぜこれが最初か」を強み・弱みの交点から説明。LINE登録で解決することを示唆</td>
-            <td><span style="color:var(--c2)">保留</span></td>
+            <td>180〜220字</td>
+            <td>4軸のgrowthを列挙 / 汎用表現 / summaryの繰り返し</td>
+            <td>一貫性チェック 全通過：前進トーン / 土台系失敗（思考-1/2・指示-1/2・活用-1）：OS安定先決フレーム / 応用系失敗（活用-2/3・指示-3・思考-3）：並走フレーム（思考-3は「分業判断を磨く」方向・レポート否定禁止）/ 土台系＋応用系同時失敗：土台系優先</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3)">
+        <strong>3構造パターン（v3.21 全グループ確定）</strong><br>
+        <strong>① 全通過（前進）：</strong>「この戦闘力があれば〜できます。最初の一手として〜してください。」背中を押すトーン。<br>
+        <strong>② 土台系失敗（OS安定先決）：思考-1/2・指示-1/2・活用-1</strong>「スキルの前に、判断基準を固める段階です。〜から始めてください。」<br>
+        &nbsp;&nbsp;└ 指示-1：AIに何ができるかの理解が起点 / 活用-1：日常ルーティンへの組み込みが起点<br>
+        <strong>③ 応用系失敗（並走）：活用-2/3・指示-3・思考-3</strong>「技術と意識が同じスピードで動く段階です。〜と〜を並走させてください。」<br>
+        &nbsp;&nbsp;└ 思考-3：「AIを疑え」ではなく「AIとの分業判断を磨く」フレームで書く（レポート自己否定禁止）<br>
+        <strong>④ 土台系＋応用系 同時失敗：土台系優先</strong>（並走フレームは使わない）
+      </div>
     </section>
 
   </main>
 </div>
+
+
+<!-- ==================== PANE: GAS実装 ==================== -->
+<div id="pane-gas-impl" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">GAS実装</div>
+      <div class="sub">ステップバイステップ実装ガイド</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">フェーズ1 — スコア計算</div>
+      <a href="#gas-s1" class="nav-item active">
+        <span class="nav-dot" style="background:var(--c3)"></span>STEP 1 Spreadsheet作成
+      </a>
+      <a href="#gas-s2" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>STEP 2 GASエディタを開く
+      </a>
+      <a href="#gas-s3" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>STEP 3 コードを貼る
+      </a>
+      <a href="#gas-s4" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>STEP 4 エディタ内テスト
+      </a>
+      <a href="#gas-s5" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>STEP 5 Webアプリデプロイ
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">フェーズ2 — Claude API</div>
+      <a href="#gas-s6" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>STEP 6 APIキー設定
+      </a>
+      <a href="#gas-s7" class="nav-item">
+        <span class="nav-dot" style="background:var(--c1)"></span>STEP 7 フェーズ2コード追加
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ==================== STEP 1 ==================== -->
+    <section class="section" id="gas-s1">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 1 / 7 — 所要時間 約2分</div>
+        <h1 class="section-title">Spreadsheetを新規作成する</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>GASが回答データを書き込む専用シートを用意する</p>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>ブラウザで新しいタブを開く</li>
+          <li>アドレスバーに <code>sheets.new</code> と入力して <kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Enter</kbd></li>
+          <li>「無題のスプレッドシート」が開く</li>
+          <li>画面左下の <strong>「シート1」</strong> タブを <strong>ダブルクリック</strong>（青く選択状態になる）</li>
+          <li><strong>「回答データ」</strong> と入力して <kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Enter</kbd></li>
+          <li>このスプレッドシートのURLをアドレスバーでコピーしておく（後でGASに紐づけるために必要）</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ チェックポイント：</strong>画面左下のシートタブが <strong>「回答データ」</strong> になっていればOK
+      </div>
+    </section>
+
+    <!-- ==================== STEP 2 ==================== -->
+    <section class="section" id="gas-s2">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 2 / 7 — 所要時間 約2分</div>
+        <h1 class="section-title">GASエディタを開く</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>スプレッドシートに紐づいたGASプロジェクトを作り、エディタを開く</p>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>スプレッドシートの上部メニューバーから <strong>「拡張機能」</strong> をクリック</li>
+          <li>ドロップダウンの中から <strong>「Apps Script」</strong> をクリック</li>
+          <li>新しいタブでGASエディタが開く（数秒かかる場合あり）</li>
+          <li>左上に <strong>「無題のプロジェクト」</strong> と表示されている部分をクリック</li>
+          <li>ダイアログが出たら <strong>「AI戦闘力診断GAS」</strong> と入力</li>
+          <li><strong>「名前を変更」</strong> ボタンをクリック</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ チェックポイント：</strong>左上に <strong>「AI戦闘力診断GAS」</strong> と表示され、エディタに <code>function myFunction() {}</code> が表示されていればOK
+      </div>
+    </section>
+
+    <!-- ==================== STEP 3 ==================== -->
+    <section class="section" id="gas-s3">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 3 / 7 — 所要時間 約5分</div>
+        <h1 class="section-title">フェーズ1コードを貼り付ける</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>スコア計算・Sheets保存・UTAGEリダイレクトの処理を実装する</p>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>GASエディタ左側ファイル一覧の <strong>「Code.gs」</strong> をクリックして選択されていることを確認</li>
+          <li>エディタ本文の中をクリックし、<kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Ctrl+A</kbd>（Mac: <kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Cmd+A</kbd>）で全選択</li>
+          <li><kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Delete</kbd> キーで削除（エディタが空になる）</li>
+          <li>下のコードをすべてコピーして、空のエディタに貼り付ける</li>
+          <li><kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Ctrl+S</kbd>（Mac: <kbd style="background:#e2e8f0;border-radius:4px;padding:1px 7px;font-size:12px;font-family:monospace">Cmd+S</kbd>）で保存</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="margin-bottom:16px">
+        <strong>⚠️ 先頭2行の定数について：</strong><code>UTAGE_THANKS_URL</code> / <code>UTAGE_FALLBACK_URL</code> は今は空のままでOK。テスト実行には影響しない。本番に進むときに実際のURLを入力する。
+      </div>
+
+      <pre style="background:#1e1e2e;border:1px solid var(--border);border-radius:10px;padding:20px;font-size:11.5px;line-height:1.75;overflow-x:auto;color:#cdd6f4;tab-size:2"><code>// ============================================================
+// AI戦闘力診断 GAS — フェーズ1
+// スコア計算 → Sheets保存 → UTAGEリダイレクト
+// ============================================================
+
+// ★ 後で実際のURLに差し替える
+const UTAGE_THANKS_URL   = '';  // 例: 'https://xxx.utage.jp/thanks'
+const UTAGE_FALLBACK_URL = '';  // 例: 'https://xxx.utage.jp/'
+const SHEET_NAME = '回答データ';
+
+// ========== エントリーポイント ==========
+function doPost(e) {
+  try {
+    const payload   = JSON.parse(e.postData.contents);
+    const diagId    = payload.id;
+    const answers   = payload.answers;
+    const timestamp = payload.timestamp;
+
+    const rowNum      = writeAnswersRow(diagId, timestamp, answers);
+    const scores      = calcScores(answers);
+    const subgroups   = calcSubgroups(answers);
+    const gapData     = calcVarianceAndGAP(scores, subgroups);
+    const consistency = calcConsistency(answers);
+    const percentile  = calcPercentile(scores.raw, scores.rank);
+
+    writeCalculatedData(rowNum, scores, subgroups, gapData, consistency, percentile);
+
+    const redirectUrl = buildRedirectUrl(scores, percentile);
+    return ContentService
+      .createTextOutput(JSON.stringify({ redirectUrl }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    Logger.log('doPost error: ' + err);
+    return ContentService
+      .createTextOutput(JSON.stringify({ redirectUrl: UTAGE_FALLBACK_URL }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ========== スコア計算 ==========
+function calcScores(answers) {
+  const k = answers.slice(0,  25).reduce((s, a) => s + a, 0);
+  const i = answers.slice(25, 50).reduce((s, a) => s + a, 0);
+  const a = answers.slice(50, 75).reduce((s, a) => s + a, 0);
+  const t = answers.slice(75,100).reduce((s, a) => s + a, 0);
+  const raw = k + i + a + t;
+
+  const kTok = Math.round(Math.pow(k / 125, 3) * 249999);
+  const iTok = Math.round(Math.pow(i / 125, 3) * 249999);
+  const aTok = Math.round(Math.pow(a / 125, 3) * 249999);
+  const tTok = Math.round(Math.pow(t / 125, 3) * 249999);
+  const tokens = kTok + iTok + aTok + tTok;
+
+  const rank    = raw >= 450 ? 'S' : raw >= 350 ? 'A' : raw >= 250 ? 'B' : raw >= 150 ? 'C' : 'D';
+  const toLevel = v => v >= 100 ? 5 : v >= 75 ? 4 : v >= 50 ? 3 : v >= 25 ? 2 : 1;
+
+  return { k, i, a, t, raw, tokens, rank,
+           kTok, iTok, aTok, tTok,
+           kLv: toLevel(k), iLv: toLevel(i), aLv: toLevel(a), tLv: toLevel(t) };
+}
+
+// ========== サブカテゴリスコア ==========
+function calcSubgroups(answers) {
+  const pick = (qNums) => qNums.reduce((s, q) => s + answers[q - 1], 0);
+  const raw = {
+    k1: pick([1,2,3,4,5,6,15,16,18,20,23]),
+    k2: pick([7,8,9,10,11,12,13,14]),
+    k3: pick([17,19,21,22,24,25]),
+    i1: pick([26,27,28,29,30,31,32,33,38,39,40]),
+    i2: pick([34,35,36,37,41,42,43,44]),
+    i3: pick([45,46,47,48,49,50]),
+    a1: pick([51,52,53,54,55,56,57,58,59,60,61]),
+    a2: pick([62,63,64,65,66,67,68,69]),
+    a3: pick([70,71,72,73,74,75]),
+    t1: pick([76,77,78,79,80,81,84,85,86,87,89]),
+    t2: pick([82,83,90,91,92,93,94,95]),
+    t3: pick([88,96,97,98,99,100]),
+  };
+  const MAX = { k1:55,k2:40,k3:30, i1:55,i2:40,i3:30,
+                a1:55,a2:40,a3:30, t1:55,t2:40,t3:30 };
+  const pct = (key) => Math.round(raw[key] / MAX[key] * 100);
+  return {
+    rawScores: raw,
+    pct: {
+      knowledge:   { tool_grasp: pct('k1'), mechanism_understand: pct('k2'), frontier_apply: pct('k3') },
+      instruction: { basic_prompt: pct('i1'), dialog_improve: pct('i2'), prompt_design: pct('i3') },
+      application: { daily_use: pct('a1'), skill_complement: pct('a2'), org_expand: pct('a3') },
+      thinking:    { output_check: pct('t1'), precise_verify: pct('t2'), risk_judge: pct('t3') },
+    }
+  };
+}
+
+// ========== 分散・GAP ==========
+function calcVariance(pctObj) {
+  const vals = Object.values(pctObj);
+  return Math.max(...vals) - Math.min(...vals);
+}
+
+function calcVarianceAndGAP(scores, subgroups) {
+  const pct = subgroups.pct;
+  const variance = {
+    k: calcVariance(pct.knowledge),
+    i: calcVariance(pct.instruction),
+    a: calcVariance(pct.application),
+    t: calcVariance(pct.thinking),
+  };
+  const kiGap = Math.round((scores.k - scores.i) / 125 * 100);
+  const atGap = Math.round((scores.a - scores.t) / 125 * 100);
+  const ktGap = Math.round((scores.k - scores.t) / 125 * 100);
+  return { variance, kiGap, atGap, ktGap };
+}
+
+// ========== 整合性チェック ==========
+function isConsistent(answers, qNums) {
+  const vals = qNums.map(q => answers[q - 1]);
+  return !(Math.min(...vals) &lt;= 2 &amp;&amp; Math.max(...vals) >= 4);
+}
+
+function calcConsistency(answers) {
+  const GROUPS = {
+    'thinking[0]':    { name: '思考-1', qs: [76,79,85] },
+    'thinking[1]':    { name: '思考-2', qs: [90,92,95] },
+    'thinking[2]':    { name: '思考-3', qs: [8,91,93]  },
+    'instruction[0]': { name: '指示-1', qs: [34,39,44] },
+    'instruction[1]': { name: '指示-2', qs: [45,46,49] },
+    'instruction[2]': { name: '指示-3', qs: [35,42,47] },
+    'application[0]': { name: '活用-1', qs: [55,57,63] },
+    'application[1]': { name: '活用-2', qs: [72,73,74] },
+    'application[2]': { name: '活用-3', qs: [67,68,69] },
+  };
+  const failedNames = [];
+  const results = { instruction: [true,true,true],
+                    application: [true,true,true],
+                    thinking:    [true,true,true] };
+  for (const [key, group] of Object.entries(GROUPS)) {
+    const [axis, idxStr] = key.replace(']','').split('[');
+    const idx = parseInt(idxStr);
+    const pass = isConsistent(answers, group.qs);
+    results[axis][idx] = pass;
+    if (!pass) failedNames.push(group.name);
+  }
+  return { check: results, failedNames,
+           failedCount: failedNames.length,
+           details: getConsistencyDetails(answers, GROUPS, failedNames) };
+}
+
+function getConsistencyDetails(answers, GROUPS, failedNames) {
+  const details = {};
+  for (const [key, group] of Object.entries(GROUPS)) {
+    if (!failedNames.includes(group.name)) continue;
+    const scored = group.qs.map(q => ({ qId: 'q' + q, score: answers[q - 1] }));
+    details[group.name] = {
+      maxQ:     scored.reduce((acc, cur) => acc.score >= cur.score ? acc : cur).qId,
+      maxScore: scored.reduce((acc, cur) => acc.score >= cur.score ? acc : cur).score,
+      minQ:     scored.reduce((acc, cur) => acc.score &lt;= cur.score ? acc : cur).qId,
+      minScore: scored.reduce((acc, cur) => acc.score &lt;= cur.score ? acc : cur).score,
+    };
+  }
+  return details;
+}
+
+// ========== パーセンタイル ==========
+function calcPercentile(rawScore, rank) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const n = sheet.getLastRow() - 1;
+  if (n &lt; 100) {
+    return { S: 3.0, A: 10.0, B: 30.0, C: 70.0, D: 90.0 }[rank];
+  }
+  // DC列（内部合計スコア） = 列107
+  const dbCol = sheet.getRange(2, 107, n, 1).getValues().flat();
+  const below = dbCol.filter(v => v &lt; rawScore).length;
+  const equal = dbCol.filter(v => v === rawScore).length;
+  return Math.round((1 - (below + equal * 0.5) / n) * 1000) / 10;
+}
+
+// ========== 全体平均トークン ==========
+function calcAvgTokens() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const n = sheet.getLastRow() - 1;
+  if (n &lt;= 0) return 0;
+  // DD列（AI戦闘力トークン） = 列108
+  const dcCol = sheet.getRange(2, 108, n, 1).getValues().flat();
+  return Math.round(dcCol.reduce((s, v) => s + (Number(v) || 0), 0) / n);
+}
+
+// ========== リダイレクトURL生成 ==========
+function buildRedirectUrl(scores, percentile) {
+  const avg    = calcAvgTokens();
+  const params = [
+    'total='  + scores.tokens,
+    'avg='    + avg,
+    'pct='    + percentile,
+    'k='      + scores.k,
+    'i='      + scores.i,
+    'a='      + scores.a,
+    't='      + scores.t,
+    'unlock=preview',
+  ].join('&amp;');
+  return UTAGE_THANKS_URL + '?' + params;
+}
+
+// ========== Sheets書き込み ==========
+function writeAnswersRow(diagId, timestamp, answers) {
+  const sheet  = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const newRow = sheet.getLastRow() + 1;
+  // A: diagId / B: timestamp / C〜CX: Q1〜Q100（100列）
+  sheet.getRange(newRow, 1, 1, 2 + answers.length).setValues([[diagId, timestamp, ...answers]]);
+  return newRow;
+}
+
+function writeCalculatedData(rowNum, scores, subgroups, gapData, consistency, percentile) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+
+  // CY〜DE: k/i/a/t/raw/tokens/rank（列103〜109）
+  sheet.getRange(rowNum, 103, 1, 7).setValues([[
+    scores.k, scores.i, scores.a, scores.t,
+    scores.raw, scores.tokens, scores.rank
+  ]]);
+
+  // DF: 不整合グループ名（カンマ区切り） / DG: percentile（列110〜111）
+  sheet.getRange(rowNum, 110, 1, 2).setValues([[
+    consistency.failedNames.join(','), percentile
+  ]]);
+
+  // DS〜ED: サブスコア raw 12本（列123〜134）
+  const r = subgroups.rawScores;
+  sheet.getRange(rowNum, 123, 1, 12).setValues([[
+    r.k1, r.k2, r.k3,
+    r.i1, r.i2, r.i3,
+    r.a1, r.a2, r.a3,
+    r.t1, r.t2, r.t3
+  ]]);
+
+  // EE〜EH: 分散4本（列135〜138）
+  sheet.getRange(rowNum, 135, 1, 4).setValues([[
+    gapData.variance.k, gapData.variance.i,
+    gapData.variance.a, gapData.variance.t
+  ]]);
+
+  // EI〜EK: GAP3本（列139〜141）
+  sheet.getRange(rowNum, 139, 1, 3).setValues([[
+    gapData.kiGap, gapData.atGap, gapData.ktGap
+  ]]);
+
+  // EL: 不整合件数（列142）
+  sheet.getRange(rowNum, 142).setValue(consistency.failedCount);
+}
+
+// ========== テスト関数（エディタ内実行用） ==========
+function testPhase1() {
+  const allFive = Array(100).fill(5);
+  const scores  = calcScores(allFive);
+  Logger.log('k=%s i=%s a=%s t=%s raw=%s tokens=%s rank=%s',
+    scores.k, scores.i, scores.a, scores.t, scores.raw, scores.tokens, scores.rank);
+  // 期待値: k=125 i=125 a=125 t=125 raw=500 tokens=999996 rank=S
+}
+
+function testConsistency() {
+  const answers = Array(100).fill(3);
+  answers[75] = 1;  // Q76 = 1（ネガ）
+  answers[78] = 5;  // Q79 = 5（ポジ） → 思考-1 が不整合になる
+  const result = calcConsistency(answers);
+  Logger.log('Failed groups: %s', result.failedNames.join(','));
+  // 期待値: 思考-1
+}</code></pre>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3);margin-top:16px">
+        <strong>✅ チェックポイント：</strong>貼り付け後にCtrl+Sで保存できた（エディタ上部タブの「●」が消えればOK）
+      </div>
+    </section>
+
+    <!-- ==================== STEP 4 ==================== -->
+    <section class="section" id="gas-s4">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 4 / 7 — 所要時間 約3分</div>
+        <h1 class="section-title">エディタ内でテスト実行する</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>貼り付けたロジックが正しく動くか確認する（Sheetsへの書き込みは行わない）</p>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">testPhase1 を実行する</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>エディタ上部の関数選択ドロップダウン（「myFunction」などと書いてある部分）をクリック</li>
+          <li>一覧から <strong>「testPhase1」</strong> を選択</li>
+          <li>▶ <strong>（実行）</strong> ボタンをクリック</li>
+          <li>初回は「承認が必要です」ダイアログが出る → <strong>「権限を確認」</strong> をクリック</li>
+          <li>Googleアカウントを選択 → 「詳細を表示」（画面左下の小さいリンク）をクリック</li>
+          <li>「AI戦闘力診断GAS（安全でないページ）に移動」をクリック → <strong>「許可」</strong> をクリック</li>
+          <li>エディタ下部の <strong>「実行ログ」</strong> タブを確認する</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:13px;margin-bottom:10px">期待値（testPhase1）</p>
+        <pre style="background:#1e1e2e;border-radius:8px;padding:14px;font-size:12px;color:#cdd6f4;margin:0"><code>k=125 i=125 a=125 t=125 raw=500 tokens=999996 rank=S</code></pre>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">tokens=999996（最大値近傍）が出ればトークン変換式が正常</p>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">testConsistency を実行する</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>ドロップダウンを <strong>「testConsistency」</strong> に切り替えて ▶ 実行</li>
+          <li>実行ログを確認する</li>
+        </ol>
+        <pre style="background:#1e1e2e;border-radius:8px;padding:14px;font-size:12px;color:#cdd6f4;margin-top:12px"><code>Failed groups: 思考-1</code></pre>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ チェックポイント：</strong>上記2つの期待値が実行ログに出ればフェーズ1のロジックはOK
+      </div>
+    </section>
+
+    <!-- ==================== STEP 5 ==================== -->
+    <section class="section" id="gas-s5">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 5 / 7 — 所要時間 約5分</div>
+        <h1 class="section-title">WebアプリとしてデプロイしてURLを取得する</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>GASをHTTPSエンドポイントとして公開し、index.htmlがPOSTできるURLを取得する</p>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">デプロイ手順</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>エディタ右上の青い <strong>「デプロイ」</strong> ボタンをクリック</li>
+          <li>「<strong>新しいデプロイ</strong>」をクリック</li>
+          <li>「種類を選択」右横の <strong>⚙ 歯車アイコン</strong> をクリック → 「<strong>ウェブアプリ</strong>」を選択</li>
+          <li>説明欄（任意）に「フェーズ1 v1」などと入力</li>
+          <li>「次のユーザーとして実行」→ <strong>「自分（メールアドレス）」</strong> を選択</li>
+          <li>「アクセスできるユーザー」→ <strong>「全員」</strong> を選択</li>
+          <li><strong>「デプロイ」</strong> ボタンをクリック</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">権限付与（「アクセスを承認」が出た場合のみ）</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>「アクセスを承認」をクリック</li>
+          <li>Googleアカウントを選択してログイン</li>
+          <li>「詳細を表示」（画面左下の小さいリンク）をクリック</li>
+          <li>「AI戦闘力診断GAS（安全でないページ）に移動」をクリック</li>
+          <li><strong>「許可」</strong> をクリック</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">WebアプリURLをメモする</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>「デプロイが更新されました」ダイアログが開く</li>
+          <li>「ウェブアプリ」欄の URL（<code>https://script.google.com/macros/s/...</code> で始まる）をコピー</li>
+          <li>このURLを <strong>GAS_DEPLOY_URL</strong> としてメモしておく（index.htmlがPOSTする送り先）</li>
+          <li>「完了」をクリック</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="margin-bottom:12px">
+        <strong>⚠️ コードを修正したら再デプロイが必要：</strong>「デプロイ」→「デプロイを管理」→ ✏ アイコン（編集）→ バージョンを <strong>「新バージョン」</strong> に変更 → 「デプロイ」。URLは変わらない。
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ チェックポイント：</strong><code>https://script.google.com/macros/s/XXXXXX/exec</code> の形式のURLが手元にあればOK。これがGAS_DEPLOY_URL。
+      </div>
+    </section>
+
+    <!-- ==================== STEP 6 ==================== -->
+    <section class="section" id="gas-s6">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 6 / 7 — 所要時間 約2分</div>
+        <h1 class="section-title">APIキーをスクリプトプロパティに設定する</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>Anthropic APIキーをコードに直書きせず安全に管理する</p>
+
+      <div class="callout" style="margin-bottom:16px">
+        <strong>なぜスクリプトプロパティを使うか：</strong>APIキーをコード内に直書きすると共有・閲覧時に流出する。スクリプトプロパティはGASの安全な設定ストアで、コードとは別に管理される。
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>GASエディタ左側のメニューから <strong>⚙ 歯車アイコン（プロジェクトの設定）</strong> をクリック</li>
+          <li>ページを下にスクロールして <strong>「スクリプトのプロパティ」</strong> セクションを探す</li>
+          <li><strong>「スクリプトのプロパティを追加」</strong> をクリック</li>
+          <li>「プロパティ」欄に <code>ANTHROPIC_API_KEY</code> と入力</li>
+          <li>「値」欄に Anthropic APIキー（<code>sk-ant-api03-...</code> で始まる文字列）を貼り付け</li>
+          <li><strong>「スクリプトのプロパティを保存」</strong> をクリック</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:13px;margin-bottom:10px">コードでの読み取り方（参考）</p>
+        <pre style="background:#1e1e2e;border-radius:8px;padding:12px;font-size:12px;color:#cdd6f4;margin:0"><code>PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY')</code></pre>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">フェーズ2の callClaudeApi() 内でこの形式でキーを読み込む（STEP 7のコードに含まれている）</p>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ チェックポイント：</strong>スクリプトのプロパティ一覧に <code>ANTHROPIC_API_KEY</code> が表示されていればOK
+      </div>
+    </section>
+
+    <!-- ==================== STEP 7 ==================== -->
+    <section class="section" id="gas-s7">
+      <div class="section-header">
+        <div class="section-eyebrow">STEP 7 / 7 — 所要時間 約10分</div>
+        <h1 class="section-title">フェーズ2コードを追加する</h1>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px"><strong>このSTEPのゴール：</strong>Claude APIを呼び出してレポートテキストを生成・DL列（116列目）に保存する</p>
+
+      <div class="callout" style="margin-bottom:16px">
+        <strong>フェーズ2の役割：</strong>CVトリガー（決済・LINE登録等）完了後にdiagIdを受け取り → Sheetsから行データを取得 → Claude APIへ送信 → JSON出力をDL列（116）に保存 → レポートURLを発行する。フェーズ1（診断完了時）とは別のタイミングで実行される。<br><br>
+        <strong>✅ 解消済み（2026-05-04）：</strong> callClaudeApi()内に <code>.replace(/^```json\s*/i,'').replace(/\s*```$/,'')</code> を追加。JSON.parse前にmarkdownブロックを除去する処理を実装済み。
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">追加手順</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>GASエディタで <strong>Code.gs</strong> を開く</li>
+          <li>既存コードの <strong>一番最後の行</strong> にカーソルを置く</li>
+          <li>下のフェーズ2コードをコピーして <strong>追記</strong> する（既存コードを消さない）</li>
+          <li>Ctrl+Sで保存</li>
+          <li>「デプロイ」→「デプロイを管理」→ ✏ アイコン → バージョン「新バージョン」→「デプロイ」で再デプロイ</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="margin-bottom:16px">
+        <strong>⚠️ buildPromptData() / buildClaudePrompt() について：</strong>これらの関数は「Claude APIプロンプト設計」タブの GAS_プロンプト.md に定義されている。フェーズ2コードを追加する前に、GAS_プロンプト.md の内容（buildPromptData + buildClaudePrompt 関数）も Code.gs に含めること。
+      </div>
+
+      <pre style="background:#1e1e2e;border:1px solid var(--border);border-radius:10px;padding:20px;font-size:11.5px;line-height:1.75;overflow-x:auto;color:#cdd6f4;tab-size:2"><code>// ============================================================
+// フェーズ2 — Claude API呼び出し・レポートURL発行
+// ============================================================
+
+// ★ 後で実際のURLに差し替える
+const REPORT_BASE_URL = '';  // 例: 'https://your-report.vercel.app/report.html'
+
+// ========== フェーズ2エントリーポイント ==========
+// CVトリガーや手動呼び出しで diagId を渡して使う
+function runPhase2(diagId) {
+  try {
+    const row       = findRowByDiagId(diagId);
+    const apiOutput = callClaudeApi(row);
+
+    saveClaudeOutput(diagId, apiOutput);  // DL列（116）に保存
+
+    const reportId  = Utilities.getUuid();
+    const reportUrl = REPORT_BASE_URL + '?id=' + reportId;
+    updateReportInfo(diagId, reportId, reportUrl);
+
+    Logger.log('Phase2 complete: %s', reportUrl);
+    return reportUrl;
+
+  } catch (err) {
+    Logger.log('runPhase2 error: ' + err);
+    throw err;
+  }
+}
+
+// ========== 行データ取得 ==========
+function findRowByDiagId(diagId) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const data  = sheet.getDataRange().getValues();
+  for (let i = 1; i &lt; data.length; i++) {
+    if (String(data[i][0]) !== String(diagId)) continue;
+    const r = data[i];
+    return {
+      diagId: r[0],  timestamp: r[1],
+      answers: r.slice(2, 102),
+      // 軸スコア raw（CY〜DB = index 102〜105）
+      k: r[102], i: r[103], a: r[104], t: r[105],
+      raw: r[106], tokens: r[107], rank: r[108],
+      // 不整合・percentile（DF〜DG = index 109〜110）
+      failedNames: r[109], percentile: r[110],
+      // サブスコア raw（DS〜ED = index 122〜133）
+      kSub1: r[122], kSub2: r[123], kSub3: r[124],
+      iSub1: r[125], iSub2: r[126], iSub3: r[127],
+      aSub1: r[128], aSub2: r[129], aSub3: r[130],
+      tSub1: r[131], tSub2: r[132], tSub3: r[133],
+      // 分散（EE〜EH = index 134〜137）
+      kVariance: r[134], iVariance: r[135],
+      aVariance: r[136], tVariance: r[137],
+      // GAP（EI〜EK = index 138〜140）
+      kiGap: r[138], atGap: r[139], ktGap: r[140],
+      // 不整合件数（EL = index 141）
+      failedCount: r[141],
+    };
+  }
+  throw new Error('Row not found: ' + diagId);
+}
+
+// ========== Claude API呼び出し ==========
+function callClaudeApi(row) {
+  // buildPromptData() / buildClaudePrompt() は GAS_プロンプト.md の関数
+  const prompt = buildClaudePrompt(buildPromptData(row));
+  const url    = 'https://api.anthropic.com/v1/messages';
+  const options = {
+    method: 'post',
+    headers: {
+      'x-api-key':         PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY'),
+      'anthropic-version': '2023-06-01',
+      'content-type':      'application/json',
+    },
+    payload: JSON.stringify({
+      model:      'claude-sonnet-4-6',
+      max_tokens: 4096,
+      messages:   [{ role: 'user', content: prompt }],
+    }),
+    muteHttpExceptions: true,
+  };
+  const response = UrlFetchApp.fetch(url, options);
+  if (response.getResponseCode() !== 200) {
+    throw new Error('Claude API error: ' + response.getContentText());
+  }
+  // Claude API はcontent[0].text にJSONが入っている
+  return JSON.parse(JSON.parse(response.getContentText()).content[0].text);
+}
+
+// ========== DL列に保存（列116） ==========
+function saveClaudeOutput(diagId, apiOutput) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const data  = sheet.getDataRange().getValues();
+  for (let i = 1; i &lt; data.length; i++) {
+    if (String(data[i][0]) !== String(diagId)) continue;
+    sheet.getRange(i + 1, 116).setValue(JSON.stringify(apiOutput));
+    return;
+  }
+  throw new Error('Row not found for saveClaudeOutput: ' + diagId);
+}
+
+// ========== レポート情報を保存（DI=列113 / DJ=列114） ==========
+function updateReportInfo(diagId, reportId, reportUrl) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const data  = sheet.getDataRange().getValues();
+  for (let i = 1; i &lt; data.length; i++) {
+    if (String(data[i][0]) !== String(diagId)) continue;
+    sheet.getRange(i + 1, 113, 1, 2).setValues([[reportId, reportUrl]]);
+    return;
+  }
+  throw new Error('Row not found for updateReportInfo: ' + diagId);
+}
+
+// ========== フェーズ2テスト（エディタ内実行用） ==========
+function testPhase2() {
+  // Spreadsheet A列に書き込まれた diagId を実際の値に差し替えて実行する
+  const diagId = 'ここに実際のdiagIdを入れる';
+  const result = runPhase2(diagId);
+  Logger.log('Report URL: %s', result);
+}</code></pre>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-top:16px;margin-bottom:16px">
+        <p style="font-weight:700;font-size:14px;margin-bottom:12px">testPhase2 の実行手順</p>
+        <ol style="margin:0;padding-left:22px;line-height:2.4;font-size:14px">
+          <li>まずフェーズ1のdoPostをテスト経由で動かし、Spreadsheetに1行データを書き込む</li>
+          <li>スプレッドシートのA列（1行目がヘッダーなら2行目）に書き込まれた diagId をコピー</li>
+          <li>testPhase2関数の <code>'ここに実際のdiagIdを入れる'</code> を実際のIDに書き換える</li>
+          <li>関数ドロップダウンを「testPhase2」に切り替えて ▶ 実行</li>
+          <li>実行ログに <code>Report URL: https://...</code> が出ればOK</li>
+          <li>SpreadsheetのDL列（116列目）にJSONが書き込まれていることを確認</li>
+        </ol>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.08);border-left-color:var(--c3)">
+        <strong>✅ フェーズ2チェックポイント：</strong>実行ログにレポートURLが表示され、SpreadsheetのDL列（116列目）にJSON文字列が書き込まれていればフェーズ2完了
+      </div>
+    </section>
+
+  </main>
+</div><!-- /pane-gas-impl -->
 
 </body>
 </html>
