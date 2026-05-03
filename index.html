@@ -848,7 +848,7 @@
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
   <button class="tab-btn" data-pane="gas-impl">GAS実装</button>
-  <span class="wiki-version">v3.25 <span class="v-date">2026-05-04</span></span>
+  <span class="wiki-version">v3.26 <span class="v-date">2026-05-04</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -1017,7 +1017,7 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">本番前必須</span></td>
-            <td><strong>URL 4点の確定・設定</strong><br><span style="font-size:12px;color:var(--muted)">以下4つのURLが全て空文字のまま。本番デプロイ前に全て埋める必要がある。<br>① <code>UTAGE_THANKS_URL</code>（Code.gs）— UTAGEサンクスページURL<br>② <code>UTAGE_FALLBACK_URL</code>（Code.gs）— エラー時フォールバックURL<br>③ <code>REPORT_BASE_URL</code>（Code.gs）— レポートホスティングURL（Vercel等）<br>④ <code>GAS_URL</code>（report.html）— GASウェブアプリURL（doGet を叩くためのエンドポイント）</span></td>
+            <td><strong>URL確定・設定（媒体別サンクスURL含む）</strong><br><span style="font-size:12px;color:var(--muted)">以下URLが全て空文字のまま。本番デプロイ前に全て埋める必要がある。<br>① <code>UTAGE_THANKS_URL_X</code>（Code.gs）— X流入用サンクスページURL<br>② <code>UTAGE_THANKS_URL_TIKTOK</code>（Code.gs）— TikTok流入用サンクスページURL<br>③ <code>UTAGE_THANKS_URL_META</code>（Code.gs）— Meta流入用サンクスページURL<br>④ <code>UTAGE_THANKS_URL</code>（Code.gs）— src未指定時のデフォルトサンクスページURL<br>⑤ <code>UTAGE_FALLBACK_URL</code>（Code.gs）— エラー時フォールバックURL<br>⑥ <code>REPORT_BASE_URL</code>（Code.gs）— レポートホスティングURL（Vercel等）<br>⑦ <code>GAS_URL</code>（report.html）— GASウェブアプリURL（doGet を叩くためのエンドポイント）</span></td>
             <td>ユーザー</td>
             <td>—</td>
           </tr>
@@ -1035,9 +1035,15 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>UTAGEサンクスページHTML/CSS/JS</strong><br><span style="font-size:12px;color:var(--muted)">カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済みのサンクスページ）</span></td>
+            <td><strong>UTAGEサンクスページHTML/CSS/JS（媒体別・複数ページ）</strong><br><span style="font-size:12px;color:var(--muted)">【設計確定 2026-05-04】媒体ごとに別UTAGEページを用意し、各ページに計測タグを設置する案A採用。<br>対象媒体：X / TikTok / Meta（追加も可能）<br>仕組み：診断HTML の URL に <code>?src=x</code> / <code>?src=tiktok</code> / <code>?src=meta</code> を付与 → doPost に src を含める → GAS が src に応じて対応する UTAGE_THANKS_URL_X / _TIKTOK / _META へ振り分けリダイレクト。<br>各ページの構造：カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済み）は共通。計測タグのみ異なる。<br>⚠️ GAS側に UTAGE_THANKS_URL_* を媒体数分追加・buildRedirectUrl() に src 分岐ロジックを追加する実装が必要。</span></td>
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>GAS buildRedirectUrl() に src 媒体振り分けロジック追加</strong><br><span style="font-size:12px;color:var(--muted)">診断HTMLから <code>src</code> パラメータを受け取り（POST payload に含める）、<code>UTAGE_THANKS_URL_X</code> / <code>_TIKTOK</code> / <code>_META</code> / デフォルトの4択で振り分けるロジックを <code>buildRedirectUrl()</code> に追加する。定数は Code.gs 先頭の設定ブロックに追記。src が未指定またはマッチしない場合はデフォルト URL へ。</span></td>
+            <td>Claude</td>
+            <td>—</td>
           </tr>
           <tr>
             <td><span class="badge badge-todo">未確定</span></td>
@@ -1103,6 +1109,9 @@
       <table class="status-table">
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
+
+          <!-- ── 2026-05-04（媒体別サンクスページ設計確定 v3.26） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>媒体別UTAGEサンクスページ設計確定 — 案A採用（v3.26）</strong><span class="done-note">X / TikTok / Meta の複数媒体それぞれに専用UTAGEサンクスページを用意し、各ページに計測タグを設置する案Aを採用。案Bの「1ページ+条件分岐タグ」は UTAGE のシナリオ設定上で流入元の特定が困難なため不採用。実装方針：① 診断HTMLのURLに ?src=x 等を付与 ② doPost に src を含める ③ GAS buildRedirectUrl() が src に応じて UTAGE_THANKS_URL_X / _TIKTOK / _META へ振り分けリダイレクト。GASの実装変更（URL定数追加 + 振り分けロジック）が必要。</span></td><td>—</td></tr>
 
           <!-- ── 2026-05-04（report.html 表示実装完成・スクリーニング対応 v3.25） ── -->
           <tr class="done-row"><td>2026-05-04</td><td><strong>secFeature() GAP動的DOM生成・summary注入・fetchフォールバック実装（v3.25）</strong><span class="done-note">① secFeature()：静的ダミーgap-item を実行時全削除 → D.gaps[] から gap-pair-title / SVGコネクタ / 2本ゲージ / diff表示 / gap-pair-bodyを動的生成。空時はセクション見出し非表示。② summary注入：REPORT_DATA.summary フィールド追加・secScore() 末尾に `.score-summary` への textContent 注入コード追加。静的ダミーテキストを空に変更。③ fetchフォールバック：fetch失敗時に赤帯エラーメッセージを body 先頭に固定表示（開発中はコンソールに加えてDOMでもエラー検知可能）。report.htmlの表示パイプライン（GAS→fetch→renderAll→各セクション）がほぼ完成。残はSection 6（next_step）のデザイン確定後実装のみ。</span></td><td>—</td></tr>
