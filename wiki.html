@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.17 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.18 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -1049,7 +1049,8 @@
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
 
-          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.17） ── -->
+          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.18） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>consistency_eval：CONSISTENCY_GROUPSマップ追加・max/min問データ活用（v3.18）</strong><span class="done-note">各失敗グループ内で「できている側の設問」と「ズレている側の設問」(max/min問)を特定してClaudeへ渡す設計に移行。旧：テーマのみ渡す→行動描写が汎用化。新：「〜はできているのに〜になると行動が変わる」という個別の認識ズレを言い当てられる。CONSISTENCY_GROUPS定数（9グループ×設問番号配列）追加。GROUP_THEMES定義も9グループ内容に合わせて調整。2ケースの具体的サンプル確定（110〜118字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>consistency_eval 指示文大幅改訂（v3.17）</strong><span class="done-note">旧：テスト結果の言い換え（「回答にばらつきがありました」）＋汎用的な行動仮説。新：GROUP_THEMESマップ追加（9グループコード→行動描写に変換してClaudeへ渡す）。失敗ケース=「場面によってできたりできなかったりする体験」をドキッとさせる言い当て＋「そのタイミングがこの診断に現れています」で締め。通過ケース=「自分でも言語化できていないまま習慣として定着している証拠」として希少性込みで称賛。3ケースサンプル確定（110〜116字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body 指示文改訂・90〜100字・体験言語化+解放ポイント2文構成（v3.16）</strong><span class="done-note">旧：「ギャップが行動でどう現れるか」→データの言い換えになり汎用化。新：①もどかしさの言語化（「〜はずです」「〜ていませんか」）②解放ポイント（「〜に変わります」「〜し始めます」）の2文構成。高い軸の強みが低い軸で止められている複合構図を伸びしろとして提示。全GAPで文体・リズムを変える指示追加。6パターン確定（83〜97字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body / consistency_eval プロンプト文初版確定・検証済み（v3.15）</strong><span class="done-note">gaps：70〜80字制約・余地表現・軸名/差分%禁止の指示文確定。6パターン仮出力検証済み。consistency_eval：108〜120字・通過=称賛断言・失敗=テーマ平易名指し+原因A/B双方可能性の行動仮説。2ケース仮出力検証済み（109〜112字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
