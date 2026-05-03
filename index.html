@@ -848,7 +848,7 @@
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
   <button class="tab-btn" data-pane="gas-impl">GAS実装</button>
-  <span class="wiki-version">v3.24 <span class="v-date">2026-05-04</span></span>
+  <span class="wiki-version">v3.25 <span class="v-date">2026-05-04</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -943,15 +943,21 @@
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">保留中</span></td>
-            <td><strong>[TODO:secFeature] GAP動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">GASがD.gaps[]の注入仕様確定後に静的ダミーを動的生成に切り替え。最大3件（kt/at/ki）。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>secFeature() GAP動的DOM生成実装</strong><span class="done-note">2026-05-04 完了。report.html の secFeature() 関数を全面実装。静的ダミー gap-item を実行時に全削除 → D.gaps[] から gap-pair-title / gap-visual（SVGコネクタ・2本ゲージ・diff表示）/ gap-pair-body を動的生成。gaps[]が空の場合はセクション見出しを非表示。consistency-block 直前に fragment挿入。ダミーデータ（knowledge＞instruction 30%差）で動作確認可能。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
           </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>summary DOM注入実装</strong><span class="done-note">2026-05-04 完了。① window.REPORT_DATA に summary フィールドをダミーテキスト付きで追加。② `.score-summary` の静的テキストを空に変更。③ secScore() 末尾に `summaryEl.textContent = D.summary` 注入コードを追加。renderAll() 実行時にリアルデータで上書きされる。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
+          </tr>
           <tr>
-            <td><span class="badge badge-todo">HTML実装時</span></td>
-            <td><strong>summary / next_step DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA キー（summary / next_step.headline / next_step.body）は buildReportDataObject() に実装済み。残タスクはDOM側のみ：Section 1（summary 216〜240字）をDOM注入するJS + Section 6（next_step）HTML構造の新規実装。</span></td>
+            <td><span class="badge badge-todo">デザイン確認待ち</span></td>
+            <td><strong>next_step Section 6 HTML + DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA の next_step.headline / next_step.body は buildReportDataObject() 実装済み。`#sec-next` は空タグのまま。デザイン方針（A: シンプル構造 / B: 専用デザイン）をユーザーが確定後に実装する。HTML構造・render(secNextStep) の追加が必要。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
@@ -993,7 +999,7 @@
           </tr>
           <tr>
             <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
-            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">✅ fetch基盤完了（2026-05-04）：GAS_URL設定後に doGet から REPORT_DATA を取得・renderAll()で全セクション再描画する仕組みを実装済み。<br>⬜ 残タスク：① summary の DOM注入コード（Section 1） ② next_step Section 6 HTML＋注入コード ③ secFeature() GAP動的DOM生成</span></td>
+            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">✅ fetch基盤完了（2026-05-04）・✅ summary注入完了（2026-05-04）・✅ secFeature動的生成完了（2026-05-04）<br>⬜ 残タスク：next_step Section 6 HTML＋注入コード（デザイン確定待ち）</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
@@ -1097,6 +1103,11 @@
       <table class="status-table">
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
+
+          <!-- ── 2026-05-04（report.html 表示実装完成・スクリーニング対応 v3.25） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>secFeature() GAP動的DOM生成・summary注入・fetchフォールバック実装（v3.25）</strong><span class="done-note">① secFeature()：静的ダミーgap-item を実行時全削除 → D.gaps[] から gap-pair-title / SVGコネクタ / 2本ゲージ / diff表示 / gap-pair-bodyを動的生成。空時はセクション見出し非表示。② summary注入：REPORT_DATA.summary フィールド追加・secScore() 末尾に `.score-summary` への textContent 注入コード追加。静的ダミーテキストを空に変更。③ fetchフォールバック：fetch失敗時に赤帯エラーメッセージを body 先頭に固定表示（開発中はコンソールに加えてDOMでもエラー検知可能）。report.htmlの表示パイプライン（GAS→fetch→renderAll→各セクション）がほぼ完成。残はSection 6（next_step）のデザイン確定後実装のみ。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>SPEC.md 記述修正 — 「100問の生回答データは渡さない」を実装の実態に修正（v3.25）</strong><span class="done-note">SPEC.md L403 の「※ 100問の生回答データは渡さない（ノイズが多く生成品質が下がるため）」を削除し「問別スコア（q1〜q100 の 1〜5 値）を buildAxesDetail() 経由でプロンプトに渡す方式を採用。全問スコア×設問ラベルを渡すことで個別最適化の精度が大幅に向上することを実装・検証済み。」に修正。第2回スクリーニング D-2 で検出された仕様書と実装の逆転記述を解消。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-04</td><td><strong>wiki v3.25 ToDo整理 — 今回実装完了タスクをDone移動・next_step単独タスクに分離</strong><span class="done-note">secFeature（GAP動的生成）・summary注入を中優先度ToDoからDoneへ移動。report.htmlのJS注入タスクの残タスク記述を「next_step Section 6のみ」に更新。summary/next_stepが1タスクに混在していた行をsummary完了（Done移動）＋next_step単独行（デザイン確定待ち）に分離。</span></td><td>—</td></tr>
 
           <!-- ── 2026-05-04（第2回スクリーニング対応・データ配信基盤完成 v3.24） ── -->
           <tr class="done-row"><td>2026-05-04</td><td><strong>doGet(e) 新規実装 — レポートデータ配信エンドポイント（v3.24）</strong><span class="done-note">Code.gs に SECTION 2.5 として doGet(e) を追加。?id=reportId でSheets行を特定 → claudeJson（DL列）を復元 → buildReportDataObject(row, claudeJson) → JSON返却。エラー時も JSON レスポンスを返す設計。findRowByDiagId() と同一の row オブジェクト構造で実装。</span></td><td>—</td></tr>
