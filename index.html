@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.12 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.13 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -4699,8 +4699,8 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td>軸評価文</td>
             <td>~80字</td>
             <td>3サブの得点率分布（どのサブが高くてどのサブが低いか）</td>
-            <td>「〇〇力は高いです」（合計値の言い換え）</td>
-            <td><span style="color:#e53e3e">未作成</span></td>
+            <td>「〇〇力は高いです」「〇〇%の水準」（数値言い換え）</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
           <tr>
             <td><code>strengths[]</code></td>
@@ -4708,7 +4708,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td>~20字 × 2</td>
             <td>最高サブグループの得点率</td>
             <td>「〇〇の知識がある」（軸名の言い換え）</td>
-            <td><span style="color:#e53e3e">未作成</span></td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
           <tr>
             <td><code>weaknesses[]</code></td>
@@ -4716,26 +4716,27 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td>~20字 × 2</td>
             <td>最低サブグループの得点率</td>
             <td>「まだ伸びしろがあります」（曖昧化）</td>
-            <td><span style="color:#e53e3e">未作成</span></td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
           <tr>
             <td><code>growth</code></td>
             <td>伸びしろ文</td>
             <td>~80字</td>
-            <td>weaknesses + 軸の方向</td>
-            <td>「継続的な学習が大切です」（generic）</td>
-            <td><span style="color:#e53e3e">未作成</span></td>
+            <td>最低サブグループ + 頻度・手段・期待変化の3要素</td>
+            <td>「継続的な学習が大切」「インプットを増やす」（汎用表現）</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
         </tbody>
       </table>
 
-      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent)">
-        <strong>具体例（知識力 k1高・k3低のケース）</strong><br>
-        eval：「実務ツールの選定・操作は固まっているが、先端技術の把握が遅れているパターン」<br>
-        strengths：["実務AIツールを選定できる", "基本操作の引き出しが多い"]<br>
-        weaknesses：["最新モデルの動向を追えていない", "研究・実験領域に手が届いていない"]<br>
-        growth：「週1回の最新AI動向チェックを習慣化することで先端感度が上がる」
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3)">
+        <strong>出力例（知識力 k1:74 / k2:55 / k3:38 のケース）</strong><br>
+        eval：「実務で使えるツールの把握は固まっているが、仕組みの理解と最新動向へのキャッチアップが遅れているパターン」<br>
+        strengths：["日常業務でAIツールを選んで使える", "用途に合ったツール選定ができる"]<br>
+        weaknesses：["AIの原理・仕組みの理解が浅い", "最新モデルの動向を追えていない"]<br>
+        growth：「週1回AIニュースレターを読む習慣をつけることで先端感度が上がり、ツールの選択肢が自然に広がってくる」
       </div>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ プロンプト文は <code>GAS_プロンプト.md</code> § axes_eval に収録</p>
     </section>
 
     <!-- Section 5 GAP -->
