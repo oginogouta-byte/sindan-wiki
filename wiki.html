@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.15 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.16 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -900,7 +900,7 @@
           </tr>
           <tr class="done-row">
             <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
-            <td><strong>gaps[].body プロンプト文を作成（GAS_プロンプト.md追記）</strong><span class="done-note">2026-05-03 完了。70〜80字制約・余地表現（〜ことが多い/〜やすい）・軸名/差分%/「バランス」汎用語禁止を指示文に明記。行動描写テキスト（GAP_BEHAVIOR）を起点として受験者固有の言語に変換させる設計確定。6パターン全件の仮出力検証済み（73〜80字内）。</span></td>
+            <td><strong>gaps[].body プロンプト文を作成・改訂（GAS_プロンプト.md）</strong><span class="done-note">2026-05-03 完了・改訂。90〜100字。2文構成：①もどかしさの言語化（「〜はずです」「〜ていませんか」）②解放ポイント（「〜に変わります」「〜し始めます」）。高い軸の強みが低い軸で止められている複合構図を体験として言い当て、伸びしろとして提示。全GAPで文体・リズムを変える指示追加。6パターン確定（83〜97字）。</span></td>
             <td>Claude＋ユーザー</td>
             <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td>
           </tr>
@@ -1050,7 +1050,8 @@
         <tbody>
 
           <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.15） ── -->
-          <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body / consistency_eval プロンプト文確定・検証済み（v3.15）</strong><span class="done-note">gaps：70〜80字制約・余地表現・軸名/差分%禁止の指示文確定。GAP_BEHAVIOR行動描写を起点として受験者固有の言語に変換させる設計。6パターン全件仮出力検証済み（73〜80字）。consistency_eval：108〜120字・通過=称賛断言・失敗=テーマ平易名指し+原因A/B双方可能性の行動仮説。2ケース仮出力検証済み（109〜112字）。Claude APIプロンプト設計タスク（🔴高優先度3件）全件完了。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body 指示文改訂・90〜100字・体験言語化+解放ポイント2文構成（v3.16）</strong><span class="done-note">旧：「ギャップが行動でどう現れるか」→データの言い換えになり汎用化。新：①もどかしさの言語化（「〜はずです」「〜ていませんか」）②解放ポイント（「〜に変わります」「〜し始めます」）の2文構成。高い軸の強みが低い軸で止められている複合構図を伸びしろとして提示。全GAPで文体・リズムを変える指示追加。6パターン確定（83〜97字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body / consistency_eval プロンプト文初版確定・検証済み（v3.15）</strong><span class="done-note">gaps：70〜80字制約・余地表現・軸名/差分%禁止の指示文確定。6パターン仮出力検証済み。consistency_eval：108〜120字・通過=称賛断言・失敗=テーマ平易名指し+原因A/B双方可能性の行動仮説。2ケース仮出力検証済み（109〜112字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>axes_eval プロンプト文確定（問別1〜5スコア・余地表現・軸ドメイン境界）（v3.14）</strong><span class="done-note">Q_LABELS全100問の行動ベース記述化・AXIS_SUBS＋buildAxesDetail()でサブ平均→問別スコアに移行。eval ~120字・全文余地表現（断定形禁止）・軸ドメイン境界定義確定。growth 2段構成（伸びしろ提示→アクション推奨）。14パターン仮出力検証済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec4">詳細 →</button></td></tr>
           <!-- ── 2026-05-03（Claude APIプロンプト設計セッション） ── -->
           <tr class="done-row"><td>2026-05-03</td><td><strong>Claude APIプロンプト設計完了（GAS_プロンプト.md 新規作成）</strong><span class="done-note">システムプロンプト・buildClaudePrompt()テンプレート・出力スキーマを1ファイルに収録。全フィールド（summary/axes_eval/gaps/consistency_eval）を1回のAPIコールでJSON一括生成する設計確定。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td></tr>
