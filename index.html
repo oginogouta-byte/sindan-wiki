@@ -2426,21 +2426,15 @@
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td><strong>[TODO:secFeature] GAP 動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">現状は静的ダミー gap-item×2 をビジュアル確認用に保留中。GAS が <code>D.gaps[]</code> の注入仕様を確定後に動的DOM生成に切り替える。検知: <code>grep TODO:secFeature report.html</code></span></td>
-            <td>GAS仕様確定後に着手</td>
-            <td><span class="badge badge-todo">設計未確定・保留</span></td>
+            <td><strong>secFeature() GAP 動的DOM生成</strong><span class="done-note">2026-05-04 完了。静的ダミー gap-item を実行時削除 → D.gaps[] から動的生成に切り替え済み。</span></td>
+            <td>—</td>
+            <td><span class="badge badge-done">実装済み（2026-05-04）</span></td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
             <td><strong>GASデータ受け渡しバリデーション機能整備</strong><br><span style="font-size:12px;color:var(--muted)">全体仕様確定後に一括整備。型強制（<code>Number()</code>）・必須フィールドチェック・エラーログ出力。現状は空文字スキップのみ実装済み。</span></td>
             <td>全体仕様確定後（最終仕上げ）</td>
             <td><span class="badge badge-todo">仕様確定後</span></td>
-          </tr>
-          <tr>
-            <td class="priority-low">🟢 低</td>
-            <td><strong>PDFダウンロード実装方式</strong><br><span style="font-size:12px;color:var(--muted)">ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</span></td>
-            <td>フェーズ3</td>
-            <td><span class="badge badge-todo">後工程</span></td>
           </tr>
         </tbody>
       </table>
@@ -2482,7 +2476,7 @@
             </td>
             <td><code>REPORT_DATA.summary / next_step</code></td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">HTML Section 1・6 実装時に追加</span></td>
+            <td><span class="badge badge-done">summary 実装済み（2026-05-04）/ next_step はデザイン確定待ち</span></td>
           </tr>
           <tr>
             <td>3</td>
@@ -2497,7 +2491,7 @@
             </td>
             <td>GAS → REPORT_DATA 変換ロジック</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">GAS設計書作成時に明記</span></td>
+            <td><span class="badge badge-done">GAS設計書に明記済み</span></td>
           </tr>
           <tr>
             <td>4</td>
@@ -2533,7 +2527,7 @@
             </td>
             <td><code>report.html</code> CSSコメント</td>
             <td><span class="priority-low">🟢 低</span></td>
-            <td><span class="badge badge-todo">実装完了後に修正</span></td>
+            <td><span class="badge badge-done">修正済み（2026-05-04）</span></td>
           </tr>
         </tbody>
       </table>
@@ -3586,7 +3580,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           <tr><td>FV Total/Avg%</td><td>totalTokens / avgTokens</td><td><code>round(v / 999,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
           <tr><td>上位X%（ピラミッド）</td><td>percentile（GAS計算値）</td><td>直値・>=10→小1位 / &lt;10→小2位</td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
           <tr><td>軸スコア%（カード・レーダー）</td><td>axes.k/i/a/t（トークン値）</td><td><code>round(v / 249,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
-          <tr><td>GAP%（バー表示）</td><td>gaps[].diff（GAS計算済み・正値）</td><td><code>(axisA − axisB) / 125 × 100</code>（GAS側）直値使用</td><td><span class="badge badge-todo">secFeature未実装</span></td></tr>
+          <tr><td>GAP%（バー表示）</td><td>gaps[].diff（GAS計算済み・正値）</td><td><code>(axisA − axisB) / 125 × 100</code>（GAS側）直値使用</td><td><span class="badge badge-done">report.html実装済み（2026-05-04）</span></td></tr>
           <tr><td>サブグループ%（ゲージ）</td><td>サブスコア / max点</td><td><code>round(sub / maxPoints × 100)</code></td><td><span class="badge badge-done">report.html実装済み（GAS注入待ち）</span></td></tr>
         </tbody>
       </table>
