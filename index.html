@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.13 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.14 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -892,9 +892,9 @@
             <td>Claude＋ユーザー</td>
             <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">🔴 次</span></td>
-            <td><strong>axes_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><br><span style="font-size:12px;color:var(--muted)">eval/strengths/weaknesses/growth × 4軸。サブグループ分布から書く原則・軸合計スコアの言い換え禁止を反映。wiki Section 4設計が正本。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>axes_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><span class="done-note">2026-05-03 完了。①Q_LABELS全100問の行動ベース記述化（技術語→実際の行動・状態に変換）。②AXIS_SUBS構造＋buildAxesDetail()によりサブ平均→問別1〜5スコアへ完全移行。③eval ~120字・全文余地表現（断定形禁止）・軸ドメイン境界定義（知識=知っているか / 指示=伝え方 / 活用=成果・展開 / 思考=評価・判断）。④growth 2段構成確定（伸びしろ提示→アクション推奨）。仮出力14パターン検証済み。</span></td>
             <td>Claude＋ユーザー</td>
             <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec4">詳細 →</button></td>
           </tr>
@@ -4688,25 +4688,43 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <div class="section-header">
         <div class="section-eyebrow">Section 4 — 軸別評価 × 4軸</div>
         <h2 class="section-title"><code>axes_eval</code>（knowledge / instruction / application / thinking）</h2>
-        <p class="section-desc">各軸のサブグループ得点率の分布から書く。軸スコア合計値から書かない。</p>
+        <p class="section-desc">各軸25問の問別1〜5スコアの分布から書く。サブ平均・軸スコア合計値から書かない。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent);margin-bottom:12px">
+        <strong>軸ドメイン境界（確定）— 軸をまたいだ内容混入禁止</strong><br>
+        知識力 = <em>知っているか・理解しているか</em>（認知レベル）<br>
+        指示力 = <em>AIへの伝え方・引き出し方</em>（コミュニケーション／操作レベル）<br>
+        活用力 = <em>実際に使って成果・展開できているか</em>（実行レベル）<br>
+        思考力 = <em>AI出力の評価・限界認識・改善方向づけ</em>（メタ認知レベル）
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:12px">
+        <strong>データ構造（確定）— 問別1〜5スコアを渡す</strong><br>
+        <code>Q_LABELS</code>（全100問・行動ベース記述）＋ <code>AXIS_SUBS</code>（サブ×問番号配列）→ <code>buildAxesDetail(data)</code> が組み立て<br>
+        例（知識力）:<br>
+        <code>①ツール把握（初級11問）: AIツールの使用経験:5 / 生成AI種類の区別:4 / … / AI動向定期チェック:2 / スキル更新意識:2</code><br>
+        <code>②本質・限界理解（中級8問）: AI誤情報の経験認識:4 / … / AI出力の誤り可能性の意識:5</code><br>
+        <code>③発展・専門応用（上級6問）: … / ツール間の自動連携経験:1 / …</code><br>
+        → 同じサブ平均でも問の分布が違えば全く異なる人物像が生まれる
       </div>
 
       <table class="score-table" style="width:100%;margin-bottom:16px">
-        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>参照データ</th><th>禁止</th><th>プロンプト文</th></tr></thead>
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>参照データ</th><th>禁止</th><th>状態</th></tr></thead>
         <tbody>
           <tr>
             <td><code>eval</code></td>
             <td>軸評価文</td>
-            <td>~80字</td>
-            <td>3サブの得点率分布（どのサブが高くてどのサブが低いか）</td>
-            <td>「〇〇力は高いです」「〇〇%の水準」（数値言い換え）</td>
+            <td>~120字</td>
+            <td>この軸の25問・問別1〜5スコアの分布（Q_LABELS付き）</td>
+            <td>断定形（〜している/〜だ）・数値言及・他軸の内容・ラベルそのまま使用</td>
             <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
           <tr>
             <td><code>strengths[]</code></td>
             <td>強みリスト</td>
             <td>~20字 × 2</td>
-            <td>最高サブグループの得点率</td>
+            <td>高スコア問群の行動内容</td>
             <td>「〇〇の知識がある」（軸名の言い換え）</td>
             <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
@@ -4714,7 +4732,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td><code>weaknesses[]</code></td>
             <td>弱みリスト</td>
             <td>~20字 × 2</td>
-            <td>最低サブグループの得点率</td>
+            <td>低スコア問群の行動内容</td>
             <td>「まだ伸びしろがあります」（曖昧化）</td>
             <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
@@ -4722,21 +4740,28 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
             <td><code>growth</code></td>
             <td>伸びしろ文</td>
             <td>~80字</td>
-            <td>最低サブグループ + 頻度・手段・期待変化の3要素</td>
-            <td>「継続的な学習が大切」「インプットを増やす」（汎用表現）</td>
+            <td>最低スコア問群（weaknesses起点）</td>
+            <td>「〜なりやすい」「〜しやすくなる」等の効果評価語・汎用表現</td>
             <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
           </tr>
         </tbody>
       </table>
 
       <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3)">
-        <strong>出力例（知識力 k1:74 / k2:55 / k3:38 のケース）</strong><br>
-        eval：「実務で使えるツールの把握は固まっているが、仕組みの理解と最新動向へのキャッチアップが遅れているパターン」<br>
-        strengths：["日常業務でAIツールを選んで使える", "用途に合ったツール選定ができる"]<br>
-        weaknesses：["AIの原理・仕組みの理解が浅い", "最新モデルの動向を追えていない"]<br>
-        growth：「週1回AIニュースレターを読む習慣をつけることで先端感度が上がり、ツールの選択肢が自然に広がってくる」
+        <strong>出力例（知識力 ①ツール把握: q1:5/q15:2/q16:2/q23:2 ②限界理解: q14:5/q9:2 ③発展応用: q21:4/q22:1 のケース）</strong><br>
+        eval：「代表的なAIツールの種類や特徴はひと通り把握していることが多く、場面に応じた使い分けができていることがある。ただ、AI関連の動向を定期的に追ったりスキルを更新したりする行動は少なくなりやすく、AIが誤ることへの意識は高い場面が多い一方で、ツール同士を繋いで自動で動かす仕組みを作った経験がまだ少ないことが多い。」<br>
+        strengths：["代表的なAIツールの種類と特徴を網羅的に把握できている", "AIの回答が誤っている可能性を常に意識して使える"]<br>
+        weaknesses：["ツール同士を繋いで自動化する仕組みを作った経験がない", "AI関連の最新動向を自ら追ってスキルを更新する行動がとれていない"]<br>
+        growth：「AIツール同士を繋いで自動で動かす経験が増えると、今持っている知識が実際の仕組みとして機能するようになります。まずZapierで小さな自動フローを1本だけ試してみてください。」
       </div>
-      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ プロンプト文は <code>GAS_プロンプト.md</code> § axes_eval に収録</p>
+
+      <div class="callout" style="background:rgba(255,193,7,0.08);border-left-color:#d69e2e;margin-top:12px">
+        <strong>growth 2段構成（確定）</strong><br>
+        ①伸びしろ提示（30〜40字）:「この領域が伸びると何がどう変わるか」を先に示す<br>
+        ②アクション推奨（40〜50字）:「〜してみてください」等の提案形で具体的な次の一手を書く<br>
+        ※ 効果の評価語（「〜なりやすい」「〜しやすくなる」等）は使わない
+      </div>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ プロンプト文・Q_LABELS・AXIS_SUBS は <code>GAS_プロンプト.md</code> § axes_eval に収録</p>
     </section>
 
     <!-- Section 5 GAP -->
