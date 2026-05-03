@@ -2354,7 +2354,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ1 ― コアを完成させる</div>
-            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）<br><strong style="color:var(--c3)">【進捗 2026-05-03】</strong> index.html: L0（軸別スコア変数）・L1（軸別立方トークン変換）・L2（ランクUI削除・内部変数保持）・L3（送信中待機UI）完了。L4（GAS POST + UTAGEリダイレクト）はGAS設計書完成後。<br>report.html: FV・Sec1・Sec2(レーダー)・Sec4(軸別評価 + axes_eval注入)・Sec5(GAP静的ダミー + 回答の一貫性)実装済み。Sec6・CTA・secFeature動的化は次フェーズ。</div>
+            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）<br><strong style="color:var(--c3)">【進捗 2026-05-04】</strong> index.html: L0〜L3完了。L4（GAS POST + UTAGEリダイレクト）のみ未実装（URL定数確定後）。<br>GAS: フェーズ1（doPost・calcScores・calcPercentile・buildRedirectUrl）+ フェーズ2（doGet・callClaudeApi・buildReportDataObject・calcAvgAxes・findRowByDiagId）すべて実装・テスト済み。<br>report.html: FV〜Sec5まで全実装済み（secFeature動的DOM・summary注入・fetchフォールバック含む）。残りはSec6（next_step）のみ（デザイン確定待ち）。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -2653,7 +2653,7 @@
           </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item step-done">
           <div class="step-left">
             <div class="step-num">5</div>
             <div class="step-line"></div>
@@ -2675,52 +2675,50 @@
             </div>
             <div class="step-meta">
               <span class="badge badge-done">L0〜L3完了</span>
-              <span class="badge badge-todo" style="margin-left:8px">L4 未実装</span>
+              <span class="badge badge-todo" style="margin-left:8px">L4 未実装（URL確定待ち）</span>
               <span style="font-size:12px;color:var(--muted);margin-left:10px">→「アルゴリズム精度」セクション参照</span>
             </div>
           </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item step-done">
           <div class="step-left">
             <div class="step-num">6</div>
             <div class="step-line"></div>
           </div>
           <div class="step-body">
             <div class="step-title">GASアルゴリズム設計書の作成</div>
-            <div class="step-desc">index.html修正と並行してドキュメントとして先に作る。4軸スコア計算・サブスコア12本・分散4本・GAP3本・整合性チェック boolean[]変換・5段階レベル・REPORT_DATA形式への変換ロジック全工程をMarkdownで定義。GAS実装（Step 7）はこの設計書が前提。</div>
+            <div class="step-desc">4軸スコア計算・サブスコア12本・分散4本・GAP3本・整合性チェック boolean[]変換・5段階レベル・REPORT_DATA形式への変換ロジック全工程をMarkdownで定義。媒体別UTAGEサンクスページ（X/TikTok/Meta/Organic）の定数設計・buildRedirectUrl() src分岐ロジックも追記済み。</div>
             <div class="step-meta">
-              <span class="badge" style="background:#ff6e9c20;color:#ff6e9c;font-weight:700">🔴 今すぐ着手</span>
+              <span class="badge badge-done">完了（GAS設計書.md）</span>
             </div>
           </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item step-done">
           <div class="step-left">
             <div class="step-num">7</div>
             <div class="step-line"></div>
           </div>
           <div class="step-body">
             <div class="step-title">GAS実装（スコア計算・変数生成・Claude API呼び出し）</div>
-            <div class="step-desc">POST受信 → 4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出 → Claude API呼び出し → Sheets保存 → URL発行の一連フロー実装。Step 6の設計書完成が前提。</div>
+            <div class="step-desc">doPost → calcScores → calcSubgroups → calcVarianceAndGAP → calcConsistency → calcPercentile → buildRedirectUrl（フェーズ1）＋ doGet → findRowByDiagId → buildReportDataObject → callClaudeApi → calcAvgAxes（フェーズ2）全関数実装・テストデプロイ済み。markdownストリッピング・prompt-caching・全フィールド正常生成確認済み。</div>
             <div class="step-meta">
-              <span class="badge badge-todo">未着手</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:10px">Step 6（設計書）完成後</span>
+              <span class="badge badge-done">完了（テストデプロイ済み）</span>
             </div>
           </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item step-done">
           <div class="step-left">
             <div class="step-num">8</div>
             <div class="step-line"></div>
           </div>
           <div class="step-body">
             <div class="step-title">Claude APIプロンプト本文設計</div>
-            <div class="step-desc">単一APIコール・JSON構造化出力。スキーマ更新済み（axes_eval / gaps[]{axisA,axisB,diff,body} / consistency_eval 108〜120字）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をMarkdownで記述。Claude＋ユーザー共同作業。</div>
+            <div class="step-desc">単一APIコール・JSON構造化出力。summary（216〜240字）/ axes_eval（eval〜120字 + strengths/weaknesses/growth）/ gaps[]{axisA,axisB,diff,body}（body 90〜100字）/ consistency_eval（108〜120字）/ next_step（headline 35〜45字 + body 180〜220字）の全フィールド確定。14パターン仮出力検証済み。GAS_プロンプト.md に全文収録。</div>
             <div class="step-meta">
-              <span class="badge badge-todo">未着手</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:10px">Step 7（GAS実装）完成後</span>
+              <span class="badge badge-done">完了（GAS_プロンプト.md）</span>
             </div>
           </div>
         </div>
@@ -2731,9 +2729,9 @@
           </div>
           <div class="step-body">
             <div class="step-title">レポートHTML残り（Section 6・CTA）</div>
-            <div class="step-desc">FV〜Section 5は実装済み。残りは「あなたの次のステップ」（next_step.headline 35〜45字 + next_step.body 180〜220字）とLINE登録CTA。プロンプト設計はv3.20確定済み。summary・next_step の REPORT_DATA キー追加と注入処理も同時対応。</div>
+            <div class="step-desc">FV〜Section 5は全実装済み（secFeature動的DOM・summary注入・fetchフォールバック含む）。残りはSection 6「これからのあなた」（next_step.headline + body DOM注入）とCTA。デザイン方針（A/B）確定待ちのため保留中。プロンプト設計・REPORT_DATAキー定義はすべて完了済み。</div>
             <div class="step-meta">
-              <span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中（FV〜Sec5完了）</span>
+              <span class="badge" style="background:#7c6eff20;color:#7c6eff">Sec1〜5完了・Sec6デザイン確定待ち</span>
             </div>
           </div>
         </div>
