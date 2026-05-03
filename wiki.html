@@ -61,6 +61,35 @@
   .tab-btn:hover { color: var(--text); }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
+  /* ===== GO BUTTON（ToDoタブ → 対象セクション） ===== */
+  .go-btn {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .go-btn:hover { background: var(--surface2); }
+
+  .wiki-version {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .05em;
+    white-space: nowrap;
+    padding-left: 16px;
+  }
+  .wiki-version .v-date {
+    font-weight: 400;
+    opacity: .6;
+  }
+
   /* ===== PANE ===== */
   .pane {
     display: flex;
@@ -810,13 +839,279 @@
 
 <!-- TAB BAR -->
 <div class="tab-bar">
-  <button class="tab-btn active" data-pane="shindan">診断設計</button>
+  <button class="tab-btn active" data-pane="todo">📋 ToDo</button>
+  <button class="tab-btn" data-pane="shindan">診断設計</button>
   <button class="tab-btn" data-pane="report">レポート</button>
   <button class="tab-btn" data-pane="algo">評価軸設計</button>
   <button class="tab-btn" data-pane="dousen">導線設計</button>
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
+  <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
+  <span class="wiki-version">v3.15 <span class="v-date">2026-05-03</span></span>
 </div>
+
+<!-- ==================== PANE: ToDo ==================== -->
+<div id="pane-todo" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">ToDo</div>
+      <div class="sub">全タスク一元管理</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">ナビゲーション</div>
+      <a href="#todo-high" class="nav-item active"><span class="nav-dot" style="background:#e53e3e"></span>高優先度</a>
+      <a href="#todo-mid" class="nav-item"><span class="nav-dot" style="background:#d69e2e"></span>中優先度</a>
+      <a href="#todo-external" class="nav-item"><span class="nav-dot" style="background:#3182ce"></span>外部確認待ち</a>
+      <a href="#todo-low" class="nav-item"><span class="nav-dot" style="background:#38a169"></span>後工程</a>
+      <a href="#todo-done" class="nav-item"><span class="nav-dot" style="background:var(--border)"></span>完了済み</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- 高優先度 -->
+    <section class="section" id="todo-high">
+      <div class="section-header">
+        <div class="section-eyebrow">Priority High</div>
+        <h2 class="section-title">🔴 高優先度</h2>
+        <p class="section-desc">実装前に決めないとデータ互換性が崩れる・他タスクがブロックされるもの</p>
+      </div>
+      <table class="status-table">
+        <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>詳細</th></tr></thead>
+        <tbody>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>GAS アルゴリズム設計書の作成</strong><span class="done-note">GAS設計書.md 作成済み（2026-05-03）。doPost/calcScores/calcSubgroups/calcVarianceAndGAP/calcConsistency/calcPercentile/buildRedirectUrl の全関数設計・Sheets列マッピング・REPORT_DATA注入対応表・エラーハンドリング・テスト方法を完全定義。GAP方向性6パターン・整合性チェック9グループのREPORT_DATA配列マッピングも確定。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>Claude APIプロンプト本文設計（GAS_プロンプト.md）</strong><span class="done-note">2026-05-03 完了。システムプロンプト・buildClaudePrompt()テンプレート・GAP_BEHAVIORマップ・positionDesc5段階変換・出力スキーマを収録。型ラベルなし設計（GAP/spread/percentile全て行動描写・事実データで渡す）確定。summaryフィールドは出力検証済み。</span></td>
+            <td>Claude＋ユーザー</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>axes_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><span class="done-note">2026-05-03 完了。①Q_LABELS全100問の行動ベース記述化（技術語→実際の行動・状態に変換）。②AXIS_SUBS構造＋buildAxesDetail()によりサブ平均→問別1〜5スコアへ完全移行。③eval ~120字・全文余地表現（断定形禁止）・軸ドメイン境界定義（知識=知っているか / 指示=伝え方 / 活用=成果・展開 / 思考=評価・判断）。④growth 2段構成確定（伸びしろ提示→アクション推奨）。仮出力14パターン検証済み。</span></td>
+            <td>Claude＋ユーザー</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec4">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>gaps[].body プロンプト文を作成（GAS_プロンプト.md追記）</strong><span class="done-note">2026-05-03 完了。70〜80字制約・余地表現（〜ことが多い/〜やすい）・軸名/差分%/「バランス」汎用語禁止を指示文に明記。行動描写テキスト（GAP_BEHAVIOR）を起点として受験者固有の言語に変換させる設計確定。6パターン全件の仮出力検証済み（73〜80字内）。</span></td>
+            <td>Claude＋ユーザー</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>consistency_eval プロンプト文を作成（GAS_プロンプト.md追記）</strong><span class="done-note">2026-05-03 完了。108〜120字。①全グループ通過=称賛断言（「〜できています」可）②失敗あり=失敗テーマを平易な言葉で名指し＋原因A(行動バラつき)/B(設問解釈差)どちらとも断定しない行動仮説。失敗グループ数列挙禁止・グループコード名禁止。通過/失敗の2ケース仮出力検証済み（109〜112字）。</span></td>
+            <td>Claude＋ユーザー</td>
+            <td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 中優先度 -->
+    <section class="section" id="todo-mid">
+      <div class="section-header">
+        <div class="section-eyebrow">Priority Mid</div>
+        <h2 class="section-title">🟡 中優先度</h2>
+        <p class="section-desc">全体仕様確定を待って着手するもの。または着手中のもの。</p>
+      </div>
+      <table class="status-table">
+        <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>詳細</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
+            <td><strong>レポートHTML Section 6・CTA 実装</strong><br><span style="font-size:12px;color:var(--muted)">「これからのあなたへ」+ LINE登録CTA。全体仕様確定後に着手。</span></td>
+            <td>ユーザー</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">保留中</span></td>
+            <td><strong>[TODO:secFeature] GAP動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">GASがD.gaps[]の注入仕様確定後に静的ダミーを動的生成に切り替え。最大3件（kt/at/ki）。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">HTML実装時</span></td>
+            <td><strong>summary / next_step フィールド追加 + JS注入実装</strong><br><span style="font-size:12px;color:var(--muted)">Section 1（summary 216〜240字）・Section 6（priority_action / explanation）のHTML実装時にREPORT_DATAにキー追加 + 注入コード実装。HTMLが未実装のため現時点で未定義は正常。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">仕様確定後</span></td>
+            <td><strong>GASデータ受け渡しバリデーション機能整備</strong><br><span style="font-size:12px;color:var(--muted)">型強制・必須フィールドチェック。全体仕様確定後に一括整備。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-todo">詳細 →</button></td>
+          </tr>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>QUESTIONS.md 整合性チェック表更新</strong><span class="done-note">9グループ確定版に書き換え済み（2026-05-03）。グループ名・設問番号・軸カラムをSPEC.md lines 86-94の正本定義と同期。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>診断ページ（index.html）UI改善：回答ボタンの親指操作ゾーン移動</strong><br><span style="font-size:12px;color:var(--muted)">現状：回答ボタン（.circle）が画面上部に配置されており、モバイルの親指操作ゾーン（画面下部）から外れている。モバイルファーストの設計なのに操作性を落としているリスク。<br>方針：回答ボタンを画面下部に固定配置し、片手親指で自然に届く位置に移動する。質問テキストは上部に、操作UIは下部にという縦分割レイアウトへ変更。</span></td>
+            <td>ユーザー＋Claude</td>
+            <td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>GAS本体コードを実装（doPost〜Claude API呼び出しまで）</strong><br><span style="font-size:12px;color:var(--muted)">GAS設計書.mdの全関数定義をそのままコード化。doPost → calcScores → calcSubgroups → calcVarianceAndGAP → calcConsistency → calcPercentile → writeCalculatedData → callClaudeAPI → issueReportUrl の順。⚠️ GASデプロイ権限確保が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA.summary / axes_eval / gaps[].body / consistency_eval を .score-summary等の対応DOMに注入するJSを実装。現在はダミーテキストがハードコード。⚠️ GAS実装完了が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>診断HTML L4実装：GAS POST + UTAGEリダイレクト</strong><br><span style="font-size:12px;color:var(--muted)">回答完了 → GAS POST（{id, answers[], timestamp}）→ GASレスポンスURLでUTAGEへリダイレクト。連続回答検知ポップアップ（10連続で非ブロッキングアラート）は別タスク。GAS設計書完成が前提。</span></td>
+            <td>Claude</td>
+            <td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>UTAGEサンクスページHTML/CSS/JS</strong><br><span style="font-size:12px;color:var(--muted)">カードグリッド + ブラーゾーン + カスタムJS（URLパラメータ注入済みのサンクスページ）</span></td>
+            <td>ユーザー</td>
+            <td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-todo">未確定</span></td>
+            <td><strong>レポートホスティング確定</strong><br><span style="font-size:12px;color:var(--muted)">Vercel が有力候補。ドメイン・URL設計も含む。</span></td>
+            <td>ユーザー</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 外部確認待ち -->
+    <section class="section" id="todo-external">
+      <div class="section-header">
+        <div class="section-eyebrow">Waiting</div>
+        <h2 class="section-title">🔵 外部確認待ち</h2>
+        <p class="section-desc">自分たちで解決できない。外部の回答が来るまでブロックされるもの。</p>
+      </div>
+      <table class="status-table">
+        <thead><tr><th>状態</th><th>確認先</th><th>確認内容</th><th>影響範囲</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-check">確認待ち</span></td>
+            <td>GWS管理者</td>
+            <td><strong>GASデプロイ権限・管理者アカウント</strong><br><span style="font-size:12px;color:var(--muted)">GAS実装の着手条件</span></td>
+            <td>GAS実装全体</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-check">確認待ち</span></td>
+            <td>UTAGE管理者</td>
+            <td><strong>stateパラメータへの診断ID動的埋め込み可否</strong><br><span style="font-size:12px;color:var(--muted)">案Aの決済完了後GAS紐づけフロー</span></td>
+            <td><button class="go-btn" data-tab="dousen" data-section="d-map">導線設計 →</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 後工程 -->
+    <section class="section" id="todo-low">
+      <div class="section-header">
+        <div class="section-eyebrow">Phase 3</div>
+        <h2 class="section-title">🟢 後工程（フェーズ3）</h2>
+        <p class="section-desc">コアが完成してから着手。今は設計しない。</p>
+      </div>
+      <table class="status-table">
+        <thead><tr><th>タスク</th><th>概要</th></tr></thead>
+        <tbody>
+          <tr><td><strong>LINE Bot実装</strong></td><td>follow イベント → 診断ID紐づけ → push送信</td></tr>
+          <tr><td><strong>PDFダウンロード</strong></td><td>ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</td></tr>
+          <tr><td><strong>SNS共有テキスト</strong></td><td>AI戦闘力・上位X%を含む共有文言テンプレート設計</td></tr>
+          <tr><td><strong>エンドツーエンドテスト</strong></td><td>診断 → サンクスページ → CV → レポート受け取りまで全フロー通し検証</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 完了済み -->
+    <section class="section" id="todo-done">
+      <div class="section-header">
+        <div class="section-eyebrow">Done</div>
+        <h2 class="section-title">✅ 完了済み</h2>
+        <p class="section-desc">設計上の決定・実装完了・方針転換をすべて日付降順で記録する。「なぜその決定になったか」「旧設計から何を変えたか」を残しておくことで、後でPDCAを回す際・同じ議論が再燃した際に根拠ごと参照できる設計変遷ログ。</p>
+      </div>
+      <table class="status-table">
+        <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
+        <tbody>
+
+          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.15） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>gaps[].body / consistency_eval プロンプト文確定・検証済み（v3.15）</strong><span class="done-note">gaps：70〜80字制約・余地表現・軸名/差分%禁止の指示文確定。GAP_BEHAVIOR行動描写を起点として受験者固有の言語に変換させる設計。6パターン全件仮出力検証済み（73〜80字）。consistency_eval：108〜120字・通過=称賛断言・失敗=テーマ平易名指し+原因A/B双方可能性の行動仮説。2ケース仮出力検証済み（109〜112字）。Claude APIプロンプト設計タスク（🔴高優先度3件）全件完了。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>axes_eval プロンプト文確定（問別1〜5スコア・余地表現・軸ドメイン境界）（v3.14）</strong><span class="done-note">Q_LABELS全100問の行動ベース記述化・AXIS_SUBS＋buildAxesDetail()でサブ平均→問別スコアに移行。eval ~120字・全文余地表現（断定形禁止）・軸ドメイン境界定義確定。growth 2段構成（伸びしろ提示→アクション推奨）。14パターン仮出力検証済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec4">詳細 →</button></td></tr>
+          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>Claude APIプロンプト設計完了（GAS_プロンプト.md 新規作成）</strong><span class="done-note">システムプロンプト・buildClaudePrompt()テンプレート・出力スキーマを1ファイルに収録。全フィールド（summary/axes_eval/gaps/consistency_eval）を1回のAPIコールでJSON一括生成する設計確定。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>summaryフィールド設計確定・出力検証済み</strong><span class="done-note">①型ラベルなし設計：GAP「ki正」等をClaudeに渡さず行動描写テキストを直接渡すGAP_BEHAVIORマップ確立。②spreadDesc：「突出型」等のラベルを渡さず「知識力が最も高く指示力との差が18%と大きい」等の事実データとして渡す。③positionDesc 5段階変換：「上位85%」の誤解を防ぐためGAS側でトップ層〜積み上げ段階の5段階テキストに変換してから渡す。出力検証：接近型/突出型/GAP有無/High〜Low 計14パターン確認済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec1">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAP行動描写6パターン確定・kt逆の表現修正</strong><span class="done-note">6パターンの行動描写テキストをGAP_BEHAVIORマップとして確定。kt逆（批判的思考者型）の旧表現「懐疑的な見方はあるが」→「AIの出力を丁寧に確認する力はあるが」に修正。「懐疑的」はユーザー拒否感を招くリスクがあるため。GAS_プロンプト.md・wiki両方に反映済み。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>Wiki Claude APIプロンプト設計タブ新設（v3.1〜v3.11）</strong><span class="done-note">全体方針（禁止リストではなく前提と目的で制御）・Section 1〜6の設計を一元管理するタブを追加。summaryの構造・サブ傾向の渡し方・平均比較の使い方・percentile変換ルール・GAP渡し方をすべて確定状態で収録。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-policy">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>「受験者」表記統一・「受信者/受診者/実務者」を廃止</strong><span class="done-note">診断レポート内の比較母集団の呼び方を「受験者」に統一。GAS_プロンプト.md全文・wiki全文で置換済み。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-03（以前） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書・SPEC.md 反映漏れ修正（スクリーニング[L1〜L4]対応）</strong><span class="done-note">①buildRedirectUrlにavg（全体平均トークン）とunlock=previewを追加。②calcAvgTokens()関数をSection 3-7として追加。③分散計算コメントを「Sub最大率は0〜1の小数→×100でpct化」と明示。④calcPercentileのDB列番号をプレースホルダーから106（確定値）に修正。⑤SPEC.md URLパラメータ例をpct=0.28形式に修正（2箇所）。⑥SPEC.md全体フロー「技術検証中」→「確定」表記修正。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAS設計書 作成完了（GAS設計書.md）</strong><span class="done-note">フェーズ1/2完全設計。doPost〜UTAGEリダイレクトまでの全関数定義・Sheets列A〜EK構成・サブカテゴリ設問番号・整合性9グループ→REPORT_DATA boolean[]変換ロジック・GAP抽出条件・PERCENTRANK計算・エラーハンドリング・定数一覧・テスト方法を網羅。Claude APIプロンプト設計が次タスク。</span></td><td>—</td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>ドキュメント同期漏れ修正（QUESTIONS.md・SPEC.md）</strong><span class="done-note">別Claude独立スクリーニングで発覚した更新漏れ3件を修正。①QUESTIONS.md整合性チェック表を9グループ確定版に書き換え（グループ名・軸カラム追加・設問番号修正: Q94→Q95, Q59→Q63, Q75→Q69, 指示-3追加）。②SPEC.md line 566「8グループ全確定」→「9グループ全確定」。③SPEC.md フェーズ1冒頭に「Claude API呼出は行わない」を明記。いずれも設計判断は済み・反映漏れのみ。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAP逆方向の意味づけ定義確定（6パターン）</strong><span class="done-note">at正=過信実行型 / at逆=慎重未活用型（CVフック大）/ ki正=知識詰め込み型 / ki逆=直感指示型 / kt正=情報収集偏重型 / kt逆=批判的思考者型。GAS設計書・Claude APIプロンプト両方に明記必須。audit-issues #3を🔴高に昇格・定義確定。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>分散・GAP単位を%（0〜100）に統一</strong><span class="done-note">旧：分散=比率差(0〜1) / GAP=生スコア差(0〜125)が混在。新：分散=(Sub最大率−Sub最小率)×100 / GAP=round((A−B)/125×100)でともに%に統一。Claude APIへのLayer2変数スケールが揃い、Section 4軸別評価のデグレードリスクを解消。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>GAP閾値を20%に統一・diff単位%に確定</strong><span class="done-note">旧：絶対値≥25点（生スコア差）。新：絶対値≥20%（=25点/125点）。diffはGASが round((軸A−軸B)/125×100) で%変換して注入。しきい値・diff・GAPバー表示がすべて%で一致。report.html / SPEC.md / wiki.html 全箇所を更新。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>index.html L0実装：軸別スコア変数追加（k/i/a/t）</strong><span class="done-note">calcResult()にk=Q1-25/i=Q26-50/a=Q51-75/t=Q76-100の軸別スライスを追加。raw=k+i+a+tに変更。window._axesに生スコアのみ保持（トークン値は除外）。L1〜L4すべての前提となるL0が確立。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>index.html L1実装：トークン変換式刷新（軸別立方変換）</strong><span class="done-note">旧：(total/500)³×999,999（単一立方）。新：Σ round((軸スコア/125)³×249,999)×4軸。軸特化型ユーザーで最大3倍以上のズレを修正。kTok/iTok/aTok/tTok変数確立。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>index.html L2実装：ランクUI完全削除・内部変数として保持</strong><span class="done-note">r-rankバッジ・r-score/r-title/r-desc表示・diagnose-btnボタン・RANK_INFO定義・openPopup/closePopup/handleOverlayClick関数・5枚ポップアップカードをすべて削除。window._rankは内部保持（N&lt;100フォールバック・Claude API・DRMセグメント用）。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-03</td><td><strong>index.html L3実装：結果画面を送信中待機UIに差し替え</strong><span class="done-note">screen-resultをスピナー（.sending-icon）＋「診断を集計しています」＋「このままお待ちください」の3要素のみに再設計。スコア・ランク・テキスト評価は一切表示しない。GAS POST完了後にリダイレクトで遷移するL4の受け皿として確立。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-accuracy">詳細 →</button></td></tr>
+
+          <!-- ── 2026-05-02 ── -->
+          <tr class="done-row"><td>2026-05-02</td><td><strong>スクリーニング完了・REPORT_DATA正本化・SPEC修正</strong><span class="done-note">「REPORT_DATAがデータ契約の正本」を設計原則として確立。Claude API出力スキーマを axes_eval / gaps[]{axisA,axisB,diff,body} に統一。GAS型変換責務を明記。</span></td><td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-02</td><td><strong>GAS→REPORT_DATA 変換責務の確定</strong><span class="done-note">subgroups：生スコア→0〜100%換算 / consistency_check：カンマ区切り文字列→boolean[] / gaps.diff：生スコア→%換算。すべてGAS側が変換してから注入する構造に確定。</span></td><td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-02</td><td><strong>Section 5 回答の一貫性 実装完了</strong><span class="done-note">secConsistency()：consistency_check（boolean[]）でバッジ動的更新 / consistency_eval テキスト注入 / 0件時も常時表示（称賛トーン）</span></td><td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-02</td><td><strong>Section 4 軸別評価（axes_eval注入）実装完了</strong><span class="done-note">secAxes()：サブグループリングゲージ更新 + axes_eval（eval/strengths/weaknesses/growth）テキスト注入。空文字スキップでHTMLダミーを保持。</span></td><td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-02</td><td><strong>report.html DOM構造整備・JS注入構造確立</strong><span class="done-note">axes_eval注入・secFeatureスタブ・CSS変数一元化・render()エラー隔離。AIが読み込みやすい設計にすることで誤検知・意図しない書き換え・データ衝突を防ぐ構造を整備。</span></td><td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-02</td><td><strong>Wiki バージョン管理・ToDoタブ一元化</strong><span class="done-note">URLハッシュタブ制御（#tab-{paneId}）・go-btn横断ナビ・v2.x管理開始。全タスクをToDoタブに集約し、各タブは設計詳細の参照先に役割分担。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-01 ── -->
+          <tr class="done-row"><td>2026-05-01</td><td><strong>整合性チェック 9グループ確定</strong><span class="done-note">旧：8グループ（知識含む）。新：3軸×3グループ=9グループ。指示-3=Q35/Q42/Q47確定。知識は整合性チェックの対象外（Layer2サブスコアで把握）。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-01</td><td><strong>Claude API JSONスキーマ確定（REPORT_DATA準拠版）</strong><span class="done-note">axes_eval / gaps[]{axisA,axisB,diff,body} / consistency_eval（108〜120字）/ summary・next_stepはHTML実装後追加。APIコール1回。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-01</td><td><strong>レポートHTML Section 2 レーダーチャート実装完了</strong><span class="done-note">secRadar()：自分 vs 全体平均 / SVGポリゴン動的生成 / トグルボタン（表示/非表示）/ avgAxes フィールド確定</span></td><td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-05-01</td><td><strong>レポートHTML Section 1・FV 実装完了</strong><span class="done-note">secFV()：Canvas半円ゲージ4軸積み上げ・上位X%ピラミッド表示 / secScore()：totalTokens・axes×4軸スコアカード・percentile</span></td><td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td></tr>
+
+          <!-- ── 2026-04-30 ── -->
+          <tr class="done-row"><td>2026-04-30</td><td><strong>タイプ名による分類設計を廃止・3層変数アーキテクチャに移行</strong><span class="done-note">旧：「知識偏重型」等のタイプ名でClaudeを動かす設計。新：Layer1(位置)×Layer2(内訳+分散)×Layer3(整合性)の生数値を直接渡し、Claudeが個別解釈する設計。タイプラベルは実態に合わないケースが多いため廃止。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>Claude API呼び出し方式を単一JSON一括出力に変更</strong><span class="done-note">旧：セクション別の個別プロンプト7本。新：3層変数を1リクエストで渡し、JSON構造化出力1回のみ。コスト削減・レイテンシ改善・生成の一貫性確保。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>self_gaps廃止・consistency_eval（単一テキスト）に変更</strong><span class="done-note">旧：不整合グループごとに個別Claudeテキストを生成するself_gaps設計。新：不整合グループのmin/max全件をClaudeに渡し、108〜120字の単一評価文1本に集約。API呼び出し削減＋読み体験改善。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-api-vars">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>知識グループを整合性チェックから廃止</strong><span class="done-note">旧：知識を含む10グループ構成。新：知識の穴はLayer2のサブスコアで把握するため整合性チェックから除外。整合性は「行動・認識の矛盾」を検知するものと再定義。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-consistency">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>ランク表示を廃止・上位X%に一本化</strong><span class="done-note">旧：S〜Dランクをレポートに表示する設計。新：ランクは内部計算のみ。レポートには「上位X%」のみ表示（市場内の相対位置として明示）。ランクラベルは感情的な上下比較を生むため廃止。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>軸名・識別子 K/I/A/T に統一</strong><span class="done-note">旧：思考力(T)→指示力(I)に改名、判断力(J)→思考力(T)に改名。GAS変数 k_score/i_score/a_score/t_score に統一。混在による実装バグ防止。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>スコアリング設計確定（トークン換算・ランク・上位X%）</strong><span class="done-note">各軸トークン = (軸スコア/125)³ × 249,999 / ランクS〜D / N&lt;100はダミー値 / N≥100でPERCENTRANK</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>Sheets列構成確定（A〜EK全列）</strong><span class="done-note">Q1〜Q100(C〜CW) / 4軸スコア(CX〜DA) / トークン(DC) / 整合性(DE) / 上位X%(DF) / 生成テキスト7本(DK〜DQ) / サブスコア12本(DR〜EC) / 分散・GAP(ED〜EK)</span></td><td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>GASフェーズ分割設計確定</strong><span class="done-note">フェーズ1（診断完了直後・スコア計算・Sheets保存）/ フェーズ2（CV完了後・Claude API呼び出し・レポートURL発行）の2段構成に確定。</span></td><td><button class="go-btn" data-tab="shindan" data-section="stack">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-30</td><td><strong>サンクスページ設計確定</strong><span class="done-note">URLパラメータ6値（total/pct/k/i/a/t）→ カスタムJS → 数値表示。Vue.js setTimeout(300)対応済み。モザイクゾーンでCVを喚起する設計。</span></td><td><button class="go-btn" data-tab="optin" data-section="optin-overview">詳細 →</button></td></tr>
+
+          <!-- ── 2026-04-27 ── -->
+          <tr class="done-row"><td>2026-04-27</td><td><strong>技術検証5点（CVトリガー）突破</strong><span class="done-note">X APIユーザー特定・引用RT照合・XStep連携すべて確認済み。Xルートの成立を確認。</span></td><td><button class="go-btn" data-tab="dousen" data-section="d-verify">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>アルゴリズム審査（GAP・整合性チェック）完了</strong><span class="done-note">単位不一致・感度・逆方向未定義・0件処理の4点を洗い出し。以降の設計方針を確定するための起点となった審査。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>GAP選択基準・しきい値確定</strong><span class="done-note">検知対象：ki_gap / at_gap（最重要・過信実行型検知）/ kt_gap の3ペアのみ。しきい値：絶対値≥20%（=25点/125点）。diff はGASが%変換して注入。最大3本表示。0本時はセクション非表示。</span></td><td><button class="go-btn" data-tab="audit" data-section="audit-gap">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>上位X%フォールバック確定（N&lt;100対応）</strong><span class="done-note">N&lt;100時はランク帯に対応するダミー値（S=3%/A=10%/B=30%/C=70%/D=90%）を使用。N≥100に達した時点でPERCENTRANK実値に自動切り替え。ローンチ直後のデータ不足を設計上吸収。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>サブカテゴリ設計確定（11/8/6統一・4軸×3サブ）</strong><span class="done-note">知識/指示/活用/思考 各3サブカテゴリ（初級11問/中級8問/上級6問）。難易度加重なし（全問×1.0）。スコア差は問題難易度差で自然発生させる設計。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-subcats">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>難易度加重なし・全問×1.0均等スコアリングに確定</strong><span class="done-note">旧：難易度別に重み付けする案を検討。新：全問均等（×1.0）。加重係数の恣意性を排除し、問題設計でスコア分布を自然にコントロールする方針に転換。</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+          <tr class="done-row"><td>2026-04-27</td><td><strong>4観点×25問 診断設計確定</strong><span class="done-note">知識力(Q1-25) / 指示力(Q26-50) / 活用力(Q51-75) / 思考力(Q76-100) / 各最大125点・合計500点</span></td><td><button class="go-btn" data-tab="algo" data-section="algo-3layer">詳細 →</button></td></tr>
+
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div><!-- /pane-todo -->
 
 <!-- ==================== PANE: 診断設計 ==================== -->
 <div id="pane-shindan" class="pane">
@@ -824,7 +1119,7 @@
   <nav class="sidebar">
     <div class="sidebar-logo">
       <div class="title">AI戦闘力診断</div>
-      <div class="sub">設計 Wiki v1.7 <span style="font-size:10px;opacity:.7">2026-05-02</span></div>
+      <div class="sub">診断設計 / 設問・アルゴリズム</div>
     </div>
 
     <div class="nav-section">
@@ -1140,135 +1435,14 @@
       </div>
     </section>
 
-    <!-- TODO MASTER -->
+    <!-- TODO → ToDoタブに移動済み（pane-todo） -->
     <section class="section" id="todo">
       <div class="section-header">
         <div class="section-eyebrow">Master TODO</div>
         <h2 class="section-title">プロジェクト全体 TODO</h2>
-        <p class="section-desc">設計・実装・外部確認すべてを一本化した管理リスト。各タブには、そのタブ固有の設計未決定事項のみを置く。</p>
+        <p class="section-desc">→ <strong>「📋 ToDo」タブ</strong>に一元化済み。詳細はそちらを参照。</p>
       </div>
 
-      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">実装タスク</h3>
-      <table class="status-table" style="margin-bottom:32px">
-        <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>参照</th></tr></thead>
-        <tbody>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>整合性チェック 9グループ確定</strong>
-              <span class="done-note">3軸×3グループ確定。指示-3=Q35/Q42/Q47「指示の質を意図的に高めている」</span></td>
-            <td>—</td>
-            <td>アルゴリズム整頓</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>Claude API JSONスキーマ確定</strong>
-              <span class="done-note">self_gaps廃止 → consistency_eval（80〜120字・単一評価文）に変更。APIコール1回</span></td>
-            <td>—</td>
-            <td>評価軸設計 → API入力変数</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>GASフェーズ分割設計</strong>
-              <span class="done-note">フェーズ1（診断完了直後・スコア計算・リダイレクト）/ フェーズ2（CV後・Claude API・URL発行）</span></td>
-            <td>—</td>
-            <td>診断設計 → 技術スタック</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>サンクスページ設計確定</strong>
-              <span class="done-note">URLパラメータ6値 → カスタムJS → 数値表示。詳細部分はCSSブラー。Vue.js対応済み（setTimeout 300ms）</span></td>
-            <td>—</td>
-            <td>UTAGEオプトイン用レポート</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>技術検証5点（CVトリガー）</strong>
-              <span class="done-note">X APIユーザー特定・引用RT照合・XStep連携、すべて突破確認済み</span></td>
-            <td>—</td>
-            <td>導線設計</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>アルゴリズム審査（GAP・整合性チェック）</strong>
-              <span class="done-note">単位不一致・感度・逆方向未定義・0件処理の課題を洗い出し。Wikiに可視化済み</span></td>
-            <td>—</td>
-            <td>アルゴリズム整頓</td>
-          </tr>
-          <tr class="done-row">
-            <td><span class="badge badge-done">✅ 完了</span></td>
-            <td><strong>Wiki 6タブ整備</strong>
-              <span class="done-note">診断設計 / レポート / 評価軸設計 / 導線設計 / アルゴリズム整頓 / UTAGEオプトイン用レポート</span></td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>Claude APIプロンプト本文</strong><br><span style="font-size:12px;color:var(--muted)">3層変数の差し込み方・ペルソナ・エッジケース指示</span></td>
-            <td>Claude＋ユーザー</td>
-            <td>評価軸設計 → API入力変数</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>GAS設計書Markdown</strong><br><span style="font-size:12px;color:var(--muted)">変数名・Sheets列構成・フェーズ1/2ロジック全体</span></td>
-            <td>Claude</td>
-            <td>評価軸設計 → API入力変数</td>
-          </tr>
-          <tr>
-            <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
-            <td><strong>レポートHTML 残セクション実装</strong><br><span style="font-size:12px;color:var(--muted)">Section 1〜6 + CTA（FVは着手済み）</span></td>
-            <td>ユーザー</td>
-            <td>レポートタブ → セクション構成</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>UTAGEサンクスページ HTML/CSS/JS</strong><br><span style="font-size:12px;color:var(--muted)">カードグリッド + ブラーゾーン + カスタムJS</span></td>
-            <td>ユーザー</td>
-            <td>UTAGEオプトイン用レポートタブ</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">未着手</span></td>
-            <td><strong>診断HTMLへのGAS送信処理追加</strong><br><span style="font-size:12px;color:var(--muted)">回答完了 → GAS POST + 連続回答検知ポップアップ</span></td>
-            <td>ユーザー</td>
-            <td>診断設計 → 技術スタック</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">未確定</span></td>
-            <td><strong>レポートホスティング確定</strong><br><span style="font-size:12px;color:var(--muted)">Vercel が有力候補。ドメイン・URL設計も含む</span></td>
-            <td>ユーザー</td>
-            <td>—</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">外部確認待ち</h3>
-      <table class="status-table" style="margin-bottom:32px">
-        <thead><tr><th>状態</th><th>確認先</th><th>確認内容</th><th>影響</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><span class="badge badge-check">確認待ち</span></td>
-            <td>GWS管理者</td>
-            <td>GASデプロイ権限・管理者アカウント</td>
-            <td>GAS実装の着手条件</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-check">確認待ち</span></td>
-            <td>UTAGE管理者</td>
-            <td>stateパラメータへの診断ID動的埋め込み可否</td>
-            <td>案Aの決済完了後 GAS 紐づけフロー</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px">後工程（フェーズ3）</h3>
-      <table class="status-table">
-        <thead><tr><th>タスク</th><th>概要</th></tr></thead>
-        <tbody>
-          <tr><td>LINE Bot実装</td><td>follow イベント → 診断ID紐づけ → push送信</td></tr>
-          <tr><td>PDFダウンロード</td><td>ブラウザ印刷→PDF保存が現実的。サーバーサイド生成は後工程</td></tr>
-          <tr><td>SNS共有テキスト</td><td>AI戦闘力・上位X%を含む共有文言テンプレート設計</td></tr>
-          <tr><td>エンドツーエンドテスト</td><td>診断 → サンクスページ → CV → レポート受け取りまで全フロー通し検証</td></tr>
-        </tbody>
-      </table>
     </section>
 
     <!-- QUESTIONS HEADER -->
@@ -1639,8 +1813,8 @@
             <div class="page-role">Claude API · 条件付き表示あり</div>
             <div class="page-title">あなたの特徴</div>
             <ul class="page-items">
-              <li><strong>GAPセクション（条件付き）：</strong>差が25点以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
-              <li><strong>回答の一貫性（条件付き）：</strong>バッジグリッド（3×3）＋ Claude評価文（80〜120字・単一テキスト）。0件 → セクション非表示（表示方針はアルゴリズム整頓タブ参照）</li>
+              <li><strong>GAPセクション（条件付き）：</strong>差が20%以上のGAPのみ表示。ki_gap / at_gap（⚠️最重要・過信実行型の検知）/ kt_gap。GAPなし → このH2ごと非表示</li>
+              <li><strong>回答の一貫性（常時表示）：</strong>バッジグリッド（3×3）＋ Claude評価文（108〜120字・単一テキスト）。0件（全パス）→ 称賛トーン、不整合あり → 称賛＋改善提案トーン</li>
             </ul>
             <div style="margin-top:10px;font-size:12px;color:var(--muted)">使用変数：Layer1（GAP3本）+ Layer3（不整合グループ名・件数・min/max）</div>
             <span class="page-gen">Claude API</span>
@@ -1716,7 +1890,7 @@
           <div class="flow-left"><div class="flow-dot"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">条件付き表示</div>
-            <div class="flow-desc">GAPセクションは有意なGAPがある場合のみ表示。回答の一貫性セクションも0件→非表示（ただし0件時の表示方針は未決・アルゴリズム整頓タブTODO参照）。コンテンツ量がユーザーによって変わる設計。</div>
+            <div class="flow-desc">GAPセクションは有意なGAPがある場合のみ表示。回答の一貫性セクションは常時表示（0件=全パス時は称賛トーン、不整合ありは称賛＋改善提案トーン）。コンテンツ量はGAPの有無によって変わる設計。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -1811,18 +1985,18 @@
           <table class="score-table" style="margin:0">
             <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差25点以上のペアのみ表示）</td></tr>
+              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ GAP（条件付き・差20%以上のペアのみ表示）</td></tr>
               <tr><td>H1：能力の偏り</td><td>セクションタイトル</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
-              <tr><td>概念説明（セクション冒頭1回・確定）</td><td>「4つの能力のうち、25%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
+              <tr><td>概念説明（セクション冒頭1回・確定）</td><td>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>大なり小なり見出し</td><td>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」― 絶対値≥25のペアのみ（最大3本）。0本 → セクションごと非表示</td><td><span class="badge badge-done">GAS動的生成</span></td></tr>
               <tr><td>スコアビジュアル</td><td>軸スコア ÷ 125 × 100 = %バー。2軸並列＋差分%を数値で明示</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>本文</td><td>あなたが今どういう状態かの観察（〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 回答の一貫性（不整合1件以上のとき表示）</td></tr>
+              <tr><td>本文</td><td>あなたが今どういう状態かの観察（70〜80字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr style="background:rgba(var(--accent-rgb),.04)"><td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:6px 10px">▌ 回答の一貫性（常時表示）</td></tr>
               <tr><td>H2：回答の一貫性</td><td>―</td><td>―</td></tr>
               <tr><td>固定文</td><td>「指示力・活用力・思考力の3つの能力で、あなたの回答が一貫しているかを検証しました。一貫性が高い能力ほど、安定したパフォーマンスを出せています。」</td><td><span class="badge badge-done">静的テキスト</span></td></tr>
               <tr><td>バッジグリッド（3×3）</td><td>軸ごと色分け・ニューモフィズム（凸=一貫・凹=不整合）・軸ラベル + N/3数値表示</td><td><span class="badge badge-done">自動計算</span></td></tr>
-              <tr><td>評価文</td><td>セクション全体の評価（80〜120字）― 称賛または不整合指摘。断定せず、原因A（行動のバラつき）・B（解釈の違い）を踏まえたトーン</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>0件の場合</td><td>セクション自体を非表示（GAPと同様）</td><td><span class="badge badge-done">非表示</span></td></tr>
+              <tr><td>評価文</td><td>セクション全体の評価（108〜120字）― 称賛または不整合指摘。断定せず、原因A（行動のバラつき）・B（解釈の違い）を踏まえたトーン</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>0件（全パス）の場合</td><td>セクション常時表示。称賛トーンの評価文を生成（「ここを改善すれば完璧」等は不要）</td><td><span class="badge badge-done">常時表示</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1910,12 +2084,12 @@
           <tr>
             <td rowspan="2">あなたの特徴</td>
             <td><code>gaps[]</code></td>
-            <td>配列（条件付き）description 〜80字</td>
+            <td>配列（条件付き）description 70〜80字</td>
             <td rowspan="2">DP列</td>
           </tr>
           <tr>
             <td><code>consistency_eval</code></td>
-            <td>文章 80〜120字（回答の一貫性セクション・単一評価文）</td>
+            <td>文章 108〜120字（回答の一貫性セクション・単一評価文）</td>
           </tr>
           <tr>
             <td rowspan="2">これからのあなたへ</td>
@@ -1957,17 +2131,17 @@
         "pair": "at | ki | kt",           // GAS側が判定（at=活用-思考 / ki=知識-指示 / kt=知識-思考）
         "direction": "positive | negative", // GAS側が判定（positive = 前者が高い）
         "value": 40,                      // 絶対値・GAS側が計算
-        "description": "string ~80字"    // Claude生成のみ
+        "description": "string 70〜80字"  // Claude生成のみ
       }
     ],
-    // gaps は絶対値25点以上のペアのみ（正負両方）。0件の場合は空配列
+    // gaps は絶対値20%以上のペアのみ（正負両方）。0件の場合は空配列
     // 見出し文言はHTML側が pair + direction から静的生成
     // 例：pair=ki, positive → 「知識力 > 指示力」
     // 例：pair=at, negative → 「思考力 > 活用力」
-    "consistency_eval": "string"  // Claude生成：80〜120字・回答の一貫性セクション用・単一評価文
+    "consistency_eval": "string"  // Claude生成：108〜120字・回答の一貫性セクション用・単一評価文
     // バッジ表示状態（凸/凹）はGASが9グループ×一貫判定で計算・Sheets保存。Claude出力には含めない
     // ClaudeへはLayer3（不整合グループ名・件数・min/max）を渡し評価文1本を生成させる
-    // 0件の場合は空文字「""」でよい（HTML側でセクション非表示）
+    // 0件（全パス）でも必ず生成する（称賛トーン）。空文字は返さない。
     // ⚠️ プロンプト制約：断定・糾弾調にしない。原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現
   },
 
@@ -1981,11 +2155,11 @@
       <div class="callout" style="margin-top:20px">
         <strong>GAPセクション・カード構造（確定）：</strong>
         <ul style="margin:8px 0 0 0;padding-left:18px;line-height:1.8">
-          <li><strong>表示条件：</strong>絶対値 ≥ 25点（正負両方）のペアのみ。最大3本（ki / at / kt）。0本 → セクションごと非表示</li>
-          <li><strong>概念説明（セクション冒頭1回のみ・確定テキスト）：</strong>「4つの能力のうち、25%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</li>
+          <li><strong>表示条件：</strong>絶対値 ≥ 20%（正負両方）のペアのみ。最大3本（ki / at / kt）。0本 → セクションごと非表示</li>
+          <li><strong>概念説明（セクション冒頭1回のみ・確定テキスト）：</strong>「4つの能力のうち、20%以上の差がある組み合わせを検出しました。多くの人が気づいていない、あなたのAI活用の弱みがわかります。」― ペアごとには置かない</li>
           <li><strong>大なり小なり見出し：</strong>GASがスコア比較で動的生成。例：「知識力 &gt; 指示力」</li>
           <li><strong>スコアビジュアル：</strong>軸スコア ÷ 125 × 100 = %バー。2軸並列 ＋ 差分%を数値で明示</li>
-          <li><strong>Claude出力：</strong>あなたが今どういう状態か（〜80字）。Claudeは状態の観察に集中</li>
+          <li><strong>Claude出力：</strong>あなたが今どういう状態か（70〜80字）。Claudeは状態の観察に集中</li>
         </ul>
         <br>
         <strong>整合性チェック（トラップ問）の活用：</strong>グループ内に <strong>min ≤ 2（ネガ）</strong> と <strong>max ≥ 4（ポジ）</strong> が共存する場合を「不整合あり」と判定。ポジとネガの逆転のみ検知。グラデーション・難易度差は対象外。<br>
@@ -2010,7 +2184,7 @@
               <div style="color:var(--muted);margin-top:4px">※ 軸ごとに色分け。一貫グループ=凸（埋まり）、不整合グループ=凹（空き）。GASが9グループ×判定で計算しSheetsに保存</div>
             </div>
             <div style="background:var(--bg);border-radius:6px;padding:10px;line-height:1.7">
-              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">評価文（Claude API・<code>consistency_eval</code>・80〜120字）</div>
+              <div style="color:var(--muted);font-size:11px;margin-bottom:2px">評価文（Claude API・<code>consistency_eval</code>・108〜120字）</div>
               <div style="color:var(--text)">「指示設計と出力確認に関して、場面による行動のバラつきが検知されました。意識はあるが習慣として定着していない可能性があります。実行の基準を明確にすることで一貫性は高まります。」</div>
             </div>
           </div>
@@ -2039,7 +2213,7 @@
             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Claudeへの入力（Layer3）：不整合グループ名・件数・各min/max をまとめて渡す</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>// Claude出力（consistency_eval のみ・1本）
 "出力確認・設計・日常定着の3領域で回答のブレが検知されました。意識と実践の間にギャップがあり、場面によって行動基準が変わっている可能性があります。"
-// 72字（実際は80〜120字目安）</code></pre>
+// 72字（実際は108〜120字目安）</code></pre>
           </div>
 
           <!-- 思考-3 例 -->
@@ -2048,7 +2222,7 @@
             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">旧「観点またぎ」が思考-3 に統合（Q8/Q91/Q93）</div>
             <pre style="background:var(--bg);border-radius:6px;padding:10px;font-size:12px;line-height:1.6;color:var(--text);margin:0"><code>// Claude出力（consistency_eval のみ・1本）
 "AIの特性理解と実際の使い方に一貫性のなさが検知されました。知識と実践の接続が場面によって異なっている可能性があります。"
-// 58字（実際は80〜120字目安）</code></pre>
+// 58字（実際は108〜120字目安）</code></pre>
           </div>
 
         </div>
@@ -2073,7 +2247,7 @@
         </div>
 
         <div style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
-          ※ Claude APIにはグループ名・件数・各グループのmin/maxをまとめて渡し、<code>consistency_eval</code>（単一評価文80〜120字）を1本生成させる。グループ別テキスト生成（旧 self_gaps）は廃止。断定・糾弾調にせず、原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現にする。
+          ※ Claude APIにはグループ名・件数・各グループのmin/maxをまとめて渡し、<code>consistency_eval</code>（単一評価文108〜120字）を1本生成させる。グループ別テキスト生成（旧 self_gaps）は廃止。断定・糾弾調にせず、原因A（行動のバラつき）・B（設問解釈の違い）を踏まえた表現にする。
         </div>
       </div>
 
@@ -2094,7 +2268,7 @@
           <div class="flow-left"><div class="flow-dot" style="background:var(--c3)"></div><div class="flow-line"></div></div>
           <div class="flow-content">
             <div class="flow-label">フェーズ1 ― コアを完成させる</div>
-            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）</div>
+            <div class="flow-desc">「生成できる」クオリティまで持っていく。診断HTMLのGAS送信処理追加 / Sheets列構成・集計関数設計 / GAS基盤実装 / レポートページHTML実装（縦スクロール型）<br><strong style="color:var(--c3)">【進捗 2026-05-03】</strong> index.html: L0（軸別スコア変数）・L1（軸別立方トークン変換）・L2（ランクUI削除・内部変数保持）・L3（送信中待機UI）完了。L4（GAS POST + UTAGEリダイレクト）はGAS設計書完成後。<br>report.html: FV・Sec1・Sec2(レーダー)・Sec4(軸別評価 + axes_eval注入)・Sec5(GAP静的ダミー + 回答の一貫性)実装済み。Sec6・CTA・secFeature動的化は次フェーズ。</div>
           </div>
         </div>
         <div class="flow-item">
@@ -2156,15 +2330,27 @@
         <tbody>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td><strong>REPORT_DATA axes の注入形式</strong><br><span style="font-size:12px;color:var(--muted)">GASがトークン値(0〜249,999)を注入する方針で現在のコードと整合している。SPEC.mdの「表示変換はフロント」という記述との齟齬を修正する</span></td>
-            <td>GAS設計書作成時に同時に確定</td>
-            <td><span class="badge badge-todo">記述修正待ち</span></td>
+            <td><strong>REPORT_DATA axes の注入形式</strong><br><span style="font-size:12px;color:var(--muted)">GASがトークン値(0〜249,999)を注入する方針で確定。REPORT_DATAが正本の原則により、SPEC.mdも同様に整合済み。</span></td>
+            <td>REPORT_DATA正本化に伴い解消（2026-05-02）</td>
+            <td><span class="badge badge-done">解消済み</span></td>
           </tr>
           <tr>
             <td class="priority-mid">🟡 中</td>
-            <td><strong>レーダーチャート（Section 2）の平均データ構造</strong><br><span style="font-size:12px;color:var(--muted)">ユーザースコアと全体平均を比較する多角形を描く。平均値をREPORT_DATAに含める形式を決める</span></td>
-            <td>Section 2 実装着手時に確定</td>
-            <td><span class="badge badge-todo">未確定</span></td>
+            <td><strong>レーダーチャート（Section 2）の平均データ構造</strong><br><span style="font-size:12px;color:var(--muted)"><code>avgAxes</code> フィールドを REPORT_DATA に追加し、<code>secRadar()</code> で参照する形式に確定・実装済み。</span></td>
+            <td>解消済み（2026-05-02）</td>
+            <td><span class="badge badge-done">解消済み</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>[TODO:secFeature] GAP 動的DOM生成</strong><br><span style="font-size:12px;color:var(--muted)">現状は静的ダミー gap-item×2 をビジュアル確認用に保留中。GAS が <code>D.gaps[]</code> の注入仕様を確定後に動的DOM生成に切り替える。検知: <code>grep TODO:secFeature report.html</code></span></td>
+            <td>GAS仕様確定後に着手</td>
+            <td><span class="badge badge-todo">設計未確定・保留</span></td>
+          </tr>
+          <tr>
+            <td class="priority-mid">🟡 中</td>
+            <td><strong>GASデータ受け渡しバリデーション機能整備</strong><br><span style="font-size:12px;color:var(--muted)">全体仕様確定後に一括整備。型強制（<code>Number()</code>）・必須フィールドチェック・エラーログ出力。現状は空文字スキップのみ実装済み。</span></td>
+            <td>全体仕様確定後（最終仕上げ）</td>
+            <td><span class="badge badge-todo">仕様確定後</span></td>
           </tr>
           <tr>
             <td class="priority-low">🟢 低</td>
@@ -2181,7 +2367,7 @@
       <div class="section-header">
         <div class="section-eyebrow">実装リスク記録</div>
         <h2 class="section-title">データ紐付けリスク一覧</h2>
-        <p class="section-desc">report.html スクリーニング（2026-05-02）で検出した未対応リスク。HTML/CSS が実装の正本。データ紐付けの最終スクリーニング後、HTML修正 または 仕様書修正のいずれかで対応する。</p>
+        <p class="section-desc">report.html スクリーニング（2026-05-02）で検出した未対応リスク。<strong>設計原則：<code>report.html</code> の <code>REPORT_DATA</code> がデータ契約の正本。</strong> GAS・Claude API の出力構造はすべて REPORT_DATA のキー名・型・スケールに合わせる。SPEC との齟齬は SPEC 側を修正する。</p>
       </div>
 
       <table class="score-table">
@@ -2194,37 +2380,40 @@
             <td>
               <strong>REPORT_DATA.axes 型衝突リスク</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                現在 <code>axes.knowledge</code> 等はトークン数値(0〜249,999)。将来 Section 4 の軸評価テキスト追加時に <code>axes.knowledge = { score: 180000, text: "..." }</code> 形式へ変更が必要になると、<code>secScore()</code>・<code>secFV()</code>・<code>secAxes()</code> の全数値参照が破壊される。
+                評価テキストは <code>axes_eval</code> という別フィールドとして分離済み。<code>axes.*</code> は数値スコアのみ、<code>axes_eval.*</code> は評価テキストのみを持つ構造に確定。<code>secScore()</code>・<code>secFV()</code>・<code>secAxes()</code> の数値参照は安全。
               </span>
             </td>
-            <td><code>secScore() / secFV() / secAxes()</code></td>
+            <td><code>REPORT_DATA.axes / axes_eval</code></td>
             <td><span class="priority-high">🔴 高</span></td>
-            <td><span class="badge badge-todo">実装完了後スクリーニング</span></td>
+            <td><span class="badge badge-done">設計上解消済み（2026-05-02）</span></td>
           </tr>
           <tr>
             <td>2</td>
             <td>
-              <strong>.score-summary JS注入未実装</strong><br>
+              <strong>summary / next_step フィールド未定義（HTML未実装フェーズ）</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                Section 1 の <code>.score-summary</code> ボックスには216〜240字の Claude API テキスト（<code>summary</code>フィールド）を注入する設計だが、現状サンプルテキストがハードコード済みでJS注入コードが存在しない。かつ <code>REPORT_DATA</code> に <code>summary</code> キーが未定義。
+                <code>REPORT_DATA</code> に <code>summary</code>（Section 1 評価文 216〜240字）・<code>next_step.priority_action / explanation</code>（Section 6）が未定義。<br>
+                <strong>これはHTMLの該当セクションが未実装のため。</strong> Criticalな齟齬ではなく実装待ち。HTML側でセクション実装と同時に REPORT_DATA にキーを追加し JS注入を実装する。
               </span>
             </td>
-            <td><code>REPORT_DATA.summary / .score-summary</code></td>
-            <td><span class="priority-high">🔴 高</span></td>
-            <td><span class="badge badge-todo">残セクション実装時に追加</span></td>
+            <td><code>REPORT_DATA.summary / next_step</code></td>
+            <td><span class="priority-mid">🟡 中</span></td>
+            <td><span class="badge badge-todo">HTML Section 1・6 実装時に追加</span></td>
           </tr>
           <tr>
             <td>3</td>
             <td>
-              <strong>REPORT_DATA 未定義フィールド（残セクション分）</strong><br>
+              <strong>GASの型変換責務（REPORT_DATA準拠）</strong><br>
               <span style="font-size:12px;color:var(--muted)">
-                以下のフィールドが現在の <code>REPORT_DATA</code> に存在しない：<br>
-                <code>summary</code>（Section 1 評価文）、<code>axisText.{k/i/a/t}</code>（Section 4 軸評価）、<code>kiGap / atGap / ktGap</code>（Section 5 GAP）、<code>consistencyEval</code>（Section 5 整合性テキスト）、<code>priorityAction / explanation</code>（Section 6 ネクスト）
+                GASはREPORT_DATA の型・スケールに合わせた変換を担当する（設計原則）:<br>
+                ① <code>consistency_check</code>：DE列のカンマ区切りグループ名 → 各軸 <code>boolean[]</code> に変換<br>
+                ② <code>subgroups</code>：DR〜EC列の生スコア → <code>Math.round(サブスコア / 最大点 × 100)</code> で 0〜100% に変換<br>
+                ③ <code>gaps[].diff</code>：GAPカード%表示は <code>軸スコア ÷ 125 × 100</code>（生スコア換算）。GASがdiff%を計算して注入するか、生スコアを別フィールドで渡すかは secFeature 実装時に確定する。
               </span>
             </td>
-            <td>Section 4 / 5 / 6 実装全体</td>
+            <td>GAS → REPORT_DATA 変換ロジック</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">各セクション実装時に順次追加</span></td>
+            <td><span class="badge badge-todo">GAS設計書作成時に明記</span></td>
           </tr>
           <tr>
             <td>4</td>
@@ -2304,6 +2493,10 @@
       <a href="#algo-ui-quality" class="nav-item">
         <span class="nav-dot" style="background:#36d399"></span>
         入力品質管理
+      </a>
+      <a href="#algo-accuracy" class="nav-item">
+        <span class="nav-dot" style="background:#ff6e9c"></span>
+        アルゴリズム精度
       </a>
     </div>
   </nav>
@@ -2386,11 +2579,24 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <div class="step-title">Claude APIプロンプト本文設計</div>
-            <div class="step-desc">単一APIコール・JSON構造化出力。スキーマ更新済み（self_gaps廃止→consistency_eval追加）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をマークダウンで記述。Claude＋ユーザー共同作業。</div>
+            <div class="step-title">アルゴリズム精度：index.html修正</div>
+            <div class="step-desc">トップダウン監査で発覚したロジックのズレを上から順に修正する。各レイヤーは前のレイヤーが前提になる。詳細は「アルゴリズム精度」セクション参照。
+              <table style="margin-top:12px;font-size:12px;border-collapse:collapse;width:100%">
+                <thead><tr style="background:rgba(0,0,0,0.04)"><th style="padding:6px 8px;text-align:left;font-weight:700">Layer</th><th style="padding:6px 8px;text-align:left;font-weight:700">作業内容</th><th style="padding:6px 8px;text-align:left;font-weight:700">状態</th></tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">L0（前提）</td><td style="padding:6px 8px">軸別スコア変数の追加（k=Q1-25 / i=Q26-50 / a=Q51-75 / t=Q76-100）</td><td style="padding:6px 8px"><span class="badge badge-done">完了</span></td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">L1</td><td style="padding:6px 8px">トークン変換式刷新：単一立方(total/500)³ → 軸別立方 Σ(axis/125)³×249,999</td><td style="padding:6px 8px"><span class="badge badge-done">完了</span></td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">L2</td><td style="padding:6px 8px">ランクUIの完全削除（r-rankバッジ・RANK_INFOポップアップを除去、内部変数として保持のみ）</td><td style="padding:6px 8px"><span class="badge badge-done">完了</span></td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">L3</td><td style="padding:6px 8px">結果画面の再設計（スコア非表示 → 「送信中…」待機UI に差し替え）</td><td style="padding:6px 8px"><span class="badge badge-done">完了</span></td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">L4</td><td style="padding:6px 8px">GAS POST実装（{id, answers[], timestamp}）→ GASレスポンスのURLでUTAGEへリダイレクト</td><td style="padding:6px 8px"><span class="badge badge-todo">未実装</span></td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:6px 8px;font-weight:700;white-space:nowrap">＋</td><td style="padding:6px 8px">連続回答検知ポップアップ（独立タスク・同値10連続で非ブロッキングアラート）</td><td style="padding:6px 8px"><span class="badge badge-todo">未実装</span></td></tr>
+                </tbody>
+              </table>
+            </div>
             <div class="step-meta">
-              <span class="badge badge-todo">未着手</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:10px">レポートHTML完成後に着手</span>
+              <span class="badge badge-done">L0〜L3完了</span>
+              <span class="badge badge-todo" style="margin-left:8px">L4 未実装</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">→「アルゴリズム精度」セクション参照</span>
             </div>
           </div>
         </div>
@@ -2401,10 +2607,10 @@
             <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <div class="step-title">GAS実装（スコア計算・変数生成・API呼び出し）</div>
-            <div class="step-desc">POST受信 → 4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出 → Claude API呼び出し → Sheets保存 → URL発行の一連フロー実装。</div>
+            <div class="step-title">GASアルゴリズム設計書の作成</div>
+            <div class="step-desc">index.html修正と並行してドキュメントとして先に作る。4軸スコア計算・サブスコア12本・分散4本・GAP3本・整合性チェック boolean[]変換・5段階レベル・REPORT_DATA形式への変換ロジック全工程をMarkdownで定義。GAS実装（Step 7）はこの設計書が前提。</div>
             <div class="step-meta">
-              <span class="badge badge-todo">未着手</span>
+              <span class="badge" style="background:#ff6e9c20;color:#ff6e9c;font-weight:700">🔴 今すぐ着手</span>
             </div>
           </div>
         </div>
@@ -2412,12 +2618,42 @@
         <div class="step-item">
           <div class="step-left">
             <div class="step-num">7</div>
+            <div class="step-line"></div>
           </div>
           <div class="step-body">
-            <div class="step-title">レポートHTML実装（縦スクロール型・7セクション：FV+1+2+4+5+6+CTA）</div>
-            <div class="step-desc">GAS APIからデータを受け取り、スコア表示・レーダーチャート・生成テキスト差し込みまで一気通貫で動く状態にする。PhotoshopデザインをベースにHTMLトレースで実装。</div>
+            <div class="step-title">GAS実装（スコア計算・変数生成・Claude API呼び出し）</div>
+            <div class="step-desc">POST受信 → 4軸スコア計算 → サブカテゴリ内訳算出 → 分散計算 → GAP計算 → 整合性チェック → 5段階レベル算出 → Claude API呼び出し → Sheets保存 → URL発行の一連フロー実装。Step 6の設計書完成が前提。</div>
             <div class="step-meta">
-              <span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span>
+              <span class="badge badge-todo">未着手</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">Step 6（設計書）完成後</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-num">8</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">Claude APIプロンプト本文設計</div>
+            <div class="step-desc">単一APIコール・JSON構造化出力。スキーマ更新済み（axes_eval / gaps[]{axisA,axisB,diff,body} / consistency_eval 108〜120字）。3層変数の差し込み方・ペルソナ・エッジケース（満点/最低点）指示をMarkdownで記述。Claude＋ユーザー共同作業。</div>
+            <div class="step-meta">
+              <span class="badge badge-todo">未着手</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:10px">Step 7（GAS実装）完成後</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-num">9</div>
+          </div>
+          <div class="step-body">
+            <div class="step-title">レポートHTML残り（Section 6・CTA）</div>
+            <div class="step-desc">FV〜Section 5は実装済み。残りは「あなたの次のステップ」（next_step.priority_action + explanation）とLINE登録CTA。summary・next_step の REPORT_DATA キー追加と注入処理も同時対応。</div>
+            <div class="step-meta">
+              <span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中（FV〜Sec5完了）</span>
             </div>
           </div>
         </div>
@@ -2466,7 +2702,7 @@
         <div class="layer-card">
           <div class="layer-num">Layer 3 — 矛盾</div>
           <div class="layer-title">回答の一貫性チェック（同テーマの回答のブレを検出）</div>
-          <div class="layer-desc">指示力・活用力・思考力の3軸×3グループ=9グループで「同じ行動テーマの設問に対して回答が矛盾している」状態を検出。バッジ3×3で視覚化し、Claude APIが80〜120字の単一評価文を生成。</div>
+          <div class="layer-desc">指示力・活用力・思考力の3軸×3グループ=9グループで「同じ行動テーマの設問に対して回答が矛盾している」状態を検出。バッジ3×3で視覚化し、Claude APIが108〜120字の単一評価文を生成。</div>
           <div class="layer-example">例：思考力のバッジが1/3 → 「AIの出力確認や判断管理に関して、場面によって行動がバラついている可能性があります」</div>
         </div>
 
@@ -3155,6 +3391,140 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       </div>
     </section>
 
+
+    <!-- アルゴリズム精度 -->
+    <section class="section" id="algo-accuracy">
+      <div class="section-header">
+        <div class="section-eyebrow">Algorithm Accuracy Audit</div>
+        <h2 class="section-title">アルゴリズム精度：トップダウン監査結果</h2>
+        <p class="section-desc">2026-05-02 実施。FV → Sec1 → Sec2 → Sec4 → Sec5 の表示要素を上から順にトレースし、各レイヤーの「正しい設計 / 現状 / ギャップ」を突き合わせた記録。index.htmlとGASそれぞれの修正TODOに直結する。</p>
+      </div>
+
+      <div class="callout" style="border-left-color:#2e7a5a;background:rgba(46,122,90,0.06);margin-bottom:28px">
+        <strong style="color:#2e7a5a">✅ L0〜L3 修正完了（2026-05-03）：</strong>index.html の calcResult() に軸別スコア変数（k/i/a/t）を追加し、軸別立方トークン変換（Σ(axis/125)³×249,999）に刷新。ランクUI・RANK_INFOポップアップを削除してランクを内部変数に移行。結果画面を「送信中」待機UIに差し替え完了。<strong>残タスク：L4（GAS POST + UTAGEリダイレクト）は GAS設計書完成後に着手。</strong>
+      </div>
+
+      <!-- Layer 0 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 0 — 前提：軸別スコア変数 <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>変数</strong></td>
+            <td>k = Q1〜25合計 / i = Q26〜50合計 / a = Q51〜75合計 / t = Q76〜100合計（各 max 125）</td>
+            <td><code>k/i/a/t</code> 実装済み。<code>raw = k+i+a+t</code>。<code>window._axes = {k, i, a, t}</code>（生スコア・トークン変換はGAS側）</td>
+          </tr>
+          <tr>
+            <td><strong>影響</strong></td>
+            <td colspan="2" style="color:#2e7a5a;font-weight:700">✅ L1〜L4の前提が確立。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Layer 1 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 1 — 戦闘力トークン変換 <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
+      <table class="score-table" style="margin-bottom:16px">
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>変換式</strong></td>
+            <td><code>Σ round((軸スコア/125)³ × 249,999)</code>（軸別立方・4軸合算）</td>
+            <td>kTok/iTok/aTok/tTok → tokens = kTok+iTok+aTok+tTok で実装済み</td>
+          </tr>
+          <tr>
+            <td><strong>旧式との差</strong></td>
+            <td colspan="2">K=100, I=A=T=25（total=175）：新式≈134,000 / 旧式≈42,874。軸特化型ユーザーで3倍以上の補正完了。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout" style="border-left-color:#2e7a5a;background:rgba(46,122,90,0.06);margin-bottom:28px">
+        <strong style="color:#2e7a5a">✅ 修正完了：</strong>軸別立方変換に刷新。GASはREPORT_DATA注入時にトークン変換を担当（index.htmlは生スコアを送るのみ）。
+      </div>
+
+      <!-- Layer 2 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 2 — ランク <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>ランクの用途</strong></td>
+            <td>内部計算・GAS保存のみ。ユーザーUIに出さない。</td>
+            <td><code>window._rank</code> として内部保持。r-rankバッジ・RANK_INFO・ポップアップ5枚・openPopup/closePopup/handleOverlayClick をすべて削除済み。</td>
+          </tr>
+          <tr>
+            <td><strong>保持理由</strong></td>
+            <td colspan="2">N&lt;100フォールバック（ダミーパーセンタイル）/ Claude API Layer1入力 / DRMセグメント分類のため内部変数として必要。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Layer 3 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 3 — 結果画面（screen-result） <span class="badge badge-done" style="vertical-align:middle;font-size:11px">修正済み</span></h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>項目</th><th>正しい設計（確定）</th><th>修正後（index.html）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>画面の役割</strong></td>
+            <td>「送信中…」待機UIのみ。スコアを見せずにGAS完了後UTAGEへリダイレクト。</td>
+            <td>.sending-icon（スピナー）＋「診断を集計しています」＋「このままお待ちください」の3要素のみ。スコア・ランク・テキスト評価は一切非表示。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Layer 4 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 4 — GAS POST &amp; リダイレクト</h3>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>項目</th><th>正しい設計</th><th>現状（index.html）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>送信内容</strong></td>
+            <td><code>{id: uuid, answers: [1〜5 × 100問], timestamp}</code> を GAS WebアプリにPOST</td>
+            <td>GAS POSTなし。データは画面表示で完結し外部に送らない。</td>
+          </tr>
+          <tr>
+            <td><strong>リダイレクト</strong></td>
+            <td>GASがレスポンスで返したURLへリダイレクト（<code>?total=&amp;k=&amp;i=&amp;a=&amp;t=&amp;pct=</code> 付き）</td>
+            <td>リダイレクトなし。</td>
+          </tr>
+          <tr>
+            <td><strong>GASの責務（送信後）</strong></td>
+            <td colspan="2">生回答を受け取り、サブスコア12本・分散・GAP・整合性チェック・REPORT_DATA変換まで全部GAS側で処理。index.htmlは生回答を送るだけでよい。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- パーセンテージ4種 -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 5 — パーセンテージ変換（4種）</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">report.html側の表示要素。GASが正しい値を注入すれば既存実装で動く。前提としてGASが軸別トークンを計算して渡す必要がある。</p>
+      <table class="score-table" style="margin-bottom:28px">
+        <thead><tr><th>表示箇所</th><th>算出元</th><th>変換式</th><th>現状</th></tr></thead>
+        <tbody>
+          <tr><td>FV Total/Avg%</td><td>totalTokens / avgTokens</td><td><code>round(v / 999,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
+          <tr><td>上位X%（ピラミッド）</td><td>percentile（GAS計算値）</td><td>直値・>=10→小1位 / &lt;10→小2位</td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
+          <tr><td>軸スコア%（カード・レーダー）</td><td>axes.k/i/a/t（トークン値）</td><td><code>round(v / 249,999 × 100)</code></td><td><span class="badge badge-done">report.html実装済み</span></td></tr>
+          <tr><td>GAP%（バー表示）</td><td>生スコア k/i/a/t（/125）</td><td><code>rawScore / 125 × 100</code></td><td><span class="badge badge-todo">secFeature未実装</span></td></tr>
+          <tr><td>サブグループ%（ゲージ）</td><td>サブスコア / max点</td><td><code>round(sub / maxPoints × 100)</code></td><td><span class="badge badge-done">report.html実装済み（GAS注入待ち）</span></td></tr>
+        </tbody>
+      </table>
+
+      <!-- GAS責務まとめ -->
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">Layer 6〜8 — GAS専属責務（index.htmlは関与しない）</h3>
+      <table class="score-table" style="margin-bottom:16px">
+        <thead><tr><th>計算</th><th>担当</th><th>Sheets列</th><th>状態</th></tr></thead>
+        <tbody>
+          <tr><td>サブスコア12本 → 0〜100%変換</td><td>GAS</td><td>DR〜EC</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>各軸分散4本（(Sub最大率−Sub最小率)×100・単位%）</td><td>GAS</td><td>ED〜EG</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>GAP3本（ki/at/kt）diff%・≥20%のみ抽出</td><td>GAS</td><td>EH〜EJ</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>整合性チェック：カンマ区切り文字列 → boolean[]</td><td>GAS</td><td>DE→REPORT_DATA</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>percentile（PERCENTRANK / N&lt;100はダミー値）</td><td>GAS/Sheets</td><td>DF</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+          <tr><td>avgAxes（DC列AVERAGE）</td><td>GAS</td><td>—</td><td><span class="badge badge-todo">設計書未作成</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>分担の原則：</strong>index.htmlは<strong>生回答（Q1〜Q100の val 1〜5）を送るだけ</strong>。サブスコア・分散・GAP・整合性チェックの計算は全部GASが行い、REPORT_DATA形式に変換してからレポートHTMLに注入する。
+      </div>
+    </section>
+
   </main>
 </div><!-- /pane-algo -->
 
@@ -3421,29 +3791,29 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
       <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPペアと設計意図</h3>
       <table class="score-table" style="margin-bottom:32px">
         <thead>
-          <tr><th>ペア</th><th>計算式</th><th>正方向（+25以上）の意味</th><th>逆方向（−25以下）の意味</th><th>状態</th></tr>
+          <tr><th>ペア</th><th>計算式</th><th>正方向（+20%以上）の意味</th><th>逆方向（−20%以下）の意味</th><th>状態</th></tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>K-I GAP</strong></td>
             <td>知識力 − 指示力</td>
-            <td>知識はあるのに指示で活かせない（知識の空転）</td>
-            <td>指示力が突出・知識の裏付けが薄い</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#8a5820">知識詰め込み型</strong><br>知識はあるが指示の組み立てが弱い。頭でわかっても手が動かない</td>
+            <td><strong style="color:#2e7098">直感指示型</strong><br>なぜ動くかわからないが使える。エラー時の対処・応用が難しい</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
           <tr>
             <td><strong>A-T GAP</strong></td>
             <td>活用力 − 思考力</td>
-            <td>使いまくっているが思考・検証が追いついていない（過信実行型）</td>
-            <td>思考・検証過剰・実行が伴わない（評論型）</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#a04870">過信実行型</strong>（⚠️最重要）<br>使う量が批評力を上回る。誤情報をそのまま採用するリスクが高い</td>
+            <td><strong style="color:#5858a8">慎重未活用型</strong>（CVフック大）<br>評価力はあるのに使っていない。LINE登録への動機づけとして強力</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
           <tr>
             <td><strong>K-T GAP</strong></td>
             <td>知識力 − 思考力</td>
-            <td>知識があるのに出力検証・判断が弱い（思考処理不全）</td>
-            <td>思考力は高いが知識基盤が薄い</td>
-            <td><span class="badge badge-check">逆方向未定義</span></td>
+            <td><strong style="color:#2e7a5a">情報収集偏重型</strong><br>新ツールへの関心は高いが出力を鵜呑みにしやすい</td>
+            <td><strong style="color:#60607a">批判的思考者型</strong><br>評価は慎重だがツール知識が浅く活用の幅が限られる</td>
+            <td><span class="badge badge-done">定義済み</span></td>
           </tr>
         </tbody>
       </table>
@@ -3452,64 +3822,40 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <strong>検知しない3ペアについて：</strong>I-A / I-T / A-K は現在対象外。選定した3ペアは「知識→指示→活用→検証」という認知チェーンの詰まり場所を特定する意図で選ばれている。残りのペアを将来追加するかは後工程で判断する。
       </div>
 
-      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">⚠️ 単位の不一致：分散 vs GAP</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:32px 0 12px;color:var(--text)">✅ 単位統一：分散・GAP ともに % に確定（2026-05-03）</h3>
 
-      <div class="callout" style="border-left-color:#a04870;background:rgba(160,72,112,0.06)">
-        <strong style="color:#a04870">要対応：</strong>Claude API へ渡す変数に単位が混在している。プロンプトか GAS のどちらかで統一する必要がある。
+      <div class="callout" style="border-left-color:var(--c3);background:rgba(46,122,90,0.06)">
+        <strong style="color:var(--c3)">確定：</strong>分散・GAPともに <strong>%（0〜100）</strong> に統一。Claude API へ渡す Layer 2 変数の単位が揃い、プロンプト内での誤解釈リスクを排除。
       </div>
 
       <table class="score-table" style="margin-bottom:20px">
-        <thead><tr><th>変数種別</th><th>計算方法</th><th>スケール</th><th>保存列</th></tr></thead>
+        <thead><tr><th>変数種別</th><th>計算方法（確定）</th><th>スケール</th><th>保存列</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>各軸の分散</strong></td>
-            <td>Sub最大率 − Sub最小率<br><span style="font-size:12px;color:var(--muted)">各Subスコアをそれぞれの最大値で割った比率の差</span></td>
-            <td><strong>0〜1（比率差）</strong></td>
+            <td>(Sub最大率 − Sub最小率) × 100<br><span style="font-size:12px;color:var(--muted)">各Subスコア÷最大点で比率化→差×100で%変換</span></td>
+            <td><strong>0〜100（%）</strong></td>
             <td>ED〜EG</td>
           </tr>
           <tr>
             <td><strong>GAP（3ペア）</strong></td>
-            <td>軸Aスコア − 軸Bスコア<br><span style="font-size:12px;color:var(--muted)">生スコアのまま引き算</span></td>
-            <td><strong>−125〜+125（生スコア差）</strong></td>
+            <td>round((軸A − 軸B) / 125 × 100)<br><span style="font-size:12px;color:var(--muted)">生スコア差を%に変換・しきい値≥20%</span></td>
+            <td><strong>0〜100（%）</strong></td>
             <td>EH〜EJ</td>
           </tr>
         </tbody>
       </table>
 
-      <p style="font-size:14px;color:var(--muted);margin-bottom:20px">例：分散 <code>0.23</code>（比率差23%）と GAP <code>40</code>（点差40点）はどちらも「40」という数値で保存されうるが意味が全く異なる。</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px">例：分散 <code>42</code>（%・軸内サブのバラつき）と GAP <code>35</code>（%・軸間の乖離）が同スケールで並ぶ。Claudeが大小比較できる。</p>
 
-      <table class="score-table" style="margin-bottom:32px">
-        <thead><tr><th>解決案</th><th>内容</th><th>メリット</th><th>デメリット</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>案A：GAPも比率化</td>
-            <td><code>(K-I) ÷ 125</code> で 0〜1 に正規化</td>
-            <td>分散と同スケール・プロンプトがシンプル</td>
-            <td>点数差の直感的な感覚が消える</td>
-          </tr>
-          <tr>
-            <td>案B：プロンプトで単位を明記</td>
-            <td>「分散は比率差(0〜1)、GAPは点数差(/125)」と記述</td>
-            <td>既存の計算ロジックを変更しなくてよい</td>
-            <td>プロンプトが長くなる・誤解リスクが残る</td>
-          </tr>
-          <tr>
-            <td>案C：分散も点数化</td>
-            <td>Sub率差 × 軸最大スコア(125)で点数換算</td>
-            <td>GAP と同スケールで直感的</td>
-            <td>Sub の問数が軸によって異なる（11/8/6問）ため Max が揃わない</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPしきい値：≥25点の根拠</h3>
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 12px;color:var(--text)">GAPしきい値：≥20%（確定）</h3>
       <table class="score-table" style="margin-bottom:16px">
         <thead><tr><th>項目</th><th>値</th></tr></thead>
         <tbody>
-          <tr><td>現在のしきい値</td><td>絶対値 ≥ 25点（生スコア差）</td></tr>
-          <tr><td>全体スケール</td><td>各軸 0〜125点（最大差 125点）</td></tr>
-          <tr><td>しきい値の比率</td><td>25 ÷ 125 = <strong>20%</strong></td></tr>
-          <tr><td>現時点の根拠</td><td>データなし（設計上の仮設定）</td></tr>
+          <tr><td>しきい値（確定）</td><td>絶対値 ≥ 20%（= 25点/125点）</td></tr>
+          <tr><td>diff単位（確定）</td><td>%（GASが <code>round((軸A−軸B)/125×100)</code> で変換して注入）</td></tr>
+          <tr><td>全体スケール</td><td>各軸 0〜100%（diff最大100%）</td></tr>
+          <tr><td>根拠</td><td>生スコア25点/125点 = 20%。単位を%に統一することで定義と表示の齟齬を解消（2026-05-03確定）</td></tr>
         </tbody>
       </table>
       <div class="callout" style="border-left-color:var(--c4)">
@@ -3624,7 +3970,7 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
           </tr>
           <tr>
             <td>不整合 1〜9件</td>
-            <td>バッジ表示 + Claude評価文（80〜120字）</td>
+            <td>バッジ表示 + Claude評価文（108〜120字）</td>
             <td>—</td>
             <td>現行維持</td>
           </tr>
@@ -3664,31 +4010,51 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
         <tbody>
           <tr>
             <td>1</td>
-            <td><strong>分散とGAPの単位統一</strong><br><span style="font-size:12px;color:var(--muted)">分散=比率差(0〜1) / GAP=生スコア差(0〜125) が混在</span></td>
+            <td><strong>分散とGAPの単位統一</strong><br><span style="font-size:12px;color:var(--muted)">確定：分散=(Sub最大率−Sub最小率)×100 / GAP=round((A−B)/125×100) / ともに%（0〜100）に統一。Claude APIへの入力変数スケールが揃った。</span></td>
             <td>GAS設計 / プロンプト</td>
             <td><span class="priority-high">🔴 高</span></td>
-            <td><span class="badge badge-todo">未決定</span></td>
+            <td><span class="badge badge-done">確定（2026-05-03）</span></td>
           </tr>
           <tr>
             <td>2</td>
-            <td><strong>整合性チェックの検出感度調整</strong><br><span style="font-size:12px;color:var(--muted)">3問1件発火の現行ロジックを厳格化するか検討（差幅 or 過半数ルール）</span></td>
+            <td><strong>整合性チェックの検出感度調整</strong><br><span style="font-size:12px;color:var(--muted)">確定：min ≤ 2（ネガ）と max ≥ 4（ポジ）が共存する場合のみ不整合と判定。グラデーション（4と3など）は対象外。認識の逆転のみ検知。</span></td>
             <td>GAS設計 / レポートUI</td>
             <td><span class="priority-high">🔴 高</span></td>
-            <td><span class="badge badge-todo">未決定</span></td>
+            <td><span class="badge badge-done">確定（2026-05-01）</span></td>
           </tr>
           <tr>
             <td>3</td>
-            <td><strong>GAP逆方向の意味づけ定義</strong><br><span style="font-size:12px;color:var(--muted)">−25以下のときの解釈をプロンプトに明記する必要あり</span></td>
-            <td>Claude APIプロンプト</td>
-            <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">未定義</span></td>
+            <td>
+              <strong>GAP逆方向の意味づけ定義</strong><br>
+              <span style="font-size:12px;color:var(--muted)">GAS設計書・Claude APIプロンプトに明記する。direction=positive（前者高）と direction=negative（後者高）の両方向について、パターン名と文脈を定義済み。</span>
+              <table style="margin-top:10px;font-size:12px;border-collapse:collapse;width:100%">
+                <thead><tr style="background:rgba(0,0,0,0.04)">
+                  <th style="padding:5px 8px;text-align:left">pair</th>
+                  <th style="padding:5px 8px;text-align:left">direction</th>
+                  <th style="padding:5px 8px;text-align:left">パターン名</th>
+                  <th style="padding:5px 8px;text-align:left">Claude生成の文脈</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">at</td><td style="padding:5px 8px">活用 &gt; 思考（正）</td><td style="padding:5px 8px;color:#a04870;font-weight:700">過信実行型</td><td style="padding:5px 8px">使う量が批評力を上回る。誤情報をそのまま採用するリスクが高い</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">at</td><td style="padding:5px 8px">思考 &gt; 活用（逆）</td><td style="padding:5px 8px;color:#5858a8;font-weight:700">慎重未活用型</td><td style="padding:5px 8px">評価力はあるのに使っていない。「わかっているが動いていない」状態。LINE登録CVへの訴求力が高い</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">ki</td><td style="padding:5px 8px">知識 &gt; 指示（正）</td><td style="padding:5px 8px;color:#8a5820;font-weight:700">知識詰め込み型</td><td style="padding:5px 8px">理解はあるが指示の組み立てが弱い。頭でわかっても手が動かない</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">ki</td><td style="padding:5px 8px">指示 &gt; 知識（逆）</td><td style="padding:5px 8px;color:#2e7098;font-weight:700">直感指示型</td><td style="padding:5px 8px">なぜ動くかわからないが使える。エラー時の対処・応用が難しい</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">kt</td><td style="padding:5px 8px">知識 &gt; 思考（正）</td><td style="padding:5px 8px;color:#2e7a5a;font-weight:700">情報収集偏重型</td><td style="padding:5px 8px">新ツールへの関心は高いが出力を鵜呑みにしやすい</td></tr>
+                  <tr style="border-top:1px solid #e2e0da"><td style="padding:5px 8px;font-weight:700">kt</td><td style="padding:5px 8px">思考 &gt; 知識（逆）</td><td style="padding:5px 8px;color:#60607a;font-weight:700">批判的思考者型</td><td style="padding:5px 8px">評価は慎重だがツール知識が浅く活用の幅が限られる</td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:8px;font-size:11px;color:var(--muted)">⚠️ at_gap逆方向（慎重未活用型）はCVフックとして特に重要。「使えるのに使っていない」という文脈はLINE登録への動機と直結する。GAS設計書・プロンプト両方に明記必須。</div>
+            </td>
+            <td>GAS設計書 + Claude APIプロンプト</td>
+            <td><span class="priority-high">🔴 高</span></td>
+            <td><span class="badge badge-done">定義確定（2026-05-03）</span></td>
           </tr>
           <tr>
             <td>4</td>
-            <td><strong>整合性0件時の表示方針</strong><br><span style="font-size:12px;color:var(--muted)">非表示 or 「全一貫」として全バッジ ● で表示するか</span></td>
+            <td><strong>整合性0件時の表示方針</strong><br><span style="font-size:12px;color:var(--muted)">確定：セクション常時表示（非表示にしない）。全バッジ ● で称賛トーンの評価文を生成。secConsistency()実装済み。</span></td>
             <td>レポートUI</td>
             <td><span class="priority-mid">🟡 中</span></td>
-            <td><span class="badge badge-todo">未決定</span></td>
+            <td><span class="badge badge-done">確定（2026-05-02）</span></td>
           </tr>
           <tr>
             <td>5</td>
@@ -4136,16 +4502,53 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
 
 
 <script>
-  // タブ切り替え
+  // タブ切り替え — URLハッシュ `#tab-{paneId}` で状態を管理
+  // リロード・戻る・進む・URL直接指定でも同じタブが開く
   const tabBtns = document.querySelectorAll('.tab-btn');
   const panes   = document.querySelectorAll('.pane');
 
+  function activateTab(paneId) {
+    var btn  = document.querySelector('.tab-btn[data-pane="' + paneId + '"]');
+    var pane = document.getElementById('pane-' + paneId);
+    if (!btn || !pane) return;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    panes.forEach(p => p.classList.add('pane-hidden'));
+    btn.classList.add('active');
+    pane.classList.remove('pane-hidden');
+  }
+
+  // クリック → ハッシュを更新（hashchange が activateTab を呼ぶ）
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
-      panes.forEach(p => p.classList.add('pane-hidden'));
-      btn.classList.add('active');
-      document.getElementById('pane-' + btn.dataset.pane).classList.remove('pane-hidden');
+      location.hash = 'tab-' + btn.dataset.pane;
+    });
+  });
+
+  // 戻る・進む・URL直接アクセス対応
+  window.addEventListener('hashchange', () => {
+    var h = location.hash;
+    if (h.startsWith('#tab-')) activateTab(h.slice(5));
+  });
+
+  // ページロード時にハッシュからタブを復元（なければ todo がデフォルト）
+  (function() {
+    var h = location.hash;
+    activateTab(h.startsWith('#tab-') ? h.slice(5) : 'todo');
+  })();
+
+  // ToDoタブ: 「詳細 →」ボタン — タブ切り替え + セクションスクロール
+  document.querySelectorAll('.go-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var tab     = btn.dataset.tab;
+      var section = btn.dataset.section;
+      activateTab(tab);
+      location.hash = 'tab-' + tab;
+      if (section) {
+        setTimeout(function() {
+          var el = document.getElementById(section);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
     });
   });
 
@@ -4167,6 +4570,289 @@ K-T GAP: {{kt_gap}}（知識と検証の整合）
     sections.forEach(s => observer.observe(s));
   });
 </script>
+
+
+
+<!-- ============================================================
+     Claude APIプロンプト設計 タブ
+     ============================================================ -->
+<div id="pane-api-prompt" class="pane pane-hidden">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">Claude API</div>
+      <div class="sub">プロンプト設計</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">全体方針</div>
+      <a href="#ap-policy" class="nav-item active">
+        <span class="nav-dot" style="background:var(--accent)"></span>
+        設計方針（確定）
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">レポートセクション順</div>
+      <a href="#ap-sec1" class="nav-item">
+        <span class="nav-dot" style="background:var(--c3)"></span>
+        Section 1 — summary
+      </a>
+      <a href="#ap-sec4" class="nav-item">
+        <span class="nav-dot" style="background:var(--c4)"></span>
+        Section 4 — axes_eval
+      </a>
+      <a href="#ap-sec5-gap" class="nav-item">
+        <span class="nav-dot" style="background:var(--c5)"></span>
+        Section 5 — GAP
+      </a>
+      <a href="#ap-sec5-consistency" class="nav-item">
+        <span class="nav-dot" style="background:var(--c2)"></span>
+        Section 5 — 一貫性
+      </a>
+      <a href="#ap-sec6" class="nav-item">
+        <span class="nav-dot" style="background:#e53e3e"></span>
+        Section 6 — next_step
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- 全体方針 -->
+    <section class="section" id="ap-policy">
+      <div class="section-header">
+        <div class="section-eyebrow">Policy — 確定</div>
+        <h2 class="section-title">設計方針</h2>
+        <p class="section-desc">プロンプトは「禁止リスト」ではなく「前提と目的の正確な伝達」で制御する。Claudeの自然な能力を活かす設計。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>① 計算された診断結果であることを前提として渡す</strong><br>
+        この診断は100問の回答データから3層変数を算出した個別最適化の結果。
+        あいまいな推測ではなく、数値が証明している事実を提示する場である。
+        この文脈をClaudeに正確に渡せば、断言的な文章は自然に出てくる。
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>② 数値を根拠に、そこから読める情報を提示する</strong><br>
+        ビジュアルが数値を見せる。テキストはその数値が何を意味するかを提示する。
+        「あなたはこうです。この数値がそれを証明しています。」という構造。
+        推測・共感・励ましではなく、客観的な事実の提示が読者に刺さる。
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:14px">
+        <strong>③ 優れている点・劣っている点を両方言い切る</strong><br>
+        ユーザーは市場のAI診断に懐疑的。フラットな文は「誰でも同じ」と読まれる。
+        強みは言い切り、弱みも言い切る。その精度がこの診断の価値になる。
+      </div>
+
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent)">
+        <strong>プロンプト設計の原則：禁止リストではなく前提と目的で制御</strong><br>
+        「〜と書くな」という制約を並べるより、Claudeが正しい文脈を理解していれば自然に正しい文章になる。
+        データ・目的・出力スキーマを正確に渡すことが最も重要。
+      </div>
+    </section>
+
+    <!-- Section 1 -->
+    <section class="section" id="ap-sec1">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 1 — 点数と戦闘力</div>
+        <h2 class="section-title"><code>summary</code>（216〜240字）</h2>
+        <p class="section-desc">スコアカード直下。ユーザーが最初に読むテキスト。全軸をまたいだパターンレベルの言語化。</p>
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>注入先DOM</td><td><code>.score-summary</code></td></tr>
+          <tr><td>文字数</td><td>216〜240字（半角=0.5字・全角=1字）</td></tr>
+          <tr><td>参照データ</td><td>4軸スコア / percentile / 最分散軸のサブグループ（定義文付き） / GAP方向パターン（条件付き）</td></tr>
+          <tr><td>役割</td><td>4軸プロフィールの総括。数値を根拠に「あなたはこうです」と言い切る総評</td></tr>
+          <tr><td>構造（確定）</td><td>
+            ① 市場の中での立ち位置 ＋ その意味を断言<br>
+            ② 4軸全体の評価 ＋ 軸間の差の幅（接近型 or 突出型）を人物像として描く<br>
+            ③ 最分散軸のサブ傾向を平易な言葉で加える（高いサブ・低いサブの組み合わせを一つの傾向として読む）<br>
+            ④ GAPがあれば課題を一文加える（条件付き・なければ省略）<br>
+            ※ 一貫性チェックはsummaryに出さない。Section 5 の「驚き・フック」として置く
+          </td></tr>
+          <tr><td>サブ傾向の渡し方（確定）</td><td>内部ラベル名ではなく定義文とスコアをセットで渡す。Claudeが平易な言葉に変換して繋げる</td></tr>
+          <tr><td>軸分布の渡し方（確定）</td><td>「接近型」「突出型」のラベルは渡さない。「○○力が最も高く、○○力との差が18%と大きい」等の事実として渡す。Claudeが自分の言葉で分布を描く</td></tr>
+          <tr><td>GAPの渡し方（確定）</td><td>「ki正」等の型名は渡さない。「知識力が指示力を28%上回っています → 情報収集の習慣はあるが言語化力が追いついていない」の形で行動描写を直接渡す</td></tr>
+          <tr><td>人物像として読む（確定）</td><td>プロンプトで「各データを別々に処理せず、すべてを一人の人物像として捉えて一つの流れで書け」と明示する。データの羅列ではなく一人の傾向として統合することでAI感が消える</td></tr>
+          <tr><td>平均比較の使い方（確定）</td><td>percentileを文脈として使い、ユーザーが立ち位置を実感できるように書く。上位30%→「平均を上回る水準」。平均以下でも「改善が必要」ではなく「まだ伸ばせる部分がある」方向で表現する</td></tr>
+          <tr><td>percentileの渡し方（確定）</td><td>「上位85%」をそのままClaudeに渡さない。「上位85%」は誤解を招く（平均以上に聞こえる）。GAS側で5段階の位置説明に変換してから渡す：≤15%=トップ層 / ≤35%=平均を上回る / ≤50%=やや上回る / ≤65%=やや下回る / 66%〜=これから積み上げる段階</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span> — <code>GAS_プロンプト.md</code> § 1 に収録</td></tr>
+          <tr><td>実装状態</td><td>HTMLあり（現在ダミーテキスト）。GASのbuildClaudePrompt()に組み込み待ち</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="section" id="ap-sec4">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 4 — 軸別評価 × 4軸</div>
+        <h2 class="section-title"><code>axes_eval</code>（knowledge / instruction / application / thinking）</h2>
+        <p class="section-desc">各軸25問の問別1〜5スコアの分布から書く。サブ平均・軸スコア合計値から書かない。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent);margin-bottom:12px">
+        <strong>軸ドメイン境界（確定）— 軸をまたいだ内容混入禁止</strong><br>
+        知識力 = <em>知っているか・理解しているか</em>（認知レベル）<br>
+        指示力 = <em>AIへの伝え方・引き出し方</em>（コミュニケーション／操作レベル）<br>
+        活用力 = <em>実際に使って成果・展開できているか</em>（実行レベル）<br>
+        思考力 = <em>AI出力の評価・限界認識・改善方向づけ</em>（メタ認知レベル）
+      </div>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3);margin-bottom:12px">
+        <strong>データ構造（確定）— 問別1〜5スコアを渡す</strong><br>
+        <code>Q_LABELS</code>（全100問・行動ベース記述）＋ <code>AXIS_SUBS</code>（サブ×問番号配列）→ <code>buildAxesDetail(data)</code> が組み立て<br>
+        例（知識力）:<br>
+        <code>①ツール把握（初級11問）: AIツールの使用経験:5 / 生成AI種類の区別:4 / … / AI動向定期チェック:2 / スキル更新意識:2</code><br>
+        <code>②本質・限界理解（中級8問）: AI誤情報の経験認識:4 / … / AI出力の誤り可能性の意識:5</code><br>
+        <code>③発展・専門応用（上級6問）: … / ツール間の自動連携経験:1 / …</code><br>
+        → 同じサブ平均でも問の分布が違えば全く異なる人物像が生まれる
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>参照データ</th><th>禁止</th><th>状態</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>eval</code></td>
+            <td>軸評価文</td>
+            <td>~120字</td>
+            <td>この軸の25問・問別1〜5スコアの分布（Q_LABELS付き）</td>
+            <td>断定形（〜している/〜だ）・数値言及・他軸の内容・ラベルそのまま使用</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
+          </tr>
+          <tr>
+            <td><code>strengths[]</code></td>
+            <td>強みリスト</td>
+            <td>~20字 × 2</td>
+            <td>高スコア問群の行動内容</td>
+            <td>「〇〇の知識がある」（軸名の言い換え）</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
+          </tr>
+          <tr>
+            <td><code>weaknesses[]</code></td>
+            <td>弱みリスト</td>
+            <td>~20字 × 2</td>
+            <td>低スコア問群の行動内容</td>
+            <td>「まだ伸びしろがあります」（曖昧化）</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
+          </tr>
+          <tr>
+            <td><code>growth</code></td>
+            <td>伸びしろ文</td>
+            <td>~80字</td>
+            <td>最低スコア問群（weaknesses起点）</td>
+            <td>「〜なりやすい」「〜しやすくなる」等の効果評価語・汎用表現</td>
+            <td><span style="color:#2e7a5a;font-weight:700">✅ 確定</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="background:rgba(46,122,90,0.06);border-left-color:var(--c3)">
+        <strong>出力例（知識力 ①ツール把握: q1:5/q15:2/q16:2/q23:2 ②限界理解: q14:5/q9:2 ③発展応用: q21:4/q22:1 のケース）</strong><br>
+        eval：「代表的なAIツールの種類や特徴はひと通り把握していることが多く、場面に応じた使い分けができていることがある。ただ、AI関連の動向を定期的に追ったりスキルを更新したりする行動は少なくなりやすく、AIが誤ることへの意識は高い場面が多い一方で、ツール同士を繋いで自動で動かす仕組みを作った経験がまだ少ないことが多い。」<br>
+        strengths：["代表的なAIツールの種類と特徴を網羅的に把握できている", "AIの回答が誤っている可能性を常に意識して使える"]<br>
+        weaknesses：["ツール同士を繋いで自動化する仕組みを作った経験がない", "AI関連の最新動向を自ら追ってスキルを更新する行動がとれていない"]<br>
+        growth：「AIツール同士を繋いで自動で動かす経験が増えると、今持っている知識が実際の仕組みとして機能するようになります。まずZapierで小さな自動フローを1本だけ試してみてください。」
+      </div>
+
+      <div class="callout" style="background:rgba(255,193,7,0.08);border-left-color:#d69e2e;margin-top:12px">
+        <strong>growth 2段構成（確定）</strong><br>
+        ①伸びしろ提示（30〜40字）:「この領域が伸びると何がどう変わるか」を先に示す<br>
+        ②アクション推奨（40〜50字）:「〜してみてください」等の提案形で具体的な次の一手を書く<br>
+        ※ 効果の評価語（「〜なりやすい」「〜しやすくなる」等）は使わない
+      </div>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ プロンプト文・Q_LABELS・AXIS_SUBS は <code>GAS_プロンプト.md</code> § axes_eval に収録</p>
+    </section>
+
+    <!-- Section 5 GAP -->
+    <section class="section" id="ap-sec5-gap">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 5 — あなたの特徴 / 能力の偏り</div>
+        <h2 class="section-title"><code>gaps[].body</code>（70〜80字 × 最大3本）</h2>
+        <p class="section-desc">GAPバーが数値・差分%を視覚化済み。テキストは行動描写だけ。|GAP|≥20%のペアのみ表示。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(49,130,206,0.06);border-left-color:var(--accent);margin-bottom:12px">
+        <strong>渡し方の設計原則（確定）</strong><br>
+        GAPパターン名（「ki正」等の型ラベル）はClaudeに渡さない。<br>
+        代わりに「軸名が軸名を○%上回っています → 行動描写テキスト」の形で渡す。<br>
+        Claudeは型分類を経由せず、行動描写を文脈として自然な文章を生成する。
+      </div>
+
+      <table class="score-table" style="width:100%">
+        <thead><tr><th>GAPパターン（内部管理用）</th><th>Claudeに渡す行動描写テキスト（確定）</th></tr></thead>
+        <tbody>
+          <tr><td>at正（活用 &gt; 思考 ≥20%）</td><td>手を動かすスピードは速いが、AIの出力を検証する工程が薄い。方向の確認が後回しになりやすい</td></tr>
+          <tr><td>at逆（思考 &gt; 活用 ≥20%）</td><td>AIのリスクを把握しているのに、実際の業務で使う頻度が低い。知識を行動に変換するステップが止まっている</td></tr>
+          <tr><td>ki正（知識 &gt; 指示 ≥20%）</td><td>情報収集の習慣はあるが、AIへの指示に変換する言語化力が追いついていない</td></tr>
+          <tr><td>ki逆（指示 &gt; 知識 ≥20%）</td><td>経験則でAIを動かせるが、体系的な知識がないため応用が効かない場面がある</td></tr>
+          <tr><td>kt正（知識 &gt; 思考 ≥20%）</td><td>インプットは多いが、AIの出力を批判的に検証する習慣が弱い</td></tr>
+          <tr><td>kt逆（思考 &gt; 知識 ≥20%）</td><td>AIの出力を丁寧に確認する力はあるが、最新ツールの把握が追いついておらず、活用できる選択肢が広がっていない</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">→ GASの <code>GAP_BEHAVIOR</code> マップとして実装。<code>GAS_プロンプト.md</code> § Layer3 参照</p>
+    </section>
+
+    <!-- Section 5 一貫性 -->
+    <section class="section" id="ap-sec5-consistency">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 5 — あなたの特徴 / 回答の一貫性</div>
+        <h2 class="section-title"><code>consistency_eval</code>（108〜120字）</h2>
+        <p class="section-desc">3×3バッジが pass/fail を視覚化済み。テキストは不整合グループのテーマ名指し＋行動仮説だけ。</p>
+      </div>
+
+      <table class="score-table" style="width:100%;margin-bottom:16px">
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>参照データ</td><td>failedGroups（グループ名・テーマ） / details（min/max）</td></tr>
+          <tr><td>禁止</td><td>「一部に一貫性のムラがあります」（バッジで見える） / 不整合グループ数の列挙</td></tr>
+          <tr><td>必須（不整合あり）</td><td>不整合グループのテーマを名指し ＋ 行動仮説1つ（意識はあるが習慣化されていない / 場面によって解釈が揺れている）</td></tr>
+          <tr><td>必須（全パス）</td><td>称賛トーン（「9グループすべてで一貫した回答」等）</td></tr>
+          <tr><td>プロンプト文</td><td><span style="color:#e53e3e;font-weight:700">未作成</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="section" id="ap-sec6">
+      <div class="section-header">
+        <div class="section-eyebrow">Section 6 — あなたの次のステップ</div>
+        <h2 class="section-title"><code>next_step</code>（HTML実装待ち）</h2>
+        <p class="section-desc">CTA（LINE登録）への橋渡し。弱みとfailedGroupsの交点から「最初にやるべき一手」を断言する。</p>
+      </div>
+
+      <div class="callout" style="background:rgba(214,158,46,0.06);border-left-color:var(--c2);margin-bottom:16px">
+        <strong style="color:var(--c2)">⚠️ 保留：Section 6 の HTML 実装完了後に作成</strong>
+      </div>
+
+      <table class="score-table" style="width:100%">
+        <thead><tr><th>サブフィールド</th><th>注入先</th><th>文字数</th><th>禁止</th><th>必須</th><th>プロンプト文</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>priority_action</code></td>
+            <td>Section 6 大見出し</td>
+            <td>~30字</td>
+            <td>「継続的に学習する」（generic）</td>
+            <td>動詞＋具体的な行動。weaknesses＋failedGroupsの組み合わせから導く</td>
+            <td><span style="color:var(--c2)">保留</span></td>
+          </tr>
+          <tr>
+            <td><code>explanation</code></td>
+            <td>Section 6 本文</td>
+            <td>150〜180字</td>
+            <td>「頑張りましょう」（励まし）</td>
+            <td>「なぜこれが最初か」を強み・弱みの交点から説明。LINE登録で解決することを示唆</td>
+            <td><span style="color:var(--c2)">保留</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
 
 </body>
 </html>
