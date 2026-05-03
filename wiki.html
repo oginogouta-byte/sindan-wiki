@@ -847,7 +847,7 @@
   <button class="tab-btn" data-pane="audit">アルゴリズム整頓</button>
   <button class="tab-btn" data-pane="optin">UTAGEオプトイン用レポート</button>
   <button class="tab-btn" data-pane="api-prompt">Claude APIプロンプト設計</button>
-  <span class="wiki-version">v3.19 <span class="v-date">2026-05-03</span></span>
+  <span class="wiki-version">v3.20 <span class="v-date">2026-05-03</span></span>
 </div>
 
 <!-- ==================== PANE: ToDo ==================== -->
@@ -1049,6 +1049,8 @@
         <thead><tr><th>完了日</th><th>タスク・決定内容</th><th>参照</th></tr></thead>
         <tbody>
 
+          <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.20） ── -->
+          <tr class="done-row"><td>2026-05-03</td><td><strong>next_step フィールド新設（headline 35〜45字 + body 180〜220字）（v3.20）</strong><span class="done-note">Section 6「これからのあなた」用に2フィールド設計。headline：「AIへの指示を書く前に〜」「AIのアウトプットを使う前に〜」等、AI-side/人間-side の具体動詞で一手を言い切る（「設計する」「確認する」等の包括動詞・比喩表現禁止）。body：GAP→consistency_eval(OS安定性)→topAxis の順で統合。一貫性チェック全通過=前進を背中押し / 土台系失敗=OS安定先決 / 応用系失敗=並走フレームの3構造確定。3ケースサンプル確定（186〜200字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
           <!-- ── 2026-05-03（Claude APIプロンプト設計セッション v3.19） ── -->
           <tr class="done-row"><td>2026-05-03</td><td><strong>consistency_eval：複数グループ失敗時の横断集約指示を追加（v3.19）</strong><span class="done-note">複数グループ失敗時は各グループを個別列挙せず、全グループを横断した「共通するズレのパターン」を1本で言い当てる設計を指示文に明記。グループ数が増えるほど個別具体→「この人全体に流れているズレ」に移行するアプローチ確定。2グループ×2パターン・3グループ×1パターンの仮出力検証済み（113〜117字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
           <tr class="done-row"><td>2026-05-03</td><td><strong>consistency_eval：CONSISTENCY_GROUPSマップ追加・max/min問データ活用（v3.18）</strong><span class="done-note">各失敗グループ内で「できている側の設問」と「ズレている側の設問」(max/min問)を特定してClaudeへ渡す設計に移行。旧：テーマのみ渡す→行動描写が汎用化。新：「〜はできているのに〜になると行動が変わる」という個別の認識ズレを言い当てられる。CONSISTENCY_GROUPS定数（9グループ×設問番号配列）追加。GROUP_THEMES定義も9グループ内容に合わせて調整。2ケースの具体的サンプル確定（110〜118字）。</span></td><td><button class="go-btn" data-tab="api-prompt" data-section="ap-sec5-consistency">詳細 →</button></td></tr>
