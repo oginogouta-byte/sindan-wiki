@@ -2106,11 +2106,12 @@
         <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px">SECTION 6</div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)">H1：これからのあなたへ</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">【表示設計確定】body → headline の順で表示。診断文脈を先に読ませ、一手を結論として締める構造。デザイン確定後に実装。</div>
           <table class="score-table" style="margin:0">
-            <thead><tr><th>要素</th><th>内容</th><th>種別</th></tr></thead>
+            <thead><tr><th>表示順</th><th>要素</th><th>ラベル（固定）</th><th>内容</th><th>種別</th></tr></thead>
             <tbody>
-              <tr><td>next_step.headline</td><td>最優先の1課題への具体的な一手（35〜45字・AI-side or 人間-side の具体動詞・比喩禁止）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
-              <tr><td>next_step.body</td><td>GAP→consistency→topAxis順で解説。3構造パターン（180〜220字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>1</td><td>next_step.body</td><td>あなたの現在地</td><td>GAP→consistency→topAxis順で解説。3構造パターン（180〜220字）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
+              <tr><td>2</td><td>next_step.headline</td><td>次の課題</td><td>最優先の1課題への具体的な一手（35〜45字・AI-side or 人間-side の具体動詞・比喩禁止）</td><td><span class="badge badge-todo">Claude API</span></td></tr>
             </tbody>
           </table>
         </div>
