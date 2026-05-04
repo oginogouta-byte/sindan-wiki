@@ -957,7 +957,7 @@
           </tr>
           <tr>
             <td><span class="badge badge-todo">デザイン確認待ち</span></td>
-            <td><strong>next_step Section 6 HTML + DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA の next_step.headline / next_step.body は buildReportDataObject() 実装済み。`#sec-next` は空タグのまま。デザイン方針（A: シンプル構造 / B: 専用デザイン）をユーザーが確定後に実装する。HTML構造・render(secNextStep) の追加が必要。</span></td>
+            <td><strong>next_step Section 6 HTML + DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA の next_step.headline / next_step.body は buildReportDataObject() 実装済み。`#sec-next` は空タグのまま。デザイン確定後に実装する。<br>【表示設計確定済み】表示順：body（「あなたの現在地」ラベル）→ headline（「次の課題」ラベル）。bodyで診断文脈を示してからheadlineで一手を結論として出す構造。セットでやること：① Section 6 HTML構造・render(secNextStep) の追加 ② GAS_プロンプト.md の next_step 指示文に「bodyを踏まえてheadlineが結論として入る接続」を一文追記</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
