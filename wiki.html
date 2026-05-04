@@ -938,8 +938,8 @@
         <thead><tr><th>状態</th><th>タスク</th><th>担当</th><th>詳細</th></tr></thead>
         <tbody>
           <tr>
-            <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
-            <td><strong>レポートHTML Section 6・CTA 実装</strong><br><span style="font-size:12px;color:var(--muted)">「これからのあなたへ」+ LINE登録CTA。全体仕様確定後に着手。</span></td>
+            <td><span class="badge badge-todo">未着手</span></td>
+            <td><strong>レポートHTML CTA 実装</strong><br><span style="font-size:12px;color:var(--muted)">LINE登録CTAセクション（#sec-cta）のみ未実装。Section 6は2026-05-04完了済み。</span></td>
             <td>ユーザー</td>
             <td><button class="go-btn" data-tab="report" data-section="r-phases">詳細 →</button></td>
           </tr>
@@ -955,15 +955,9 @@
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
-          <tr>
-            <td><span class="badge badge-todo">デザイン確認待ち</span></td>
-            <td><strong>next_step Section 6 HTML + DOM注入実装</strong><br><span style="font-size:12px;color:var(--muted)">REPORT_DATA の next_step.headline / next_step.body は buildReportDataObject() 実装済み。`#sec-next` は空タグのまま。デザイン確定後に実装する。<br>【表示設計確定済み】表示順：body（「あなたの現在地」ラベル）→ headline（「次の課題」ラベル）。bodyで診断文脈を示してからheadlineで一手を結論として出す構造。セットでやること：① Section 6 HTML構造・render(secNextStep) の追加 ② GAS_プロンプト.md の next_step 指示文に「bodyを踏まえてheadlineが結論として入る接続」を一文追記</span></td>
-            <td>Claude</td>
-            <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-todo">デザイン確認待ち</span></td>
-            <td><strong>Section 6 中見出しラベル・表示順の実装</strong><br><span style="font-size:12px;color:var(--muted)">【確定済み設計】① 表示順：body → headline（診断文脈を先に読ませて、一手を結論として出す）② ラベル：bodyに「あなたの現在地」・headlineに「次の課題」を固定ラベルとして付与。③ GAS_プロンプト.md の next_step 指示文に接続文（「bodyを踏まえてheadlineが結論として入る」）を追記。上の Section 6 HTML実装タスクとセットで対応する。</span></td>
+          <tr class="done-row">
+            <td><span class="badge" style="background:var(--c3);color:#fff">✅ 完了</span></td>
+            <td><strong>next_step Section 6 HTML + DOM注入・中見出しラベル実装</strong><span class="done-note">2026-05-04 完了。① グラデーション背景（#09B8FD→#0054E9）パネル（#next-panel）構築。② 表示順確定：body（「あなたの現在地」ラベル＋下線）→ headline（「次の課題」白boxカード内）。③ secNextStep() 関数を _renders に追加。④ REPORT_DATA.next_step { headline / body } フィールドをダミーデータ付きで定義。⑤ GAS から渡されたデータが renderAll() 経由で .next-body・.next-box-headline に自動注入される構造が完成。</span></td>
             <td>Claude</td>
             <td>—</td>
           </tr>
@@ -1005,7 +999,7 @@
           </tr>
           <tr>
             <td><span class="badge" style="background:#7c6eff20;color:#7c6eff">着手中</span></td>
-            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">✅ fetch基盤完了（2026-05-04）・✅ summary注入完了（2026-05-04）・✅ secFeature動的生成完了（2026-05-04）<br>⬜ 残タスク：next_step Section 6 HTML＋注入コード（デザイン確定待ち）</span></td>
+            <td><strong>report.htmlにJS注入実装（ClaudeテキストをDOMへ）</strong><br><span style="font-size:12px;color:var(--muted)">✅ fetch基盤完了（2026-05-04）・✅ summary注入完了（2026-05-04）・✅ secFeature動的生成完了（2026-05-04）・✅ secNextStep完了（2026-05-04）<br>全セクション注入実装完了。残はCTAのみ。</span></td>
             <td>Claude</td>
             <td><button class="go-btn" data-tab="report" data-section="r-risks">詳細 →</button></td>
           </tr>
@@ -1120,6 +1114,9 @@
           <tr class="done-row"><td>2026-05-04</td><td><strong>媒体別UTAGEサンクスページ設計確定 — 案A採用・オーガニック追加（v3.26）</strong><span class="done-note">X / TikTok / Meta / オーガニック の4媒体それぞれに専用UTAGEサンクスページを用意し、各ページに計測タグを設置する案Aを採用。案Bの「1ページ+条件分岐タグ」は UTAGE のシナリオ設定上で流入元の特定が困難なため不採用。オーガニック（SNS自然流入・直接流入）は別の訴求ニーズがあるため4媒体目として追加決定。実装方針：① 診断HTMLのURLに ?src=x / tiktok / meta / organic 等を付与 ② doPost に src を含める ③ GAS buildRedirectUrl() が src に応じて UTAGE_THANKS_URL_X / _TIKTOK / _META / _ORGANIC へ振り分けリダイレクト。GASの実装変更（URL定数追加 + 振り分けロジック）が必要。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-04</td><td><strong>PDFダウンロード機能 — 不採用決定（v3.26）</strong><span class="done-note">レポートのPDFダウンロードボタンはフェーズ1〜2では実装しないと決定。ブラウザ印刷→PDF保存は技術的には可能だが、現フェーズの優先度・工数対効果から見送り。wiki ToDoからPDFタスクを削除済み。将来の要件として必要になった場合は後工程で再検討する。</span></td><td>—</td></tr>
           <tr class="done-row"><td>2026-05-04</td><td><strong>Section 6（next_step）デザイン方針の整理・保留決定（v3.26）</strong><span class="done-note">Section 6「これからのあなた」の表示デザインについてA案（カード型）・B案（タイムライン型）等の選択肢を整理。デザイン確定は別途ユーザー判断とし、HTML実装は保留。wiki ToDoに「デザイン確定待ち」タスクとして単独分離済み。headline（35〜45字）＋body（180〜220字）のフィールド定義・GASプロンプト設計は完了しており、デザイン確定後にDOM注入実装を行う。</span></td><td>—</td></tr>
+
+          <!-- ── 2026-05-04（Section 6 全実装完了 v3.31） ── -->
+          <tr class="done-row"><td>2026-05-04</td><td><strong>Section 6「これからのあなたへ」全実装完了（v3.31）</strong><span class="done-note">① グラデーション背景パネル（#09B8FD 0%固定→#0054E9、165deg）構築。② 表示構造確定：feature-titleタイトル → .next-label「あなたの現在地」＋角丸白下線（90%不透明）→ .next-body（body 180〜220字）→ #next-box白カード（角丸10px・ニューモフィズム）内に .next-box-label「次の課題」グラデーション文字 → .next-box-headline（headline 35〜45字）。③ secNextStep() 関数を _renders に追加し renderAll() パイプラインに組み込み。④ REPORT_DATA.next_step { headline / body } フィールドをダミーデータ付きで定義。GASから渡されたデータが全自動注入される構造が完成。report.html の動的表示パイプラインがCTAを除き完全完成。</span></td><td>—</td></tr>
 
           <!-- ── 2026-05-04（report.html 表示実装完成・スクリーニング対応 v3.25） ── -->
           <tr class="done-row"><td>2026-05-04</td><td><strong>secFeature() GAP動的DOM生成・summary注入・fetchフォールバック実装（v3.25）</strong><span class="done-note">① secFeature()：静的ダミーgap-item を実行時全削除 → D.gaps[] から gap-pair-title / SVGコネクタ / 2本ゲージ / diff表示 / gap-pair-bodyを動的生成。空時はセクション見出し非表示。② summary注入：REPORT_DATA.summary フィールド追加・secScore() 末尾に `.score-summary` への textContent 注入コード追加。静的ダミーテキストを空に変更。③ fetchフォールバック：fetch失敗時に赤帯エラーメッセージを body 先頭に固定表示（開発中はコンソールに加えてDOMでもエラー検知可能）。report.htmlの表示パイプライン（GAS→fetch→renderAll→各セクション）がほぼ完成。残はSection 6（next_step）のデザイン確定後実装のみ。</span></td><td>—</td></tr>
@@ -2730,15 +2727,16 @@
           </div>
         </div>
 
-        <div class="step-item">
+        <div class="step-item step-done">
           <div class="step-left">
             <div class="step-num">9</div>
           </div>
           <div class="step-body">
             <div class="step-title">レポートHTML残り（Section 6・CTA）</div>
-            <div class="step-desc">FV〜Section 5は全実装済み（secFeature動的DOM・summary注入・fetchフォールバック含む）。残りはSection 6「これからのあなた」（next_step.headline + body DOM注入）とCTA。デザイン方針（A/B）確定待ちのため保留中。プロンプト設計・REPORT_DATAキー定義はすべて完了済み。</div>
+            <div class="step-desc">Section 6「これからのあなたへ」全実装完了（2026-05-04）。グラデーション背景パネル・「あなたの現在地」ラベル＋下線・body注入・「次の課題」白boxカード・headline注入・secNextStep()関数・REPORT_DATA.next_step定義すべて完了。残りはCTA（LINE登録）のみ。</div>
             <div class="step-meta">
-              <span class="badge" style="background:#7c6eff20;color:#7c6eff">Sec1〜5完了・Sec6デザイン確定待ち</span>
+              <span class="badge badge-done">Section 6完了</span>
+              <span class="badge badge-todo" style="margin-left:8px">CTA未実装</span>
             </div>
           </div>
         </div>
